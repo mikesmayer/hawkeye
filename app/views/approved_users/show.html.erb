@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @approved_user.name %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @approved_user.email %>
+</p>
+
+<%= link_to 'Edit', edit_approved_user_path(@approved_user) %> |
+<%= link_to 'Back', approved_users_path %>

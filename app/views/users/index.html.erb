@@ -1,0 +1,54 @@
+<h3>Users</h3>
+<div class="row">
+  <div class="col-md-7">
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Registered</th>
+        <th>Role</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= link_to user.name, user %></td>
+        <td><%= user.email %></td>
+        <td><%= user.created_at.to_date %></td>
+        <td><%= user.role %></td>
+        <td><%= link_to("Delete user", user_path(user), :data => { :confirm => "Are you sure?" }, :method => :delete, :class => 'btn btn-mini btn-danger') unless user == current_user %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  </div>
+  <div class="col-md-4 well">
+    <h4>Approved Users</h4>
+    <p>Only users listed here will be allowed to sign in to RADAR.</p>
+    <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @approved_users = ApprovedUser.all %>
+    <% @approved_users.each do |approved_user| %>
+      <tr>
+        <td><%= approved_user.name %></td>
+        <td><%= approved_user.email %></td>
+        <td><%= link_to 'Edit', edit_approved_user_path(approved_user) %></td>
+        <td><%= link_to 'Destroy', approved_user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+    </tbody>
+    </table>
+    <%= link_to 'New Approved user', new_approved_user_path, :class => 'btn btn-small btn-success' %>
+  </div>
+</div>
+

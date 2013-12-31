@@ -1,0 +1,29 @@
+<h1>Listing approved_users</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @approved_users.each do |approved_user| %>
+      <tr>
+        <td><%= approved_user.name %></td>
+        <td><%= approved_user.email %></td>
+        <td><%= link_to 'Show', approved_user %></td>
+        <td><%= link_to 'Edit', edit_approved_user_path(approved_user) %></td>
+        <td><%= link_to 'Destroy', approved_user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Approved user', new_approved_user_path %>
