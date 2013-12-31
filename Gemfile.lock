@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/capistrano/rvm.git
+  revision: 7a35d1124e5cf4dcec1079acf3941b8be54307fd
+  specs:
+    capistrano-rvm (0.1.0)
+      capistrano (~> 3.0)
+      sshkit (~> 1.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -182,6 +190,7 @@ DEPENDENCIES
   cancan
   capistrano (~> 3.0)
   capistrano-rails (~> 1.1)
+  capistrano-rvm!
   coffee-rails (~> 4.0.0)
   devise
   figaro
