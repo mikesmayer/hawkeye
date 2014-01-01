@@ -3,6 +3,7 @@ set :repository,  "https://tylersam@github.com/tylersam/hawkeye.git"
 
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
 set :deploy_to, "/home/tylersam/webapps/hawkeye"
+set :shared_path, "/home/tylersam/webapps/hawkeye/shared"
 
 role :web, "hawkeye.pitza42.com"                          # Your HTTP server, Apache/etc
 role :app, "hawkeye.pitza42.com"                          # This may be the same as your `Web` server
@@ -36,6 +37,13 @@ set :rvm_autolibs_flag, "read-only"       # more info: rvm help autolibs
 before 'deploy:setup', 'rvm:install_rvm'  # install/update RVM
 before 'deploy:setup', 'rvm:install_ruby' # install Ruby and create gemset, OR:
 # before 'deploy:setup', 'rvm:create_gemset' # only create gemset
+
+before "deploy:assets:precompile" do
+  run ["ln -nfs #{shared_path}/config/settings.yml #{release_path}/config/settings.yml",
+       "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml",
+       "ln -fs #{shared_path}/uploads #{release_path}/uploads"
+  ].join(" && ")
+end
 
 namespace :deploy do
 	desc "Restart nginx"
