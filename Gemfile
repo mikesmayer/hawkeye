@@ -23,3 +23,4 @@ end
 gem 'devise'
 gem 'cancan'
 gem 'omniauth-google-oauth2'
+gem 'capistrano', '~> 2.15.5'
