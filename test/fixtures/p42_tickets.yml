@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  pos_ticket_id: 1
+  gross_price: 1.5
+  net_price: 1.5
+  meal_for_meal: 1
+
+two:
+  pos_ticket_id: 1
+  gross_price: 1.5
+  net_price: 1.5
+  meal_for_meal: 1

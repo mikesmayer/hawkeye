@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  app_key: MyString
+  app_secret: MyString
+  access_token: MyString
+  account_name: MyString
+  authorized: false
+
+two:
+  app_key: MyString
+  app_secret: MyString
+  access_token: MyString
+  account_name: MyString
+  authorized: false

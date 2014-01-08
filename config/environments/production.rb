@@ -78,5 +78,17 @@ RailsBootstrap::Application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
+  config.action_mailer.delivery_method = :sendmail
+  
+  config.action_mailer.smtp_settings = {
+    address: "smtp.gmail.com",
+    port: 587,
+    domain: "pitza42.com",
+    authentication: "plain",
+    enable_starttls_auto: true,
+    user_name: ENV["GMAIL_USERNAME"],
+    password: ENV["GMAIL_PASSWORD"],
+    :openssl_verify_mode  => 'none'
+  }
   config.action_mailer.default_url_options = { :host => 'hawkeye.pitza42.com'}
 end

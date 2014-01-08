@@ -1,0 +1,33 @@
+<h1>Listing p42_tickets</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Pos ticket</th>
+      <th>Gross price</th>
+      <th>Net price</th>
+      <th>Meal for meal</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @p42_tickets.each do |p42_ticket| %>
+      <tr>
+        <td><%= p42_ticket.pos_ticket_id %></td>
+        <td><%= p42_ticket.gross_price %></td>
+        <td><%= p42_ticket.net_price %></td>
+        <td><%= p42_ticket.meal_for_meal %></td>
+        <td><%= link_to 'Show', p42_ticket %></td>
+        <td><%= link_to 'Edit', edit_p42_ticket_path(p42_ticket) %></td>
+        <td><%= link_to 'Destroy', p42_ticket, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New P42 ticket', new_p42_ticket_path %>
