@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Server:</strong>
+  <%= @ftp_connect.server %>
+</p>
+
+<p>
+  <strong>Username:</strong>
+  <%= @ftp_connect.username %>
+</p>
+
+<p>
+  <strong>Password:</strong>
+  <%= @ftp_connect.password %>
+</p>
+
+<%= link_to 'Edit', edit_ftp_connect_path(@ftp_connect) %> |
+<%= link_to 'Back', ftp_connects_path %>

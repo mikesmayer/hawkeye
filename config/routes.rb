@@ -6,6 +6,6 @@ RailsBootstrap::Application.routes.draw do
   resources :p42_tickets
   resources :approved_users
   resources :users  
-
+  resources :ftp_connects
 
 end

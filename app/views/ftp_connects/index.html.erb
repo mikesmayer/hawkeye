@@ -1,0 +1,31 @@
+<h1>Listing ftp_connects</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Server</th>
+      <th>Username</th>
+      <th>Password</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @ftp_connects.each do |ftp_connect| %>
+      <tr>
+        <td><%= ftp_connect.server %></td>
+        <td><%= ftp_connect.username %></td>
+        <td><%= ftp_connect.password %></td>
+        <td><%= link_to 'Show', ftp_connect %></td>
+        <td><%= link_to 'Edit', edit_ftp_connect_path(ftp_connect) %></td>
+        <td><%= link_to 'Destroy', ftp_connect, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Ftp connect', new_ftp_connect_path %>
