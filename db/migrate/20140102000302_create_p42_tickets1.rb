@@ -1,4 +1,4 @@
-class CreateP42Tickets < ActiveRecord::Migration
+class CreateP42Tickets1 < ActiveRecord::Migration
   def change
     create_table :p42_tickets do |t|
       t.integer :pos_ticket_id

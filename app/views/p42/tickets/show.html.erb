@@ -1,0 +1,59 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Auto discount:</strong>
+  <%= @p42_ticket.auto_discount %>
+</p>
+
+<p>
+  <strong>Customer:</strong>
+  <%= @p42_ticket.customer_id %>
+</p>
+
+<p>
+  <strong>Gross price:</strong>
+  <%= @p42_ticket.gross_price %>
+</p>
+
+<p>
+  <strong>Meal for meal:</strong>
+  <%= @p42_ticket.meal_for_meal %>
+</p>
+
+<p>
+  <strong>Manual discount:</strong>
+  <%= @p42_ticket.manual_discount %>
+</p>
+
+<p>
+  <strong>Net price:</strong>
+  <%= @p42_ticket.net_price %>
+</p>
+
+<p>
+  <strong>Ticket close time:</strong>
+  <%= @p42_ticket.ticket_close_time %>
+</p>
+
+<p>
+  <strong>Ticket open time:</strong>
+  <%= @p42_ticket.ticket_open_time %>
+</p>
+
+<p>
+  <strong>Pos ticket:</strong>
+  <%= @p42_ticket.pos_ticket_id %>
+</p>
+
+<p>
+  <strong>Customer phone:</strong>
+  <%= @p42_ticket.customer_phone %>
+</p>
+
+<p>
+  <strong>Discount total:</strong>
+  <%= @p42_ticket.discount_total %>
+</p>
+
+<%= link_to 'Edit', edit_p42_ticket_path(@p42_ticket) %> |
+<%= link_to 'Back', p42_tickets_path %>

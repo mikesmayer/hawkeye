@@ -1,0 +1,47 @@
+<h1>Listing p42_tickets</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Auto discount</th>
+      <th>Customer</th>
+      <th>Gross price</th>
+      <th>Meal for meal</th>
+      <th>Manual discount</th>
+      <th>Net price</th>
+      <th>Ticket close time</th>
+      <th>Ticket open time</th>
+      <th>Pos ticket</th>
+      <th>Customer phone</th>
+      <th>Discount total</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @p42_tickets.each do |p42_ticket| %>
+      <tr>
+        <td><%= p42_ticket.auto_discount %></td>
+        <td><%= p42_ticket.customer_id %></td>
+        <td><%= p42_ticket.gross_price %></td>
+        <td><%= p42_ticket.meal_for_meal %></td>
+        <td><%= p42_ticket.manual_discount %></td>
+        <td><%= p42_ticket.net_price %></td>
+        <td><%= p42_ticket.ticket_close_time %></td>
+        <td><%= p42_ticket.ticket_open_time %></td>
+        <td><%= p42_ticket.pos_ticket_id %></td>
+        <td><%= p42_ticket.customer_phone %></td>
+        <td><%= p42_ticket.discount_total %></td>
+        <td><%= link_to 'Show', p42_ticket %></td>
+        <td><%= link_to 'Edit', edit_p42_ticket_path(p42_ticket) %></td>
+        <td><%= link_to 'Destroy', p42_ticket, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Ticket', new_p42_ticket_path %>

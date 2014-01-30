@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  auto_discount: 1.5
+  customer_id: 1
+  gross_price: 1.5
+  meal_for_meal: 1
+  manual_discount: 1.5
+  net_price: 1.5
+  ticket_close_time: 2014-01-30 14:27:52
+  ticket_open_time: 2014-01-30 14:27:52
+  pos_ticket_id: 1
+  customer_phone: 1
+  discount_total: 1.5
+
+two:
+  auto_discount: 1.5
+  customer_id: 1
+  gross_price: 1.5
+  meal_for_meal: 1
+  manual_discount: 1.5
+  net_price: 1.5
+  ticket_close_time: 2014-01-30 14:27:52
+  ticket_open_time: 2014-01-30 14:27:52
+  pos_ticket_id: 1
+  customer_phone: 1
+  discount_total: 1.5
