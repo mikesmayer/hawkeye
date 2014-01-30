@@ -1,0 +1,22 @@
+<%= simple_form_for(@p42_ticket_item) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :auto_discount %>
+    <%= f.input :gross_price %>
+    <%= f.input :item_qty %>
+    <%= f.input :manual_discount %>
+    <%= f.input :menu_itme_group_id %>
+    <%= f.input :menu_item_id %>
+    <%= f.input :net_price %>
+    <%= f.input :pos_ticket_id %>
+    <%= f.input :pos_ticket_item_id %>
+    <%= f.input :revenue_group_id %>
+    <%= f.input :ticket_id %>
+    <%= f.input :meal_for_meal %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

@@ -1,0 +1,49 @@
+<h1>Listing p42_ticket_items</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Auto discount</th>
+      <th>Gross price</th>
+      <th>Item qty</th>
+      <th>Manual discount</th>
+      <th>Menu itme group</th>
+      <th>Menu item</th>
+      <th>Net price</th>
+      <th>Pos ticket</th>
+      <th>Pos ticket item</th>
+      <th>Revenue group</th>
+      <th>Ticket</th>
+      <th>Meal for meal</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @p42_ticket_items.each do |p42_ticket_item| %>
+      <tr>
+        <td><%= p42_ticket_item.auto_discount %></td>
+        <td><%= p42_ticket_item.gross_price %></td>
+        <td><%= p42_ticket_item.item_qty %></td>
+        <td><%= p42_ticket_item.manual_discount %></td>
+        <td><%= p42_ticket_item.menu_itme_group_id %></td>
+        <td><%= p42_ticket_item.menu_item_id %></td>
+        <td><%= p42_ticket_item.net_price %></td>
+        <td><%= p42_ticket_item.pos_ticket_id %></td>
+        <td><%= p42_ticket_item.pos_ticket_item_id %></td>
+        <td><%= p42_ticket_item.revenue_group_id %></td>
+        <td><%= p42_ticket_item.ticket_id %></td>
+        <td><%= p42_ticket_item.meal_for_meal %></td>
+        <td><%= link_to 'Show', p42_ticket_item %></td>
+        <td><%= link_to 'Edit', edit_p42_ticket_item_path(p42_ticket_item) %></td>
+        <td><%= link_to 'Destroy', p42_ticket_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Ticket item', new_p42_ticket_item_path %>
