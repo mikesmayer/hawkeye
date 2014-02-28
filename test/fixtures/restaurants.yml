@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  bek_customer_number: 1
+  soap_url: MyString
+  soap_endpoint: MyString
+
+two:
+  name: MyString
+  bek_customer_number: 1
+  soap_url: MyString
+  soap_endpoint: MyString

@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @restaurant.name %>
+</p>
+
+<p>
+  <strong>Bek customer number:</strong>
+  <%= @restaurant.bek_customer_number %>
+</p>
+
+<p>
+  <strong>Soap url:</strong>
+  <%= @restaurant.soap_url %>
+</p>
+
+<p>
+  <strong>Soap endpoint:</strong>
+  <%= @restaurant.soap_endpoint %>
+</p>
+
+<%= link_to 'Edit', edit_restaurant_path(@restaurant) %> |
+<%= link_to 'Back', restaurants_path %>

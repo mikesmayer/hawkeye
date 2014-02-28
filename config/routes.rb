@@ -1,5 +1,7 @@
 RailsBootstrap::Application.routes.draw do
 
+  resources :restaurants
+
   namespace :p42 do
     resources :ticket_items
   end

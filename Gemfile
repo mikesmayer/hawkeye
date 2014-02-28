@@ -26,5 +26,5 @@ gem 'omniauth-google-oauth2'
 gem 'capistrano', '~> 2.15.5'
 gem 'rvm-capistrano'
 gem 'highline'
-gem 'therubyracer'
+gem 'therubyracer', :platform => :ruby
 gem 'paperclip', '~> 3.0'
