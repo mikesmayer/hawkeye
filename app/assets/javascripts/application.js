@@ -15,6 +15,7 @@
 //= require turbolinks
 //= require bootstrap
 //= require bootstrap-datepicker
+//= require 'rest_in_place'
 //= require_tree .
 
 

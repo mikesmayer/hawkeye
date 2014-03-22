@@ -168,6 +168,8 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (10.1.1)
     ref (1.0.5)
+    rest_in_place (2.4.0)
+      rails (>= 3.1)
     rubyntlm (0.3.4)
     rvm-capistrano (1.5.1)
       capistrano (~> 2.15.4)
@@ -244,6 +246,7 @@ DEPENDENCIES
   quiet_assets
   rails (= 4.0.2)
   rails_layout (>= 0.5.11)
+  rest_in_place
   rvm-capistrano
   sass-rails (~> 4.0.0)
   savon (~> 2.0)

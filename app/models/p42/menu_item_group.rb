@@ -1,6 +1,8 @@
 class P42::MenuItemGroup < ActiveRecord::Base
 	has_many :menu_items
 
+	validates :default_meal_modifier, numericality: { only_integer: true }
+
   def self.sync_menu_item_groups
     initialize_soap
     
