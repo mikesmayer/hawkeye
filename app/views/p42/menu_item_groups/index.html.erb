@@ -1,8 +1,17 @@
 <h1>Pitza 42 Menu Item Groups</h1>
-<%= link_to "Sync Menu Item Groups", {:controller => 'p42/menu_item_groups', :action => 'sync_menu_item_groups'}, :method => 'POST', :class => 'btn btn-default', :type => "button" %>
-<h4 class="bg-danger" id="error_cont"></h4>
-<p class="well">The Sync Menu Item Groups button above will download all of the Item Groups from Dinerware at P42.</p>
-  <p class="well">You can then set the default number of meals for each Item Group. This default amount will be used as the meal modifier for every menu item added to that group from the time you set it forward. It will not change the meal modifier for any menu item from that group that is already in Hawkeye.</p>
+<p><%= link_to "Sync Menu Item Groups", {:controller => 'p42/menu_item_groups', :action => 'sync_menu_item_groups'}, :method => 'POST', :class => 'btn btn-default', :type => "button" %>
+</p>
+<span id="error_cont">
+  <!-- error message dropped in here if the in place update of the default meal modifier fails -->
+</span>
+<div class="bs-callout bs-callout-info">
+  <h4>Sync</h4>
+  <p>The Sync Menu Item Groups button above will download all of the Item Groups from Dinerware at P42.</p>
+</div>
+<div class="bs-callout bs-callout-info">
+  <h4>Default Meal Modifier</h4>
+  <p>You can then set the default number of meals for each Item Group. This default amount will be used as the meal modifier for every menu item added to that group from the time you set it forward. It will not change the meal modifier for any menu item from that group that is already in Hawkeye.</p>
+</div>
   <div class="bg-primary"><p class="text-center">Click on the placeholder text or number to change the default meal modifier in place</p></div>
 <table class="table">
   <thead>

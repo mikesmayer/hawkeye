@@ -12,3 +12,15 @@
  *= require bootstrap-datepicker
  *= require_tree .
  */
+
+
+.bs-callout-info {
+	background-color: #f4f8fa;
+	border-color: #5bc0de;
+}
+
+.bs-callout {
+	margin: 20px 0;
+	padding: 20px;
+	border-left: 3px solid #eee;
+}

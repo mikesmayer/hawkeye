@@ -1,0 +1,22 @@
+<h1>Pitza 42 Revenue Groups</h1>
+<p><%= link_to "Sync Revenue Classes", {:controller => 'p42/revenue_groups', :action => 'sync_revenue_groups'}, :method => 'POST', :class => 'btn btn-default' %>
+</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @p42_revenue_groups.each do |p42_revenue_group| %>
+      <tr>
+        <td><%= p42_revenue_group.id %></td>
+        <td><%= p42_revenue_group.name %></td>
+        <td><%= link_to 'Destroy', p42_revenue_group, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
