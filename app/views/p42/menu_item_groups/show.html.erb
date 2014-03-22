@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @p42_menu_item_group.name %>
+</p>
+
+<p>
+  <strong>Default meal modifier:</strong>
+  <%= @p42_menu_item_group.default_meal_modifier %>
+</p>
+
+<%= link_to 'Edit', edit_p42_menu_item_group_path(@p42_menu_item_group) %> |
+<%= link_to 'Back', p42_menu_item_groups_path %>

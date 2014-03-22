@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>P42 menu item:</strong>
+  <%= @p42_meal_count_rule.p42_menu_item_id %>
+</p>
+
+<p>
+  <strong>Start date:</strong>
+  <%= @p42_meal_count_rule.start_date %>
+</p>
+
+<p>
+  <strong>End date:</strong>
+  <%= @p42_meal_count_rule.end_date %>
+</p>
+
+<p>
+  <strong>Meal modifier:</strong>
+  <%= @p42_meal_count_rule.meal_modifier %>
+</p>
+
+<%= link_to 'Edit', edit_p42_meal_count_rule_path(@p42_meal_count_rule) %> |
+<%= link_to 'Back', p42_meal_count_rules_path %>

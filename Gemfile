@@ -28,3 +28,5 @@ gem 'rvm-capistrano'
 gem 'highline'
 gem 'therubyracer', :platform => :ruby
 gem 'paperclip', '~> 3.0'
+gem 'savon', '~> 2.0'
+gem 'bootstrap-datepicker-rails'

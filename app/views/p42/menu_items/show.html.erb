@@ -1,0 +1,49 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Gross price:</strong>
+  <%= @p42_menu_item.gross_price %>
+</p>
+
+<p>
+  <strong>Menu item group:</strong>
+  <%= @p42_menu_item.menu_item_group_id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @p42_menu_item.name %>
+</p>
+
+<p>
+  <strong>Recipe:</strong>
+  <%= @p42_menu_item.recipe_id %>
+</p>
+
+<p>
+  <strong>Revenue group:</strong>
+  <%= @p42_menu_item.revenue_group_id %>
+</p>
+
+<p>
+  <strong>Count meal:</strong>
+  <%= @p42_menu_item.count_meal %>
+</p>
+
+<p>
+  <strong>Count meal start:</strong>
+  <%= @p42_menu_item.count_meal_start %>
+</p>
+
+<p>
+  <strong>Count meal end:</strong>
+  <%= @p42_menu_item.count_meal_end %>
+</p>
+
+<p>
+  <strong>Count meal modifier:</strong>
+  <%= @p42_menu_item.count_meal_modifier %>
+</p>
+
+<%= link_to 'Edit', edit_p42_menu_item_path(@p42_menu_item) %> |
+<%= link_to 'Back', p42_menu_items_path %>

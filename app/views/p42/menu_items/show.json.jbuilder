@@ -1,0 +1,1 @@
+json.extract! @p42_menu_item, :id, :gross_price, :menu_item_group_id, :name, :recipe_id, :revenue_group_id, :count_meal, :count_meal_start, :count_meal_end, :count_meal_modifier, :created_at, :updated_at

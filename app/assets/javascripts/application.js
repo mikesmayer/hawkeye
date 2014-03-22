@@ -14,4 +14,12 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap
+//= require bootstrap-datepicker
 //= require_tree .
+
+
+$(document).ready(function(){
+	$('.datepicker').datepicker({
+		autoclose: true
+	});
+})

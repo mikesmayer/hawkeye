@@ -1,0 +1,23 @@
+<h1>Pitza 42 Menu Item Groups</h1>
+<%= link_to "Sync Menu Item Groups", {:controller => 'p42/menu_item_groups', :action => 'sync_menu_item_groups'}, :method => 'POST', :class => 'btn btn-default', :type => "button" %>
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Default meal modifier</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @p42_menu_item_groups.each do |p42_menu_item_group| %>
+      <tr>
+        <td><%= p42_menu_item_group.id %></td>
+        <td><%= p42_menu_item_group.name %></td>
+        <td><%= p42_menu_item_group.default_meal_modifier %></td>
+        <td><%= link_to 'Destroy', p42_menu_item_group, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

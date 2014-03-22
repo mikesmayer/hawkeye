@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  gross_price: 1.5
+  menu_item_group_id: 1
+  name: MyString
+  recipe_id: 1
+  revenue_group_id: 1
+  count_meal: false
+  count_meal_start: 2014-03-21 17:20:10
+  count_meal_end: 2014-03-21 17:20:10
+  count_meal_modifier: 1
+
+two:
+  gross_price: 1.5
+  menu_item_group_id: 1
+  name: MyString
+  recipe_id: 1
+  revenue_group_id: 1
+  count_meal: false
+  count_meal_start: 2014-03-21 17:20:10
+  count_meal_end: 2014-03-21 17:20:10
+  count_meal_modifier: 1

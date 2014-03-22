@@ -1,0 +1,43 @@
+<h1>Listing p42_menu_items</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Gross price</th>
+      <th>Menu item group</th>
+      <th>Name</th>
+      <th>Recipe</th>
+      <th>Revenue group</th>
+      <th>Count meal</th>
+      <th>Count meal start</th>
+      <th>Count meal end</th>
+      <th>Count meal modifier</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @p42_menu_items.each do |p42_menu_item| %>
+      <tr>
+        <td><%= p42_menu_item.gross_price %></td>
+        <td><%= p42_menu_item.menu_item_group_id %></td>
+        <td><%= p42_menu_item.name %></td>
+        <td><%= p42_menu_item.recipe_id %></td>
+        <td><%= p42_menu_item.revenue_group_id %></td>
+        <td><%= p42_menu_item.count_meal %></td>
+        <td><%= p42_menu_item.count_meal_start %></td>
+        <td><%= p42_menu_item.count_meal_end %></td>
+        <td><%= p42_menu_item.count_meal_modifier %></td>
+        <td><%= link_to 'Show', p42_menu_item %></td>
+        <td><%= link_to 'Edit', edit_p42_menu_item_path(p42_menu_item) %></td>
+        <td><%= link_to 'Destroy', p42_menu_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Menu item', new_p42_menu_item_path %>

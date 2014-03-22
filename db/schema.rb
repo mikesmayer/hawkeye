@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140227171246) do
+ActiveRecord::Schema.define(version: 20140322165244) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,34 @@ ActiveRecord::Schema.define(version: 20140227171246) do
     t.string   "server"
     t.string   "username"
     t.string   "password"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "p42_meal_count_rules", force: true do |t|
+    t.integer  "p42_menu_item_id"
+    t.time     "start_date"
+    t.time     "end_date"
+    t.integer  "meal_modifier"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "p42_menu_item_groups", force: true do |t|
+    t.string   "name"
+    t.integer  "default_meal_modifier"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "p42_menu_items", force: true do |t|
+    t.float    "gross_price"
+    t.integer  "menu_item_group_id"
+    t.string   "name"
+    t.integer  "recipe_id"
+    t.integer  "revenue_group_id"
+    t.boolean  "count_meal"
+    t.integer  "count_meal_modifier"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
