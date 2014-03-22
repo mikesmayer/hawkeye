@@ -1,12 +1,14 @@
 class P42::MenuItem < ActiveRecord::Base
-	has_many :meal_count_rule, dependent: :destroy
+	has_many :meal_count_rules, :dependent => :destroy
 	belongs_to :menu_item_group
 	belongs_to :revenue_group
 	belongs_to :ticket_items
 
-	 validates :count_meal_modifier, :numericality => true, :allow_nil => true
+	validates :count_meal_modifier, :numericality => true, :allow_nil => true
 
+  after_create :set_default_meal_modifier
   after_save :update_meal_check
+
 
 
   def self.sync_menu_items
@@ -39,9 +41,28 @@ class P42::MenuItem < ActiveRecord::Base
 
   # determine if meal setting have changed and thus meal counts need to be updated
   def update_meal_check
-    if self.count_meal_changed? || self.count_meal_start_changed? || self.count_meal_end_changed? || self.count_meal_modifier_changed?
+    if self.count_meal_changed? || self.count_meal_modifier_changed?
       update_meal_counts
     end    
+  end
+
+  #checks to see if the item group it belongs to has a default meal modifier set and sets its modifier if necessary
+  def set_default_meal_modifier    
+    meal_num = self.menu_item_group.try(:default_meal_modifier)
+    if meal_num.nil?
+      #do nothing
+    else
+      meal_num.to_i
+      if meal_num == 0
+        self.count_meal = false
+        self.count_meal_modifier = meal_num
+      else
+        self.count_meal = true
+        self.count_meal_modifier = meal_num
+      end
+      self.save
+    end
+
   end
 
   def update_meal_counts
@@ -83,7 +104,7 @@ class P42::MenuItem < ActiveRecord::Base
   	if menu_item.nil?
   		menu_item = P42::MenuItem.create(:id => id, :name => name, :menu_item_group_id => menu_item_group_id, 
   			:revenue_group_id => revenue_class_id, :gross_price => gross_price)
-      MenuItemMailer.menu_item_added(menu_item).deliver
+      #MenuItemMailer.menu_item_added(menu_item).deliver
   	else
   		menu_item.update_attributes(:name => name, :menu_item_group_id => menu_item_group_id, 
   			:revenue_group_id => revenue_class_id, :gross_price => gross_price)

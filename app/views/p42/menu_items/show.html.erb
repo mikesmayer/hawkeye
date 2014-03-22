@@ -1,49 +1,42 @@
 <p id="notice"><%= notice %></p>
+<div class="row">
+  <h1><%= @p42_menu_item.name %></h1>
+  <div class="col-md-4">
+    <p>
+      <strong>Name:</strong>
+      <%= @p42_menu_item.name %>
+    </p>
+    <p>
+      <strong>Item group:</strong>
+      <%= @p42_menu_item.menu_item_group.name %>
+    </p>
+    <p>
+      <strong>Revenue group:</strong>
+      <%= @p42_menu_item.revenue_group.try(:name) %>
+    </p>
+    <p>
+      <strong>Gross price:</strong>
+      <%= @p42_menu_item.gross_price %>
+    </p>
 
-<p>
-  <strong>Gross price:</strong>
-  <%= @p42_menu_item.gross_price %>
-</p>
+    <p>
+      <strong>Recipe:</strong>
+      <%= @p42_menu_item.recipe_id %>
+    </p>
 
-<p>
-  <strong>Menu item group:</strong>
-  <%= @p42_menu_item.menu_item_group_id %>
-</p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @p42_menu_item.name %>
-</p>
+  </div>
+  <div class="col-md-4">
+    <h4>Meal for Meal Settings</h4>
+    <p>
+      <b>Used in meal count:</b> <%= @p42_menu_item.count_meal %>
+    </p>
+    <p>
+      <b>Count modifier:</b> <%= @p42_menu_item.count_meal_modifier %>
+    </p>
+  </div>
+</div>
 
-<p>
-  <strong>Recipe:</strong>
-  <%= @p42_menu_item.recipe_id %>
-</p>
 
-<p>
-  <strong>Revenue group:</strong>
-  <%= @p42_menu_item.revenue_group_id %>
-</p>
-
-<p>
-  <strong>Count meal:</strong>
-  <%= @p42_menu_item.count_meal %>
-</p>
-
-<p>
-  <strong>Count meal start:</strong>
-  <%= @p42_menu_item.count_meal_start %>
-</p>
-
-<p>
-  <strong>Count meal end:</strong>
-  <%= @p42_menu_item.count_meal_end %>
-</p>
-
-<p>
-  <strong>Count meal modifier:</strong>
-  <%= @p42_menu_item.count_meal_modifier %>
-</p>
-
-<%= link_to 'Edit', edit_p42_menu_item_path(@p42_menu_item) %> |
+<%= link_to 'Edit', edit_p42_menu_item_path(@p42_menu_item), :class => 'btn btn-info' %> 
 <%= link_to 'Back', p42_menu_items_path %>

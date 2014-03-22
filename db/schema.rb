@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140322221118) do
+ActiveRecord::Schema.define(version: 20140322234740) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 20140322221118) do
   end
 
   create_table "p42_meal_count_rules", force: true do |t|
-    t.integer  "p42_menu_item_id"
+    t.integer  "menu_item_id"
     t.time     "start_date"
     t.time     "end_date"
     t.integer  "meal_modifier"

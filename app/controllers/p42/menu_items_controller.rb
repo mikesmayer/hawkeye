@@ -4,9 +4,18 @@ class P42::MenuItemsController < ApplicationController
   # GET /p42/menu_items
   # GET /p42/menu_items.json
   def index
-    @p42_menu_items = P42::MenuItem.all
+    @p42_menu_items = P42::MenuItem.order("id ASC").all
+    @food_not_counted = P42::MenuItem.where("count_meal IS NOT true AND (menu_item_group_id = 40 OR
+        menu_item_group_id = 41 OR menu_item_group_id = 42 OR menu_item_group_id = 43 OR
+        menu_item_group_id = 52 OR menu_item_group_id = 53 OR menu_item_group_id = 54 OR
+        menu_item_group_id = 50 OR menu_item_group_id = 47)")
+    @apparel_items_modifier_not_set = P42::MenuItem.where("revenue_group_id = 18 AND count_meal IS true AND count_meal_modifier IS NULL")
+    
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @p42_menu_items }
+    end
   end
-
   # GET /p42/menu_items/1
   # GET /p42/menu_items/1.json
   def show
@@ -61,6 +70,11 @@ class P42::MenuItemsController < ApplicationController
     end
   end
 
+  def sync_menu_items
+    flash[:notice] = P42::MenuItem.sync_menu_items
+    redirect_to p42_menu_items_path
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_p42_menu_item
@@ -69,6 +83,6 @@ class P42::MenuItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def p42_menu_item_params
-      params.require(:p42_menu_item).permit(:gross_price, :menu_item_group_id, :name, :recipe_id, :revenue_group_id, :count_meal, :count_meal_start, :count_meal_end, :count_meal_modifier)
+      params.require(:p42_menu_item).permit(:gross_price, :menu_item_group_id, :name, :recipe_id, :revenue_group_id, :count_meal, :count_meal_modifier)
     end
 end

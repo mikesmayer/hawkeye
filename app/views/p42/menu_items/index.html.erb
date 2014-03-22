@@ -1,43 +1,60 @@
-<h1>Listing p42_menu_items</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Gross price</th>
-      <th>Menu item group</th>
-      <th>Name</th>
-      <th>Recipe</th>
-      <th>Revenue group</th>
-      <th>Count meal</th>
-      <th>Count meal start</th>
-      <th>Count meal end</th>
-      <th>Count meal modifier</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @p42_menu_items.each do |p42_menu_item| %>
-      <tr>
-        <td><%= p42_menu_item.gross_price %></td>
-        <td><%= p42_menu_item.menu_item_group_id %></td>
-        <td><%= p42_menu_item.name %></td>
-        <td><%= p42_menu_item.recipe_id %></td>
-        <td><%= p42_menu_item.revenue_group_id %></td>
-        <td><%= p42_menu_item.count_meal %></td>
-        <td><%= p42_menu_item.count_meal_start %></td>
-        <td><%= p42_menu_item.count_meal_end %></td>
-        <td><%= p42_menu_item.count_meal_modifier %></td>
-        <td><%= link_to 'Show', p42_menu_item %></td>
-        <td><%= link_to 'Edit', edit_p42_menu_item_path(p42_menu_item) %></td>
-        <td><%= link_to 'Destroy', p42_menu_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
+<h1>Pitza 42 Menu Items</h1>
+<div class="row">
+    <div class="span2">
+        <p><%= link_to "Sync Menu Items", {:controller => 'p42/menu_items', :action => 'sync_menu_items'}, :method => 'POST', :class => 'btn btn-primary' %>
+        </p>
+    </div>
+    <div class="span3 well">
+        <p class="bold">Items possibly needing an update. Not currently used in meal count:</p>
+        <% @food_not_counted.all.each do |item| %>
+            <p>
+                <%= link_to item.name, edit_p42_menu_item_path(item) %>
+            </p>
+        <% end %>
+    </div>
+    <% unless @apparel_items_modifier_not_set.empty? %>
+    <div class="span3 well">
+        <p class="bold">Items possibly needing an update. Modifier not set for these
+            apparel items:</p>
+        <% @apparel_items_modifier_not_set.all.each do |item| %>
+            <p>
+                <%= link_to item.name, edit_p42_menu_item_path(item) %>
+            </p>
+        <% end %>
+    </div>
     <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Menu item', new_p42_menu_item_path %>
+</div>
+<div class="row">
+    <div class="span12 table-responsive">
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>Name</th>
+                <th>Item group</th>
+                <th>Revenue class</th>
+                <th>Gross price</th>
+                <th>FMSC Count</th>
+                <th>Count Modifier</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            <% @p42_menu_items.each do |p42_menu_item| %>
+              <tr>
+                <td><%= p42_menu_item.id %></td>
+                <td><%= p42_menu_item.name %></td>
+                <td><%= p42_menu_item.menu_item_group.try(:name) %></td>
+                <td><%= p42_menu_item.revenue_group.try(:name) %></td>
+                <td><%= number_to_currency(p42_menu_item.gross_price) %></td>
+                <td><%= p42_menu_item.count_meal %></td>
+                <td><%= p42_menu_item.count_meal_modifier %></td>
+                <td><p><%= link_to 'Show', p42_menu_item, :class => 'btn btn-default btn-mini' %>
+                <%= link_to 'Edit', edit_p42_menu_item_path(p42_menu_item), :class => 'btn btn-mini btn-primary' %>
+                <%= link_to 'Destroy', p42_menu_item, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' %></p></td>
+              </tr>
+            <% end %>
+            </tbody>
+        </table>
+    </div>
+</div>

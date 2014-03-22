@@ -69,6 +69,6 @@ class P42::MealCountRulesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def p42_meal_count_rule_params
-      params.require(:p42_meal_count_rule).permit(:p42_menu_item_id, :start_date, :end_date, :meal_modifier)
+      params.require(:p42_meal_count_rule).permit(:menu_item_id, :start_date, :end_date, :meal_modifier)
     end
 end

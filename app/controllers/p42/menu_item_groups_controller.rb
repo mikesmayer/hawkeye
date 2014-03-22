@@ -4,7 +4,7 @@ class P42::MenuItemGroupsController < ApplicationController
   # GET /p42/menu_item_groups
   # GET /p42/menu_item_groups.json
   def index
-    @p42_menu_item_groups = P42::MenuItemGroup.all
+    @p42_menu_item_groups = P42::MenuItemGroup.order("id ASC").all
   end
 
   # GET /p42/menu_item_groups/1

@@ -15,7 +15,11 @@ RailsBootstrap::Application.routes.draw do
 
     resources :meal_count_rules
 
-    resources :menu_items
+    resources :menu_items do 
+      collection do
+        post :sync_menu_items
+      end
+    end
 
     resources :ticket_items
 
