@@ -15,8 +15,6 @@
 //= require turbolinks
 //= require bootstrap
 //= require bootstrap-datepicker
-//= require dataTables/jquery.dataTables
-//= require dataTables/jquery.dataTables.bootstrap
 //= require 'rest_in_place'
 //= require_tree .
 
