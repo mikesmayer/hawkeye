@@ -27,5 +27,6 @@ module RailsBootstrap
       end if File.exists?(env_file)
     end
     
+    config.time_zone = "Central Time (US & Canada)"
   end
 end

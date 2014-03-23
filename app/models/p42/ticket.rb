@@ -29,7 +29,7 @@ class P42::Ticket < ActiveRecord::Base
 	   	return "#{ticket_count} tickets were added to the database."
 	    #JobLog.create(:job_name => 'sync_tickets', :result => "Successful sync. #{ticket_count} tickets were added. Start date: #{start_date} - End Date: #{end_date} ")
 	  end
-	  #handle_asynchronously :sync_tickets
+	  handle_asynchronously :sync_tickets
   end
   
 
