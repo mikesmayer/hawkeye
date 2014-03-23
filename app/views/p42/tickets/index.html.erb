@@ -1,47 +1,93 @@
-<h1>Listing p42_tickets</h1>
+<h1>Pitza 42 Sales Tickets</h1>
+<div class="row">
+    <div class="col-md-9">
+        <h4>Get Tickets</h4>
+        <%= form_tag({:controller => 'p42/tickets', :action => 'index'}, :method => 'GET', :class => 'form-inline') do %>            
+                <%= label_tag :view_start_date, "Start Date", :class => 'bold' %>
+                <%= text_field_tag :view_start_date, params[:view_start_date], :class => 'datepicker' %>            
+                <%= label_tag :view_end_date, "End Date", :class => 'bold' %>
+                <%= text_field_tag :view_end_date, params[:view_end_date], :class => 'datepicker' %>
+            
+            <%= submit_tag "List Tickets", :class => 'btn' %>
+        <% end %>
+        <% unless params[:view_start_date].nil? || params[:view_end_date].nil? %>
+            <hr />
+            <div class="row">
+                <div class="col-md-3">
+                    <p>
+                        <b>Ticket Count:</b> <%= @p42_tickets.count %>
+                    </p>
+                    <p>
+                        <b>Meal for Meal Total:</b> <%= @p42_tickets.sum(:meal_for_meal) %>
+                    </p>
+                    
+                </div>
+                <div class="col-md-3">
+                    <p>
+                        <b>Net Sales Total:</b> <%= @net_sales %>
+                    </p>     
+                    <p>
+                        <b>Gross Sales Total:</b> <%= @gross_sales %>
+                    </p>
+                </div>
+                <div class="col-md-3">
+                    <p>
+                        <b>Auto Discount Total:</b> <%= @p42_tickets.sum(:auto_discount) %>
+                    </p>
+                    <p>
+                        <b>Manual Discount Total:</b> <%= @p42_tickets.sum(:manual_discount) %>
+                    </p>
+                    <p>
+                        <b>Discount Total:</b> <%= @p42_tickets.sum(:discount_total) %>
+                    </p>
+                </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Auto discount</th>
-      <th>Customer</th>
-      <th>Gross price</th>
-      <th>Meal for meal</th>
-      <th>Manual discount</th>
-      <th>Net price</th>
-      <th>Ticket close time</th>
-      <th>Ticket open time</th>
-      <th>Pos ticket</th>
-      <th>Customer phone</th>
-      <th>Discount total</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
+            </div>
+                      
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>POS Ticket ID</th>
+                        <th>Net Price</th>
+                        <th>Gross Price</th>
+                        <th>Auto Discount</th>
+                        <th>Manual Discount</th>
+                        <th>Meal Count</th>
+                        <th>Ticket Close Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @p42_tickets.each do |ticket| %>
+                    <tr>
+                        <td><%= ticket.id %></td>
+                        <td><%= link_to ticket.pos_ticket_id, ticket %></td>
+                        <td><%= ticket.net_price %></td>
+                        <td><%= ticket.gross_price %></td>
+                        <td><%= ticket.auto_discount %></td>
+                        <td><%= ticket.manual_discount %></td>
+                        <td><%= ticket.meal_for_meal %></td>
+                        <td><%= ticket.ticket_close_time %></td>
+                    </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        <% end %>
+    </div>
+    <div class="col-md-3">
+        <%= form_tag(:controller => 'p42/tickets', :action => 'sync_tickets') do  %>
+            <div class="field">
+                <%= label_tag :start_date, "Start Date", :class => 'bold' %>
+                <%= text_field_tag :start_date, nil, :class => 'datepicker' %>
+            </div>
+            <div class="field">
+                <%= label_tag :end_date, "End Date", :class => 'bold' %>
+                <%= text_field_tag :end_date, nil, :class => 'datepicker' %>
+            </div>
+            
+        <%= submit_tag "Sync", :class => 'btn' %>
+        <% end %>
+    </div>
+</div> 
 
-  <tbody>
-    <% @p42_tickets.each do |p42_ticket| %>
-      <tr>
-        <td><%= p42_ticket.auto_discount %></td>
-        <td><%= p42_ticket.customer_id %></td>
-        <td><%= p42_ticket.gross_price %></td>
-        <td><%= p42_ticket.meal_for_meal %></td>
-        <td><%= p42_ticket.manual_discount %></td>
-        <td><%= p42_ticket.net_price %></td>
-        <td><%= p42_ticket.ticket_close_time %></td>
-        <td><%= p42_ticket.ticket_open_time %></td>
-        <td><%= p42_ticket.pos_ticket_id %></td>
-        <td><%= p42_ticket.customer_phone %></td>
-        <td><%= p42_ticket.discount_total %></td>
-        <td><%= link_to 'Show', p42_ticket %></td>
-        <td><%= link_to 'Edit', edit_p42_ticket_path(p42_ticket) %></td>
-        <td><%= link_to 'Destroy', p42_ticket, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
 
-<br>
-
-<%= link_to 'New Ticket', new_p42_ticket_path %>

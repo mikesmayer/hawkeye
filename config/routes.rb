@@ -1,7 +1,7 @@
 RailsBootstrap::Application.routes.draw do
 
   namespace :p42 do
-    resources :discount_items
+    
   end
 
     namespace :p42 do
@@ -31,10 +31,17 @@ RailsBootstrap::Application.routes.draw do
       end
     end
 
+    resources :tickets do
+      collection do
+        post :sync_tickets
+        post :index
+      end
+    end
 
+    resources :discount_items
     resources :ticket_items
 
-    resources :tickets
+
   end
 
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }

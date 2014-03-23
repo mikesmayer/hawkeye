@@ -4,7 +4,13 @@ class P42::TicketsController < ApplicationController
   # GET /p42/tickets
   # GET /p42/tickets.json
   def index
-    @p42_tickets = P42::Ticket.all
+    unless params[:view_start_date].nil? || params[:view_end_date].nil?
+      start_date = DateTime.parse(params[:view_start_date]).change(:offset => getTimeZoneOffset)
+      end_date = DateTime.parse(params[:view_end_date]).change(:offset => getTimeZoneOffset)
+      @p42_tickets = p42_tickets = P42::Ticket.where(:ticket_close_time => (start_date)..(end_date + 1.day)).order('pos_ticket_id')
+      @net_sales = p42_tickets.sum(:net_price)
+      @gross_sales = p42_tickets.sum(:gross_price)
+    end
   end
 
   # GET /p42/tickets/1
@@ -59,6 +65,19 @@ class P42::TicketsController < ApplicationController
       format.html { redirect_to p42_tickets_url }
       format.json { head :no_content }
     end
+  end
+
+  def sync_tickets
+    if params[:start_date].nil? || params[:end_date].nil?
+      flash[:error] = "Start date and end date were not set successfully."      
+    else
+      flash[:notice] = P42::Ticket.sync_tickets(params[:start_date], params[:end_date])
+    end
+    redirect_to p42_tickets_path(:view_start_date => params[:start_date], :view_end_date => params[:end_date])
+  end
+
+  def getTimeZoneOffset
+    Time.now.formatted_offset(false)
   end
 
   private

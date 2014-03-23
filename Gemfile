@@ -34,3 +34,6 @@ gem 'rest_in_place'
 
 
 gem 'delayed_job_active_record'
+gem 'daemons'
+
+gem 'activerecord-session_store', github: 'rails/activerecord-session_store'

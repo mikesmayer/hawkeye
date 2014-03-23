@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140323184444) do
+ActiveRecord::Schema.define(version: 20140323201908) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,7 +109,7 @@ ActiveRecord::Schema.define(version: 20140323184444) do
     t.float    "gross_price"
     t.integer  "item_qty"
     t.float    "manual_discount"
-    t.integer  "menu_itme_group_id"
+    t.integer  "menu_item_group_id"
     t.integer  "menu_item_id"
     t.float    "net_price"
     t.integer  "pos_ticket_id"
@@ -131,7 +131,7 @@ ActiveRecord::Schema.define(version: 20140323184444) do
     t.datetime "ticket_close_time"
     t.datetime "ticket_open_time"
     t.integer  "pos_ticket_id"
-    t.integer  "customer_phone"
+    t.string   "customer_phone"
     t.float    "discount_total"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -145,6 +145,16 @@ ActiveRecord::Schema.define(version: 20140323184444) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "sessions", force: true do |t|
+    t.string   "session_id", null: false
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
+  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
