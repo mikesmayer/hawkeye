@@ -26,7 +26,7 @@
 </div>
 <div class="row">
     <div class="span12 table-responsive">
-        <table class="table table-hover">
+        <table class="table table-hover" id="menu_items_tbl">
             <thead>
               <tr>
                 <th>id</th>
@@ -36,6 +36,8 @@
                 <th>Gross price</th>
                 <th>FMSC Count</th>
                 <th>Count Modifier</th>
+                <th></th>
+                <th></th>
                 <th></th>
               </tr>
             </thead>
@@ -49,10 +51,16 @@
                 <td><%= number_to_currency(p42_menu_item.gross_price) %></td>
                 <td><%= p42_menu_item.count_meal %></td>
                 <td><%= p42_menu_item.count_meal_modifier %></td>
-                <td><p><%= link_to 'Show', p42_menu_item, :class => 'btn btn-default btn-mini' %>
-                <%= link_to 'Edit', edit_p42_menu_item_path(p42_menu_item), :class => 'btn btn-mini btn-primary' %>
-                <%= link_to 'Destroy', p42_menu_item, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' %></p></td>
+                <td><%= link_to 'Show', p42_menu_item, :class => 'btn btn-default btn-mini' %></td>
+                <td><%= link_to 'Edit', edit_p42_menu_item_path(p42_menu_item), :class => 'btn btn-mini btn-primary' %></td>
+                <td><%= link_to 'Destroy', p42_menu_item, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' %></td>
               </tr>
+                <!-- Add detail row to the table that lists the menu item's meal rules -->
+                <% unless p42_menu_item.meal_count_rules.empty? %>
+                  <tr>
+                    <td colspan="11" style="border-top-width: 0px;"><%= p42_menu_item.name %></td>
+                  </tr>
+                <% end %>
             <% end %>
             </tbody>
         </table>

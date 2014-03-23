@@ -50,7 +50,8 @@ class P42::MenuItem < ActiveRecord::Base
   def set_default_meal_modifier    
     meal_num = self.menu_item_group.try(:default_meal_modifier)
     if meal_num.nil?
-      #do nothing
+      self.count_meal = false
+      self.count_meal_modifier = 0
     else
       meal_num.to_i
       if meal_num == 0

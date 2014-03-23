@@ -31,5 +31,7 @@ gem 'paperclip', '~> 3.0'
 gem 'savon', '~> 2.0'
 gem 'bootstrap-datepicker-rails'
 gem 'rest_in_place'
+gem 'jquery-datatables-rails', git: 'git://github.com/rweng/jquery-datatables-rails.git'
+
 
 gem 'delayed_job_active_record'

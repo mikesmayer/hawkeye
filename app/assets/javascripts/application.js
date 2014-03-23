@@ -15,6 +15,8 @@
 //= require turbolinks
 //= require bootstrap
 //= require bootstrap-datepicker
+//= require dataTables/jquery.dataTables
+//= require dataTables/jquery.dataTables.bootstrap
 //= require 'rest_in_place'
 //= require_tree .
 
@@ -23,4 +25,15 @@ $(document).ready(function(){
 	$('.datepicker').datepicker({
 		autoclose: true
 	});
+/*
+	var recipe_tbl = $('#menu_items_tbl').dataTable({
+		"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+		"sPaginationType": "bootstrap",
+		"bRetrieve": true,
+		"aoColumnDefs": [
+			{ 'bSortable': false, 
+				'aTargets': [ 7, 8, 9 ] }
+		]
+	});
+*/
 })

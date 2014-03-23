@@ -10,6 +10,7 @@
  *
  *= require_self
  *= require bootstrap-datepicker
+ *= require dataTables/jquery.dataTables.bootstrap
  *= require_tree .
  */
 
@@ -24,3 +25,4 @@
 	padding: 20px;
 	border-left: 3px solid #eee;
 }
+
