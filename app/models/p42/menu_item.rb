@@ -7,7 +7,7 @@ class P42::MenuItem < ActiveRecord::Base
 	validates :count_meal_modifier, :numericality => true, :allow_nil => true
 
   after_create :set_default_meal_modifier
-  after_save :update_meal_check
+  #after_save :update_meal_check
 
 
 
@@ -66,14 +66,14 @@ class P42::MenuItem < ActiveRecord::Base
   end
 
   def update_meal_counts
-    customer_ids = Array.new
+    #customer_ids = Array.new
     tickets = get_all_associated_tickets
     tickets.each do |ticket|      
       t = P42::Ticket.find(ticket)
       t.delay.recalculate_meal_numbers
-      unless t.customer_id.nil?
-        customer_ids << t.customer_id.to_i
-      end      
+      #unless t.customer_id.nil?
+      #  customer_ids << t.customer_id.to_i
+      #end      
     end
     customer_ids.uniq!
     #raise customer_ids.inspect
@@ -104,7 +104,7 @@ class P42::MenuItem < ActiveRecord::Base
   	if menu_item.nil?
   		menu_item = P42::MenuItem.create(:id => id, :name => name, :menu_item_group_id => menu_item_group_id, 
   			:revenue_group_id => revenue_class_id, :gross_price => gross_price)
-      #MenuItemMailer.menu_item_added(menu_item).deliver
+      MenuItemMailer.menu_item_added(menu_item).deliver
   	else
   		menu_item.update_attributes(:name => name, :menu_item_group_id => menu_item_group_id, 
   			:revenue_group_id => revenue_class_id, :gross_price => gross_price)
