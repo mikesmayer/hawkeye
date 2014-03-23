@@ -1,0 +1,26 @@
+<h1>P42 Discounts</h1>
+<%= link_to "Sync Discounts", {:controller => 'p42/discounts', :action => 'sync_discounts'}, :method => 'POST', :class => 'btn btn-primary' %>
+<br />
+<p>
+  <b>Total Items: </b><%= @p42_discounts.count %>
+</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Active</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @p42_discounts.each do |p42_discount| %>
+      <tr>
+        <td><%= p42_discount.id %></td>
+        <td><%= p42_discount.name %></td>
+        <td><%= p42_discount.active %></td>
+        <td><%= link_to 'Destroy', p42_discount, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

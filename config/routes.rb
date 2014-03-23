@@ -1,6 +1,10 @@
 RailsBootstrap::Application.routes.draw do
 
   namespace :p42 do
+    resources :discount_items
+  end
+
+    namespace :p42 do
     resources :menu_item_groups do
       collection do
         post :sync_menu_item_groups
@@ -20,6 +24,13 @@ RailsBootstrap::Application.routes.draw do
         post :sync_menu_items
       end
     end
+
+    resources :discounts do 
+      collection do
+        post :sync_discounts
+      end
+    end
+
 
     resources :ticket_items
 

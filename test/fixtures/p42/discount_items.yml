@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  auto_apply: false
+  discount_amount: 1.5
+  discount_item_id: 1
+  menu_item_id: 1
+  pos_ticket_id: 1
+  pos_ticket_item_id: 1
+  reason_text: MyString
+  ticket_id: 1
+  ticket_item_id: 1
+  ticket_item_price: 1.5
+  when: 2014-03-23 14:44:44
+
+two:
+  auto_apply: false
+  discount_amount: 1.5
+  discount_item_id: 1
+  menu_item_id: 1
+  pos_ticket_id: 1
+  pos_ticket_item_id: 1
+  reason_text: MyString
+  ticket_id: 1
+  ticket_item_id: 1
+  ticket_item_price: 1.5
+  when: 2014-03-23 14:44:44

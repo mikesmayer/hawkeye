@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140322234740) do
+ActiveRecord::Schema.define(version: 20140323184444) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,29 @@ ActiveRecord::Schema.define(version: 20140322234740) do
     t.string   "server"
     t.string   "username"
     t.string   "password"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "p42_discount_items", force: true do |t|
+    t.boolean  "auto_apply"
+    t.float    "discount_amount"
+    t.integer  "discount_item_id"
+    t.integer  "menu_item_id"
+    t.integer  "pos_ticket_id"
+    t.integer  "pos_ticket_item_id"
+    t.string   "reason_text"
+    t.integer  "ticket_id"
+    t.integer  "ticket_item_id"
+    t.float    "ticket_item_price"
+    t.time     "when"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "p42_discounts", force: true do |t|
+    t.boolean  "active"
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -1,0 +1,21 @@
+<%= simple_form_for(@p42_discount_item) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :auto_apply %>
+    <%= f.input :discount_amount %>
+    <%= f.input :discount_item_id %>
+    <%= f.input :menu_item_id %>
+    <%= f.input :pos_ticket_id %>
+    <%= f.input :pos_ticket_item_id %>
+    <%= f.input :reason_text %>
+    <%= f.input :ticket_id %>
+    <%= f.input :ticket_item_id %>
+    <%= f.input :ticket_item_price %>
+    <%= f.input :when %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>
