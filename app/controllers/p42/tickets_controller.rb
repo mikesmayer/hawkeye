@@ -10,6 +10,7 @@ class P42::TicketsController < ApplicationController
       @p42_tickets = p42_tickets = P42::Ticket.where(:ticket_close_time => (start_date)..(end_date + 1.day)).order('pos_ticket_id')
       @net_sales = p42_tickets.sum(:net_price)
       @gross_sales = p42_tickets.sum(:gross_price)
+      @p42_ticket_ids = @p42_tickets.pluck(:id)
     end
   end
 
@@ -65,6 +66,18 @@ class P42::TicketsController < ApplicationController
       format.html { redirect_to p42_tickets_url }
       format.json { head :no_content }
     end
+  end
+
+  def destroy_multiple
+    ticket_ids_string = params[:tickets]
+    ticket_ids_array = ticket_ids_string.split(" ").map { |s| s.to_i }
+    P42::Ticket.destroy(ticket_ids_array)
+
+    respond_to do |format|
+      format.html { redirect_to p42_tickets_path }
+      format.json { head :no_content }
+    end
+
   end
 
   def sync_tickets

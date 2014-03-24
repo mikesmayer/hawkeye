@@ -10,7 +10,13 @@
             
             <%= submit_tag "List Tickets", :class => 'btn' %>
         <% end %>
-        <% unless params[:view_start_date].nil? || params[:view_end_date].nil? %>
+        <% unless params[:view_start_date].nil? || params[:view_end_date].nil? %>         
+            <%= @p42_ticket_ids %>
+            <%= form_tag destroy_multiple_p42_tickets_path, method: :delete do %>
+                <%= hidden_field_tag "start_date", params[:view_start_date] %>
+                <%= hidden_field_tag "end_date", params[:view_end_date] %>
+                <%= submit_tag "Delete all", :class => 'btn btn-danger' %>
+            <% end %>
             <hr />
             <div class="row">
                 <div class="col-md-3">

@@ -18,8 +18,8 @@ class P42::Ticket < ActiveRecord::Base
 	   		ticket_header_response.each do |ticket|
 	   			# make sure to only add a ticket if it was not voided
 	   			if(ticket[:void_id] == "-1")
-	   				#P42::Ticket.delay.get_ticket(ticket[:id])
-	   				P42::Ticket.get_ticket(ticket[:id])
+	   				P42::Ticket.delay.get_ticket(ticket[:id])
+	   				#P42::Ticket.get_ticket(ticket[:id])
 	   				ticket_count += 1
 	   			end
 	   		end

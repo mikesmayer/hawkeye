@@ -35,6 +35,7 @@ RailsBootstrap::Application.routes.draw do
       collection do
         post :sync_tickets
         post :index
+        delete :destroy_multiple
       end
     end
 
