@@ -34,16 +34,18 @@ class P42::Ticket < ActiveRecord::Base
   
 
   def self.find_or_update_by_pos_ticket_id(pos_ticket_id, customer_id, ticket_open_time, 
-		ticket_close_time, customer_phone, discount_total, net_price_total, gross_price_total)
+		ticket_close_time, customer_phone, discount_total, net_price_total, gross_price_total, ticket_close_time_string)
   	ticket = P42::Ticket.find_by_pos_ticket_id(pos_ticket_id)
   	if ticket.nil?
   		ticket = P42::Ticket.create(:pos_ticket_id => pos_ticket_id, :customer_id => customer_id, :ticket_open_time => ticket_open_time, 
 		:ticket_close_time => ticket_close_time, :customer_phone => customer_phone, 
-		:discount_total => discount_total, :net_price => net_price_total, :gross_price => gross_price_total)
+		:discount_total => discount_total, :net_price => net_price_total, :gross_price => gross_price_total,
+		:ticket_close_time_string => ticket_close_time_string)
   	else
   		ticket.update_attributes(:customer_id => customer_id, :ticket_open_time => ticket_open_time, 
 		:ticket_close_time => ticket_close_time, :customer_phone => customer_phone, 
-		:discount_total => discount_total, :net_price => net_price_total, :gross_price => gross_price_total)
+		:discount_total => discount_total, :net_price => net_price_total, :gross_price => gross_price_total,
+		:ticket_close_time_string  => ticket_close_time_string)
   	end
   	ticket
   end
@@ -111,13 +113,14 @@ class P42::Ticket < ActiveRecord::Base
 
 	ticket_open_time = ticket_contents[:create_time]
 	ticket_close_time = ticket_contents[:close_time]
+	ticket_close_time_string = ticket_contents[:close_time].to_s
 
 	logger.debug "ticket open time:"
 	logger.debug ticket_open_time.inspect
 
 	#ticket_open_time = DateTime.parse(ticket_open_time.to_s)
 	#ticket_open_time = Time.strptime(ticket_open_time.to_s,'%a, %d %b %Y %H:%M:%S %z').in_time_zone(Time.zone)
-	ticket_open_time = Time.parse(ticket_open_time.to_s).in_time_zone(Time.zone)
+	ticket_open_time = Time.parse(ticket_open_time.to_s)
 
 	logger.debug "ticket open time 2:"
 	logger.debug ticket_open_time.inspect
@@ -130,7 +133,7 @@ class P42::Ticket < ActiveRecord::Base
 	
 
 	current_ticket = P42::Ticket.find_or_update_by_pos_ticket_id(id, customer_id, ticket_open_time, 
-		ticket_close_time, customer_phone, discount_total, net_price_total, gross_price_total)
+		ticket_close_time, customer_phone, discount_total, net_price_total, gross_price_total, ticket_close_time_string)
 
 	if ticket_items.kind_of?(Array)
 		#auto_discount_total = 0

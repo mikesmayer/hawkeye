@@ -5,14 +5,14 @@ class P42::TicketsController < ApplicationController
   # GET /p42/tickets.json
   def index
     unless params[:view_start_date].nil? || params[:view_end_date].nil?
-      start_date = DateTime.parse(params[:view_start_date]).change(:offset => 0)
-      end_date = DateTime.parse(params[:view_end_date]).change(:offset => 0)
-=begin
+      #start_date = DateTime.parse(params[:view_start_date]).change(:offset => 0)
+      #end_date = DateTime.parse(params[:view_end_date]).change(:offset => 0)
+
       start_date = DateTime.parse(params[:view_start_date])
       start_date.change({:hour => 0, :min => 0, :sec => 0})
       end_date = DateTime.parse(params[:view_end_date])
       end_date.change({:hour => 23, :min => 59, :sec => 59})
-=end   
+   
       @p42_tickets = p42_tickets = P42::Ticket.where(:ticket_close_time => (start_date)..(end_date + 1.day)).order('pos_ticket_id')
       @net_sales = p42_tickets.sum(:net_price)
       @gross_sales = p42_tickets.sum(:gross_price)
