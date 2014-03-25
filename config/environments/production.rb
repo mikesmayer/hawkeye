@@ -92,4 +92,9 @@ RailsBootstrap::Application.configure do
     :openssl_verify_mode  => 'none'
   }
   config.action_mailer.default_url_options = { :host => 'hawkeye.pitza42.com'}
+
+  config.time_zone = "Central Time (US & Canada)"
+  config.active_record.default_timezone = "Central Time (US & Canada)"
+
+
 end
