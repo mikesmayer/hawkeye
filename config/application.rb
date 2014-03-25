@@ -28,5 +28,6 @@ module RailsBootstrap
     end
     
     config.time_zone = "Central Time (US & Canada)"
+    config.active_record.default_timezone = "Central Time (US & Canada)"
   end
 end

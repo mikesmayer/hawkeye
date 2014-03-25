@@ -18,8 +18,8 @@ class P42::Ticket < ActiveRecord::Base
 	   		ticket_header_response.each do |ticket|
 	   			# make sure to only add a ticket if it was not voided
 	   			if(ticket[:void_id] == "-1")
-	   				P42::Ticket.delay.get_ticket(ticket[:id])
-	   				#P42::Ticket.get_ticket(ticket[:id])
+	   				#P42::Ticket.delay.get_ticket(ticket[:id])
+	   				P42::Ticket.get_ticket(ticket[:id])
 	   				ticket_count += 1
 	   			end
 	   		end
@@ -29,7 +29,7 @@ class P42::Ticket < ActiveRecord::Base
 	   	return "#{ticket_count} tickets were added to the database."
 	    #JobLog.create(:job_name => 'sync_tickets', :result => "Successful sync. #{ticket_count} tickets were added. Start date: #{start_date} - End Date: #{end_date} ")
 	  end
-	  handle_asynchronously :sync_tickets
+	  #handle_asynchronously :sync_tickets
   end
   
 
@@ -107,8 +107,21 @@ class P42::Ticket < ActiveRecord::Base
 		@customer_id_array << customer_id.to_i
 	end	
 
+	## CONVERT time to DateTime with the correct offset ##
+
 	ticket_open_time = ticket_contents[:create_time]
 	ticket_close_time = ticket_contents[:close_time]
+
+	logger.debug "ticket open time:"
+	logger.debug ticket_open_time.inspect
+
+	ticket_open_time = DateTime.parse(ticket_open_time.to_s)
+
+	logger.debug "ticket open time 2:"
+	logger.debug ticket_open_time.inspect
+
+
+
 	discount_total = ticket_contents[:discount_total]	
 	net_price_total = ((ticket_contents[:total].to_f) - (ticket_contents[:tax_total].to_f))
 	gross_price_total = (net_price_total.to_f + discount_total.to_f)
