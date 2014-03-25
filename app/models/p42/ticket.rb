@@ -115,7 +115,9 @@ class P42::Ticket < ActiveRecord::Base
 	logger.debug "ticket open time:"
 	logger.debug ticket_open_time.inspect
 
-	ticket_open_time = DateTime.parse(ticket_open_time.to_s)
+	#ticket_open_time = DateTime.parse(ticket_open_time.to_s)
+	#ticket_open_time = Time.strptime(ticket_open_time.to_s,'%a, %d %b %Y %H:%M:%S %z').in_time_zone(Time.zone)
+	ticket_open_time = Time.parse(ticket_open_time.to_s).in_time_zone(Time.zone)
 
 	logger.debug "ticket open time 2:"
 	logger.debug ticket_open_time.inspect
