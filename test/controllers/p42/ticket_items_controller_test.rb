@@ -18,7 +18,7 @@ class P42::TicketItemsControllerTest < ActionController::TestCase
 
   test "should create p42_ticket_item" do
     assert_difference('P42::TicketItem.count') do
-      post :create, p42_ticket_item: { auto_discount: @p42_ticket_item.auto_discount, gross_price: @p42_ticket_item.gross_price, item_qty: @p42_ticket_item.item_qty, manual_discount: @p42_ticket_item.manual_discount, meal_for_meal: @p42_ticket_item.meal_for_meal, menu_item_id: @p42_ticket_item.menu_item_id, menu_itme_group_id: @p42_ticket_item.menu_itme_group_id, net_price: @p42_ticket_item.net_price, pos_ticket_id: @p42_ticket_item.pos_ticket_id, pos_ticket_item_id: @p42_ticket_item.pos_ticket_item_id, revenue_group_id: @p42_ticket_item.revenue_group_id, ticket_id: @p42_ticket_item.ticket_id }
+      post :create, p42_ticket_item: { category_id: @p42_ticket_item.category_id, choice_additions_total: @p42_ticket_item.choice_additions_total, customer_original_id: @p42_ticket_item.customer_original_id, discount_total: @p42_ticket_item.discount_total, item_menu_price: @p42_ticket_item.item_menu_price, menu_item_id: @p42_ticket_item.menu_item_id, net_price: @p42_ticket_item.net_price, quantity: @p42_ticket_item.quantity, revenue_class_id: @p42_ticket_item.revenue_class_id, ticket_close_time: @p42_ticket_item.ticket_close_time, ticket_id: @p42_ticket_item.ticket_id, ticket_item_id: @p42_ticket_item.ticket_item_id }
     end
 
     assert_redirected_to p42_ticket_item_path(assigns(:p42_ticket_item))
@@ -35,7 +35,7 @@ class P42::TicketItemsControllerTest < ActionController::TestCase
   end
 
   test "should update p42_ticket_item" do
-    patch :update, id: @p42_ticket_item, p42_ticket_item: { auto_discount: @p42_ticket_item.auto_discount, gross_price: @p42_ticket_item.gross_price, item_qty: @p42_ticket_item.item_qty, manual_discount: @p42_ticket_item.manual_discount, meal_for_meal: @p42_ticket_item.meal_for_meal, menu_item_id: @p42_ticket_item.menu_item_id, menu_itme_group_id: @p42_ticket_item.menu_itme_group_id, net_price: @p42_ticket_item.net_price, pos_ticket_id: @p42_ticket_item.pos_ticket_id, pos_ticket_item_id: @p42_ticket_item.pos_ticket_item_id, revenue_group_id: @p42_ticket_item.revenue_group_id, ticket_id: @p42_ticket_item.ticket_id }
+    patch :update, id: @p42_ticket_item, p42_ticket_item: { category_id: @p42_ticket_item.category_id, choice_additions_total: @p42_ticket_item.choice_additions_total, customer_original_id: @p42_ticket_item.customer_original_id, discount_total: @p42_ticket_item.discount_total, item_menu_price: @p42_ticket_item.item_menu_price, menu_item_id: @p42_ticket_item.menu_item_id, net_price: @p42_ticket_item.net_price, quantity: @p42_ticket_item.quantity, revenue_class_id: @p42_ticket_item.revenue_class_id, ticket_close_time: @p42_ticket_item.ticket_close_time, ticket_id: @p42_ticket_item.ticket_id, ticket_item_id: @p42_ticket_item.ticket_item_id }
     assert_redirected_to p42_ticket_item_path(assigns(:p42_ticket_item))
   end
 

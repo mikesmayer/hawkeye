@@ -69,6 +69,6 @@ class P42::TicketItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def p42_ticket_item_params
-      params.require(:p42_ticket_item).permit(:auto_discount, :gross_price, :item_qty, :manual_discount, :menu_item_group_id, :menu_item_id, :net_price, :pos_ticket_id, :pos_ticket_item_id, :revenue_group_id, :ticket_id, :meal_for_meal)
+      params.require(:p42_ticket_item).permit(:ticket_item_id, :ticket_id, :menu_item_id, :category_id, :revenue_class_id, :customer_original_id, :quantity, :net_price, :discount_total, :item_menu_price, :choice_additions_total, :ticket_close_time)
     end
 end

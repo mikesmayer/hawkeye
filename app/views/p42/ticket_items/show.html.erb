@@ -1,53 +1,8 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Auto discount:</strong>
-  <%= @p42_ticket_item.auto_discount %>
-</p>
-
-<p>
-  <strong>Gross price:</strong>
-  <%= @p42_ticket_item.gross_price %>
-</p>
-
-<p>
-  <strong>Item qty:</strong>
-  <%= @p42_ticket_item.item_qty %>
-</p>
-
-<p>
-  <strong>Manual discount:</strong>
-  <%= @p42_ticket_item.manual_discount %>
-</p>
-
-<p>
-  <strong>Menu itme group:</strong>
-  <%= @p42_ticket_item.menu_itme_group_id %>
-</p>
-
-<p>
-  <strong>Menu item:</strong>
-  <%= @p42_ticket_item.menu_item_id %>
-</p>
-
-<p>
-  <strong>Net price:</strong>
-  <%= @p42_ticket_item.net_price %>
-</p>
-
-<p>
-  <strong>Pos ticket:</strong>
-  <%= @p42_ticket_item.pos_ticket_id %>
-</p>
-
-<p>
-  <strong>Pos ticket item:</strong>
-  <%= @p42_ticket_item.pos_ticket_item_id %>
-</p>
-
-<p>
-  <strong>Revenue group:</strong>
-  <%= @p42_ticket_item.revenue_group_id %>
+  <strong>Ticket item:</strong>
+  <%= @p42_ticket_item.ticket_item_id %>
 </p>
 
 <p>
@@ -56,8 +11,53 @@
 </p>
 
 <p>
-  <strong>Meal for meal:</strong>
-  <%= @p42_ticket_item.meal_for_meal %>
+  <strong>Menu item:</strong>
+  <%= @p42_ticket_item.menu_item_id %>
+</p>
+
+<p>
+  <strong>Category:</strong>
+  <%= @p42_ticket_item.category_id %>
+</p>
+
+<p>
+  <strong>Revenue class:</strong>
+  <%= @p42_ticket_item.revenue_class_id %>
+</p>
+
+<p>
+  <strong>Customer original:</strong>
+  <%= @p42_ticket_item.customer_original_id %>
+</p>
+
+<p>
+  <strong>Quantity:</strong>
+  <%= @p42_ticket_item.quantity %>
+</p>
+
+<p>
+  <strong>Net price:</strong>
+  <%= @p42_ticket_item.net_price %>
+</p>
+
+<p>
+  <strong>Discount total:</strong>
+  <%= @p42_ticket_item.discount_total %>
+</p>
+
+<p>
+  <strong>Item menu price:</strong>
+  <%= @p42_ticket_item.item_menu_price %>
+</p>
+
+<p>
+  <strong>Choice additions total:</strong>
+  <%= @p42_ticket_item.choice_additions_total %>
+</p>
+
+<p>
+  <strong>Ticket close time:</strong>
+  <%= @p42_ticket_item.ticket_close_time %>
 </p>
 
 <%= link_to 'Edit', edit_p42_ticket_item_path(@p42_ticket_item) %> |

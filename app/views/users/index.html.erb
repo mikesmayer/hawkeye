@@ -16,7 +16,7 @@
       <tr>
         <td><%= link_to user.name, user %></td>
         <td><%= user.email %></td>
-        <td><%= user.created_at.to_date %></td>
+        <td><%= user.created_at %></td>
         <td><%= user.role %></td>
         <td><%= link_to("Delete user", user_path(user), :data => { :confirm => "Are you sure?" }, :method => :delete, :class => 'btn btn-mini btn-danger') unless user == current_user %></td>
       </tr>

@@ -2,3 +2,10 @@
 <p><b>User:</b> <%= @user.name %></p>
 <p><b>Email:</b> <%= @user.email if @user.email %></p>
 <p><b>Role:</b> <%= @user.role %></p>
+
+<% result = @user.get_file_list %>
+<% result.each do |item| %>
+<p><%= item['id'] %>
+<b><%= item['title'] %></b>
+</p>
+<% end %> 

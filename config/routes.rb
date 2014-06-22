@@ -1,6 +1,10 @@
 RailsBootstrap::Application.routes.draw do
 
   namespace :p42 do
+    resources :ticket_items
+  end
+
+  namespace :p42 do
     
   end
 

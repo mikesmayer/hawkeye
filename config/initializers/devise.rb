@@ -253,5 +253,8 @@ Devise.setup do |config|
   # config.omniauth_path_prefix = '/my_engine/users/auth'
 
   require "omniauth-google-oauth2"
-  config.omniauth :google_oauth2, "932916932109-p8itlampkca8i87eibc599a9f49i8bdn.apps.googleusercontent.com", "GEOne_O8aPm4SvkxlPs0P2Ks", { access_type: "offline", approval_prompt: "" }
+  config.omniauth :google_oauth2, ENV['GOOGLE_AUTH_CLIENT_ID'], ENV['GOOGLE_AUTH_CLIENT_SECRET'], { 
+    access_type: "offline",  
+    approval_prompt: "", 
+    scope: 'email,profile,drive' }
 end

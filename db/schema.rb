@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140325171031) do
+ActiveRecord::Schema.define(version: 20140622232449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,21 +105,23 @@ ActiveRecord::Schema.define(version: 20140325171031) do
   end
 
   create_table "p42_ticket_items", force: true do |t|
-    t.float    "auto_discount"
-    t.float    "gross_price"
-    t.integer  "item_qty"
-    t.float    "manual_discount"
-    t.integer  "menu_item_group_id"
-    t.integer  "menu_item_id"
-    t.float    "net_price"
-    t.integer  "pos_ticket_id"
-    t.integer  "pos_ticket_item_id"
-    t.integer  "revenue_group_id"
+    t.integer  "ticket_item_id"
     t.integer  "ticket_id"
-    t.integer  "meal_for_meal"
+    t.integer  "menu_item_id"
+    t.integer  "category_id"
+    t.integer  "revenue_class_id"
+    t.integer  "customer_original_id"
+    t.float    "quantity"
+    t.float    "net_price"
+    t.float    "discount_total"
+    t.float    "item_menu_price"
+    t.float    "choice_additions_total"
+    t.datetime "ticket_close_time"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "p42_ticket_items", ["ticket_item_id"], name: "index_p42_ticket_items_on_ticket_item_id", unique: true, using: :btree
 
   create_table "p42_tickets", force: true do |t|
     t.float    "auto_discount"
@@ -174,6 +176,9 @@ ActiveRecord::Schema.define(version: 20140325171031) do
     t.string   "name"
     t.string   "fname"
     t.string   "lname"
+    t.string   "token"
+    t.string   "refresh_token"
+    t.text     "credentials"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
