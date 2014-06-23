@@ -7,6 +7,10 @@ class P42::TicketItemsController < ApplicationController
     @p42_ticket_items = P42::TicketItem.all
   end
 
+  def files
+    ###
+  end
+
   # GET /p42/ticket_items/1
   # GET /p42/ticket_items/1.json
   def show
@@ -60,6 +64,19 @@ class P42::TicketItemsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def save_file_to_local
+    file = P42::TicketItem.save_file_to_local(params[:file_id])
+    
+    name = file['title']
+    directory = "public/p42_files"
+    path = File.join(directory, name)
+    File.open(path, "wb") { |f| f.write(file['body']) }
+    flash[:notice] = "File uploaded"
+    redirect_to "/p42/ticket_items/files"
+  end
+
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

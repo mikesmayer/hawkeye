@@ -1,7 +1,11 @@
 RailsBootstrap::Application.routes.draw do
 
   namespace :p42 do
-    resources :ticket_items
+    resources :ticket_items do
+      collection do
+        get :files
+      end
+    end
   end
 
   namespace :p42 do
@@ -56,5 +60,8 @@ RailsBootstrap::Application.routes.draw do
   resources :users  
   resources :ftp_connects
   resources :restaurants
+
+  post 'p42/ticket_items/files/save_to_local', :controller => 'p42/ticket_items', :action => 'save_file_to_local'
+
 
 end

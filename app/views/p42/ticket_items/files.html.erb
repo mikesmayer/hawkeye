@@ -1,0 +1,5 @@
+<h1>Local Files</h1>
+<% files = Dir.glob('public/p42_files/*.csv') %>
+<%  files.each do |file|  %>
+<p><%=    file %></p>
+<% end %> 

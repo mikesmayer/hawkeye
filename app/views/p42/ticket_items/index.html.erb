@@ -1,49 +1,8 @@
-<h1>Listing p42_ticket_items</h1>
+<h1>Pitza 42 Ticket Items</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Ticket item</th>
-      <th>Ticket</th>
-      <th>Menu item</th>
-      <th>Category</th>
-      <th>Revenue class</th>
-      <th>Customer original</th>
-      <th>Quantity</th>
-      <th>Net price</th>
-      <th>Discount total</th>
-      <th>Item menu price</th>
-      <th>Choice additions total</th>
-      <th>Ticket close time</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @p42_ticket_items.each do |p42_ticket_item| %>
-      <tr>
-        <td><%= p42_ticket_item.ticket_item_id %></td>
-        <td><%= p42_ticket_item.ticket_id %></td>
-        <td><%= p42_ticket_item.menu_item_id %></td>
-        <td><%= p42_ticket_item.category_id %></td>
-        <td><%= p42_ticket_item.revenue_class_id %></td>
-        <td><%= p42_ticket_item.customer_original_id %></td>
-        <td><%= p42_ticket_item.quantity %></td>
-        <td><%= p42_ticket_item.net_price %></td>
-        <td><%= p42_ticket_item.discount_total %></td>
-        <td><%= p42_ticket_item.item_menu_price %></td>
-        <td><%= p42_ticket_item.choice_additions_total %></td>
-        <td><%= p42_ticket_item.ticket_close_time %></td>
-        <td><%= link_to 'Show', p42_ticket_item %></td>
-        <td><%= link_to 'Edit', edit_p42_ticket_item_path(p42_ticket_item) %></td>
-        <td><%= link_to 'Destroy', p42_ticket_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Ticket item', new_p42_ticket_item_path %>
+<% result = P42::TicketItem.get_file_list %>
+<% result.each do |item| %>
+<p><a href="files/save_to_local?file_id=<%= item['id'] %>" data-method="post"><%= item['id'] %></a>
+<b><%= item['title'] %></b>
+</p>
+<% end %> 
