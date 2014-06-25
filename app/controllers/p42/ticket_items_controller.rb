@@ -65,6 +65,7 @@ class P42::TicketItemsController < ApplicationController
     end
   end
 
+=begin
   def save_file_to_local
     file = P42::TicketItem.save_file_to_local(params[:file_id])
     
@@ -74,6 +75,12 @@ class P42::TicketItemsController < ApplicationController
     File.open(path, "wb") { |f| f.write(file['body']) }
     flash[:notice] = "File uploaded"
     redirect_to "/p42/ticket_items/files"
+  end
+=end
+
+  def parse_csv    
+    @csv_contents = P42::TicketItem.parse_csv(params[:file_id])
+    flash[:notice] = @row_array
   end
 
 

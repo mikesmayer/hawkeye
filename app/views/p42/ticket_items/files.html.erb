@@ -1,4 +1,5 @@
 <h1>Local Files</h1>
+row array: <%= @row_array %>
 <% files = Dir.glob('public/p42_files/*.csv') %>
 <%  files.each do |file|  %>
 <p><%=    file %></p>

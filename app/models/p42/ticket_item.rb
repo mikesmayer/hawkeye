@@ -1,3 +1,4 @@
+require 'csv'
 class P42::TicketItem < ActiveRecord::Base
 
 
@@ -140,5 +141,135 @@ class P42::TicketItem < ActiveRecord::Base
 	end
 
 
+	def self.get_csv(file_id)
+
+		api_result = @client.execute(
+			:api_method => @drive.files.get,
+			:parameters => { 'fileId' => file_id})
+
+		#Get file
+		if api_result.status == 200
+			file = api_result.data 
+
+			#Download file
+			if file.download_url
+
+				file_contents = @client.execute(:uri => file.download_url)
+				if file_contents.status == 200
+					body = file_contents.body
+					title = file.title
+				end
+
+			else
+				#File has no contents on drive therefore not download_url
+			end
+
+		else
+			#status was not 200
+		end
+
+		#body is a string containing the contents of the downloaded file
+		body
+	end
+
+
+	def self.parse_csv(file_id)
+		if @drive.nil?
+			setup_client
+		end
+		file_body = self.get_csv(file_id)
+		csv_rows = Array.new
+
+		file_body = file_body.strip
+
+		#csv = CSV.parse(file_body, {:headers => true, :col_sep => ";", :quote_char => "|"})
+
+		csv = CSV.new(file_body, :headers => true, :header_converters => :symbol, :converters => :all, :col_sep => ";", :quote_char => "|")
+		csv = csv.to_a.map {|row| row.to_hash }
+
+		items = Array.new
+		items = P42::TicketItem.add_tickets_to_db(csv)
+=begin
+		csv.each do |row|
+			puts row.to_s
+
+			csv_rows << row
+		end
+=end
+
+		{ :body => csv, :items => items }
+	end
+
+	def self.add_tickets_to_db(csv_body)
+		items = Array.new
+
+		csv_body.each do |row|
+			if (row[:ticket_item_id].is_a? Numeric)
+				
+				#Discount total null check
+				if row[:discount_total] == "NULL"
+					row[:discount_total] = 0
+				end
+
+				#customer id check
+				if row[:customer_original_id] == "NULL"
+					row[:customer_original_id] = 0
+				end
+
+				items << P42::TicketItem.find_or_update_by_ticket_item_id(
+					row[:ticket_item_id],
+					row[:ticket_id],
+					row[:menu_item_id],
+					row[:i_price_category_id],
+					row[:i_revenue_class],
+					row[:customer_original_id],
+					row[:quantity],
+					row[:net_price],
+					row[:discount_total],
+					row[:item_menu_price],					
+					row[:choice_additions_total],				
+					row[:ticket_close_time],					
+					0)
+			end
+			
+		end
+		items
+	end
+
+	### NOT currently used ###
+	def replace_nulls(csv_body)
+		csv_body.each do |row|
+			#Discount total null check
+			if row[:discount_total] == "NULL"
+				row[:discount_total] = 0
+			end
+
+			#customer id check
+			if row[:customer_original_id] == "NULL"
+				row[:customer_original_id] = 0
+			end
+		end
+		csv_body
+	end
+
+	def self.find_or_update_by_ticket_item_id(pos_ticket_item_id, pos_ticket_id, menu_item_id, pos_category_id, pos_revenue_class_id,
+	 customer_original_id, quantity, net_price, discount_total, item_menu_price, choice_additions_total, ticket_close_time, meal_for_meal)
+  	
+		ticket_item = P42::TicketItem.find_by_pos_ticket_item_id(pos_ticket_item_id)
+		if ticket_item.nil?
+			ticket_item = P42::TicketItem.create(:pos_ticket_item_id => pos_ticket_item_id, :pos_ticket_id => pos_ticket_id, 
+				:menu_item_id => menu_item_id, :pos_category_id => pos_category_id, :pos_revenue_class_id => pos_revenue_class_id,
+				:customer_original_id => customer_original_id, :quantity => quantity, :net_price => net_price, :discount_total => discount_total,
+				:item_menu_price => item_menu_price, :choice_additions_total => choice_additions_total, :ticket_close_time => ticket_close_time,
+				:meal_for_meal => meal_for_meal)
+		else
+			ticket_item.update_attributes(:pos_ticket_id => pos_ticket_id, 
+				:menu_item_id => menu_item_id, :pos_category_id => pos_category_id, :pos_revenue_class_id => pos_revenue_class_id,
+				:customer_original_id => customer_original_id, :quantity => quantity, :net_price => net_price, :discount_total => discount_total,
+				:item_menu_price => item_menu_price, :choice_additions_total => choice_additions_total, :ticket_close_time => ticket_close_time,
+				:meal_for_meal => meal_for_meal)
+		end
+		ticket_item
+	end
 
 end

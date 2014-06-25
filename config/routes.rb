@@ -1,5 +1,9 @@
 RailsBootstrap::Application.routes.draw do
 
+#post 'p42/ticket_items/files/save_to_local', :controller => 'p42/ticket_items', :action => 'save_file_to_local'
+  post 'p42/ticket_items/parse_csv', :controller => 'p42/ticket_items', :action => 'parse_csv'
+
+
   namespace :p42 do
     resources :ticket_items do
       collection do
@@ -60,8 +64,6 @@ RailsBootstrap::Application.routes.draw do
   resources :users  
   resources :ftp_connects
   resources :restaurants
-
-  post 'p42/ticket_items/files/save_to_local', :controller => 'p42/ticket_items', :action => 'save_file_to_local'
 
 
 end
