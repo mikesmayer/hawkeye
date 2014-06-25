@@ -2,7 +2,9 @@
 
 <% result = P42::TicketItem.get_file_list %>
 <% result.each do |item| %>
-<p><a href="parse_csv?file_id=<%= item['id'] %>" data-method="post"><%= item['id'] %></a>
+<p><%= link_to "Parse CSV", {controller: "ticket_items", action: "parse_csv", :file_id => item['id']}, :method => :post  %>
+
+  <a href="parse_csv?file_id=<%= item['id'] %>" data-method="post"><%= item['id'] %></a>
 <b><%= item['title'] %></b>
 </p>
 <% end %> 
