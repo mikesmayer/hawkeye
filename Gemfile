@@ -39,3 +39,4 @@ gem 'daemons'
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 
 gem 'google-api-client'
+gem 'will_paginate'

@@ -42,6 +42,7 @@ before 'deploy:setup', 'rvm:install_ruby' # install Ruby and create gemset, OR:
 before "deploy:assets:precompile" do
   run ["ln -nfs #{shared_path}/config/settings.yml #{release_path}/config/settings.yml",
        "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml",
+       "ln -nfs #{shared_path}/config/local_env.yml #{release_path}/config/local_env.yml",
        "ln -fs #{shared_path}/uploads #{release_path}/uploads"
   ].join(" && ")
 end
