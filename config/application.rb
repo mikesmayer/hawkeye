@@ -31,8 +31,9 @@ module RailsBootstrap
       YAML.load(File.open(prod_env_file)).each do |key, value|
         ENV[key.to_s] = value
       end if File.exists?(prod_env_file)
+=end 
     end
-=end  
+ 
     #config.time_zone = "Central Time (US & Canada)"
     #config.active_record.default_timezone = "Central Time (US & Canada)"
     config.time_zone = 'UTC'
