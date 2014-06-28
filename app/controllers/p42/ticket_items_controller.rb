@@ -4,7 +4,12 @@ class P42::TicketItemsController < ApplicationController
   # GET /p42/ticket_items
   # GET /p42/ticket_items.json
   def index
-    @p42_ticket_items = P42::TicketItem.all
+    unless params[:view_start_date].empty? || params[:view_end_date].empty?
+      start_date = DateTime.parse(params[:view_start_date])
+      end_date = DateTime.parse(params[:view_end_date])
+      @p42_ticket_items = P42::TicketItem.where(:ticket_close_time => (start_date)..(end_date + 1.day)).order('pos_ticket_id')
+      @meal_count = P42::TicketItem.where("meal_for_meal > 0").sum(:meal_for_meal)
+    end    
   end
 
   def files

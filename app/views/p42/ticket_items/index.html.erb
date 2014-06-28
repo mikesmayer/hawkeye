@@ -1,5 +1,71 @@
 <h1>Pitza 42 Ticket Items</h1>
+<div class="row">
+	<div class="col-md-8">
+        <h4>Get Tickets</h4>
+        <%= form_tag({:controller => 'p42/ticket_items', :action => 'index'}, :method => 'GET', :class => 'form-inline') do %>            
+                <%= label_tag :view_start_date, "Start Date", :class => 'bold' %>
+                <%= text_field_tag :view_start_date, params[:view_start_date], :class => 'datepicker' %>            
+                <%= label_tag :view_end_date, "End Date", :class => 'bold' %>
+                <%= text_field_tag :view_end_date, params[:view_end_date], :class => 'datepicker' %>
+            
+            <%= submit_tag "List Tickets", :class => 'btn' %>
+        <% end %>
+        <% unless params[:view_start_date].empty? || params[:view_end_date].empty? %>
+            <hr />
+            <div class="row">
+                <div class="span3">
+                    <p>
+                        <b>Ticket Item Count:</b> <%= @p42_ticket_items.count %>
+                    </p>
+                    <p>
+                    	<b>Ticket Count</b> <%= @p42_ticket_items.count('pos_ticket_id', :distinct => true) %>
+                    </p>
+                    <p>
+                        <b>Meal for Meal Total:</b> <%= @meal_countjjjj %>
+                    </p>
+                    
+                </div>
+                <div class="span3">
+                    <p>
+                        <b>Net Sales Total:</b> <%= @p42_ticket_items.sum(:net_price)  %>
+                    </p>     
+                    <p>
+                        <b>Discount Total:</b> <%= @p42_ticket_items.sum(:discount_total) %>
+                    </p>
+                </div>
 
+            </div>
+                      
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>POS Ticket ID</th>
+                        <th>POS Ticket Item ID</th>
+                        <th>Net Price</th>
+                        <th>Total Discount</th>
+                        <th>Meal Count</th>
+                        <th>Ticket Close Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @p42_ticket_items.each do |ticket_item| %>
+                    <tr>
+                        <td><%= ticket_item.id %></td>
+                        <td><%= ticket_item.pos_ticket_id %></td>
+                        <td><%= ticket_item.pos_ticket_item_id %></td>
+                        <td><%= ticket_item.net_price %></td>
+                        <td><%= ticket_item.discount_total %></td>
+                        <td><%= ticket_item.meal_for_meal %></td>
+                        <td><%= ticket_item.ticket_close_time %></td>
+                    </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        <% end %>
+    
+	</div>
+</div>
 <% result = P42::TicketItem.get_file_list %>
 <% result.each do |item| %>
 <p><%= link_to "Parse CSV", {controller: "ticket_items", action: "parse_csv", :file_id => item['id']}, :method => :post  %>

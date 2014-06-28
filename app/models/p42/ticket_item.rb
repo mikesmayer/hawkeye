@@ -229,7 +229,7 @@ class P42::TicketItem < ActiveRecord::Base
 					row[:item_menu_price],					
 					row[:choice_additions_total],				
 					row[:ticket_close_time],					
-					0)
+					-1)
 			end
 			
 		end
