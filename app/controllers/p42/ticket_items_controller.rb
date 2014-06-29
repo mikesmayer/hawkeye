@@ -4,7 +4,7 @@ class P42::TicketItemsController < ApplicationController
   # GET /p42/ticket_items
   # GET /p42/ticket_items.json
   def index
-    unless params[:view_start_date].empty? || params[:view_end_date].empty?
+    unless params[:view_start_date].nil? || params[:view_end_date].nil? || params[:view_start_date].empty? || params[:view_end_date].empty?
       start_date = DateTime.parse(params[:view_start_date])
       end_date = DateTime.parse(params[:view_end_date])
       @p42_ticket_items = P42::TicketItem.where(:ticket_close_time => (start_date)..(end_date + 1.day)).order('pos_ticket_id')
@@ -89,6 +89,10 @@ class P42::TicketItemsController < ApplicationController
   end
 
 
+  def file_list
+    @file_list = P42::TicketItem.get_file_list
+    render :layout => false
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

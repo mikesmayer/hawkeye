@@ -10,10 +10,10 @@
             
             <%= submit_tag "List Tickets", :class => 'btn' %>
         <% end %>
-        <% unless params[:view_start_date].empty? || params[:view_end_date].empty? %>
+        <% unless params[:view_start_date].nil? || params[:view_end_date].nil? || params[:view_start_date].empty? || params[:view_end_date].empty? %>
             <hr />
             <div class="row">
-                <div class="span3">
+                <div class="col-md-3">
                     <p>
                         <b>Ticket Item Count:</b> <%= @p42_ticket_items.count %>
                     </p>
@@ -25,7 +25,7 @@
                     </p>
                     
                 </div>
-                <div class="span3">
+                <div class="col-md-3">
                     <p>
                         <b>Net Sales Total:</b> <%= @p42_ticket_items.sum(:net_price)  %>
                     </p>     
@@ -65,12 +65,8 @@
         <% end %>
     
 	</div>
+	<div class="col-md-4" id="gdrive_file_list">
+		Loading file list from Google Drive...
+		<!-- This div will be loaded via ajax - it's the list of files from google drive -->
+	</div>
 </div>
-<% result = P42::TicketItem.get_file_list %>
-<% result.each do |item| %>
-<p><%= link_to "Parse CSV", {controller: "ticket_items", action: "parse_csv", :file_id => item['id']}, :method => :post  %>
-
-  <a href="parse_csv?file_id=<%= item['id'] %>" data-method="post"><%= item['id'] %></a>
-<b><%= item['title'] %></b>
-</p>
-<% end %> 

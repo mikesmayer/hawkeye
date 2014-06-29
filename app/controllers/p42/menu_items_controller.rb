@@ -5,11 +5,11 @@ class P42::MenuItemsController < ApplicationController
   # GET /p42/menu_items.json
   def index
     @p42_menu_items = P42::MenuItem.order("id ASC").all
-    @food_not_counted = P42::MenuItem.where("count_meal IS NOT true AND (menu_item_group_id = 40 OR
+    @food_not_counted = P42::MenuItem.includes('meal_count_rules').where("p42_meal_count_rules.id IS NULL AND (menu_item_group_id = 40 OR
         menu_item_group_id = 41 OR menu_item_group_id = 42 OR menu_item_group_id = 43 OR
         menu_item_group_id = 52 OR menu_item_group_id = 53 OR menu_item_group_id = 54 OR
         menu_item_group_id = 50 OR menu_item_group_id = 47)")
-    @apparel_items_modifier_not_set = P42::MenuItem.where("revenue_group_id = 18 AND count_meal IS true AND count_meal_modifier IS NULL")
+    @apparel_items_modifier_not_set = P42::MenuItem.where("revenue_group_id = 18")
     
     respond_to do |format|
       format.html # index.html.erb

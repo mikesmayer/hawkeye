@@ -1,10 +1,10 @@
 <h1>Pitza 42 Menu Items</h1>
 <div class="row">
-    <div class="span2">
+    <div class="col-md-2">
         <p><%= link_to "Sync Menu Items", {:controller => 'p42/menu_items', :action => 'sync_menu_items'}, :method => 'POST', :class => 'btn btn-primary' %>
         </p>
     </div>
-    <div class="span3 well">
+    <div class="col-md-3 well">
         <p class="bold">Items possibly needing an update. Not currently used in meal count:</p>
         <% @food_not_counted.all.each do |item| %>
             <p>
@@ -13,7 +13,7 @@
         <% end %>
     </div>
     <% unless @apparel_items_modifier_not_set.empty? %>
-    <div class="span3 well">
+    <div class="col-md-3 well">
         <p class="bold">Items possibly needing an update. Modifier not set for these
             apparel items:</p>
         <% @apparel_items_modifier_not_set.all.each do |item| %>
@@ -25,7 +25,7 @@
     <% end %>
 </div>
 <div class="row">
-    <div class="span12 table-responsive">
+    <div class="col-md-12 table-responsive">
         <table class="table table-hover" id="menu_items_tbl">
             <thead>
               <tr>
@@ -34,8 +34,6 @@
                 <th>Item group</th>
                 <th>Revenue class</th>
                 <th>Gross price</th>
-                <th>FMSC Count</th>
-                <th>Count Modifier</th>
                 <th></th>
                 <th></th>
                 <th></th>
@@ -49,17 +47,25 @@
                 <td><%= p42_menu_item.menu_item_group.try(:name) %></td>
                 <td><%= p42_menu_item.revenue_group.try(:name) %></td>
                 <td><%= number_to_currency(p42_menu_item.gross_price) %></td>
-                <td><%= p42_menu_item.count_meal %></td>
-                <td><%= p42_menu_item.count_meal_modifier %></td>
                 <td><%= link_to 'Show', p42_menu_item, :class => 'btn btn-default btn-mini' %></td>
                 <td><%= link_to 'Edit', edit_p42_menu_item_path(p42_menu_item), :class => 'btn btn-mini btn-primary' %></td>
                 <td><%= link_to 'Destroy', p42_menu_item, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' %></td>
               </tr>
                 <!-- Add detail row to the table that lists the menu item's meal rules -->
                 <% unless p42_menu_item.meal_count_rules.empty? %>
-                  <tr>
-                    <td colspan="11" style="border-top-width: 0px;"><%= p42_menu_item.name %></td>
-                  </tr>
+                  
+                    
+                <% p42_menu_item.meal_count_rules.each_with_index do |rule, index| %>
+                    <tr>
+                        <% if index == 0 %>
+                            <td colspan="2" rowspan="<%= p42_menu_item.meal_count_rules.count %>"style="border-top-width: 0px;">Meal Count Rules</td>
+                        <% end %>
+                        <td colspan="2" style="border-top-width: 0px;">Start:<%= rule.start_date %></td>
+                        <td colspan="2" style="border-top-width: 0px;">End: <%= rule.end_date %></td>
+                        <td colspan="2" style="border-top-width: 0px;">Multiplier: <%= rule.meal_modifier %></td>
+                    </tr>                        
+                <% end %>                    
+                  
                 <% end %>
             <% end %>
             </tbody>

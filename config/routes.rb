@@ -8,6 +8,7 @@ RailsBootstrap::Application.routes.draw do
     resources :ticket_items do
       collection do
         get :files
+        get :file_list
       end
     end
   end

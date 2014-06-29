@@ -2,6 +2,22 @@ require 'csv'
 class P42::TicketItem < ActiveRecord::Base
 
 
+	 def recalculate_meal_numbers
+		# Customer meal number recalculation called from the menu_item model where this method is called
+		menu_item = P42::MenuItem.find(self.menu_item_id)
+		if menu_item.nil?
+			# get multiplier method takes the ticket date and searches the menu item's meal rules 
+			# for the correct meal multiplier for the given date 
+			meal_multipier = menu_item.get_multiplier(self.ticket_close_time)
+			meal_num = self.quantity * P42::MenuItem.find_by_id(self.menu_item_id)
+		else
+
+		end
+		  	
+		self.meal_for_meal = meal_num
+		self.save
+	end
+
 	def get_p42_report_file_list
 
 

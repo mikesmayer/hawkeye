@@ -31,7 +31,7 @@ class P42::MenuItem < ActiveRecord::Base
    	return "Sync completed successfully"
   end
 
-  def get_all_associated_tickets
+  def get_all_associated_ticket_items
     ticket_ids = Array.new
     self.ticket_items.all.each do |item|
       ticket_ids << item.ticket_id
@@ -39,13 +39,16 @@ class P42::MenuItem < ActiveRecord::Base
     ticket_ids.uniq
   end
 
+=begin
   # determine if meal setting have changed and thus meal counts need to be updated
   def update_meal_check
     if self.count_meal_changed? || self.count_meal_modifier_changed?
       update_meal_counts
     end    
   end
+=end
 
+=begin
   #checks to see if the item group it belongs to has a default meal modifier set and sets its modifier if necessary
   def set_default_meal_modifier    
     meal_num = self.menu_item_group.try(:default_meal_modifier)
@@ -65,12 +68,13 @@ class P42::MenuItem < ActiveRecord::Base
     end
 
   end
+=end
 
   def update_meal_counts
     #customer_ids = Array.new
-    tickets = get_all_associated_tickets
-    tickets.each do |ticket|      
-      t = P42::Ticket.find(ticket)
+    ticket_items = get_all_associated_ticket_items
+    ticket_items.each do |ticket_item|      
+      t = P42::TicketItem.find(ticket_item)
       t.delay.recalculate_meal_numbers
       #unless t.customer_id.nil?
       #  customer_ids << t.customer_id.to_i
