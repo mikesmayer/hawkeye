@@ -14,10 +14,6 @@ RailsBootstrap::Application.routes.draw do
   end
 
   namespace :p42 do
-    
-  end
-
-    namespace :p42 do
     resources :menu_item_groups do
       collection do
         post :sync_menu_item_groups

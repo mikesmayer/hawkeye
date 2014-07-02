@@ -1,0 +1,6 @@
+<tr id="rule-<%= @p42_meal_count_rule.id %>">
+  <td><%= @p42_meal_count_rule.start_date %></td>
+  <td><%= @p42_meal_count_rule.end_date %></td>
+  <td><%= @p42_meal_count_rule.meal_modifier %></td>
+  <td><%= link_to @p42_meal_count_rule, remote: true, confirm: 'Are you sure?', disable_with: 'deleting...', method: :delete, class: 'btn-mini btn-danger btn' do %><span class="glyphicon glyphicon-trash"></span><% end %></td>
+</tr>

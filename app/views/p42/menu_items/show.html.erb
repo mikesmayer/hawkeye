@@ -1,42 +1,99 @@
 <p id="notice"><%= notice %></p>
+<h1><%= @p42_menu_item.name %></h1>
 <div class="row">
-  <h1><%= @p42_menu_item.name %></h1>
-  <div class="col-md-4">
-    <p>
-      <strong>Name:</strong>
-      <%= @p42_menu_item.name %>
-    </p>
-    <p>
-      <strong>Item group:</strong>
-      <%= @p42_menu_item.menu_item_group.name %>
-    </p>
-    <p>
-      <strong>Revenue group:</strong>
-      <%= @p42_menu_item.revenue_group.try(:name) %>
-    </p>
-    <p>
-      <strong>Gross price:</strong>
-      <%= @p42_menu_item.gross_price %>
-    </p>
-
-    <p>
-      <strong>Recipe:</strong>
-      <%= @p42_menu_item.recipe_id %>
-    </p>
-
-
+  <div class="col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <p>
+          <strong>Name:</strong>
+          <%= @p42_menu_item.name %>
+        </p>
+        <p>
+          <strong>Item category:</strong>
+          <%= @p42_menu_item.menu_item_group.name %>
+        </p>
+        <p>
+          <strong>Revenue class:</strong>
+          <%= @p42_menu_item.revenue_group.try(:name) %>
+        </p>
+        <p>
+          <strong>Gross price:</strong>
+          $<%= @p42_menu_item.gross_price %>
+        </p>
+      </div>
+    </div>
   </div>
-  <div class="col-md-4">
-    <h4>Meal for Meal Settings</h4>
-    <p>
-      <b>Used in meal count:</b> <%= @p42_menu_item.count_meal %>
-    </p>
-    <p>
-      <b>Count modifier:</b> <%= @p42_menu_item.count_meal_modifier %>
-    </p>
+  <div class="col-md-9">
+    <div class="panel panel-default">
+     
+      <div class="panel-body">
+
+            <h3 class="pull-left">Meal for Meal Rules</h3>
+          
+            <%= link_to 'Add Rule', '#new_rule_modal', 'data-toggle' => 'modal', :class => 'btn btn-success pull-right' %>
+  
+        
+        <div class="hidden" id="num_rules"><%= @num_rules %></div>
+        <p>
+          
+        </p>
+        <% if @num_rules == 0 %>
+          <p><blockquote>No meal count rules are set.</blockquote></p>
+        <% end %>        
+      </div>
+      <div id="rules_table_container" class="table-responsive">
+        <table class="table" id="rules_table">
+          <thead>
+            <tr>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Meal Modifier</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @p42_menu_item.meal_count_rules.each do |rule| %>  
+              <tr class="success" id="rule-<%= rule.id %>">
+                <% if rule.start_date == P42::MealCountRule.RULE_START_DATE_FLAG && rule.end_date == P42::MealCountRule.RULE_END_DATE_FLAG %>
+                  <td colspan="2" class="text-center"><b>Modifier active for all time</b></td>
+                <% else %>
+                  <td><%= rule.start_date %></td>
+                  <td><%= rule.end_date %></td>
+                <% end %>
+
+                
+                
+
+                <td><%= rule.meal_modifier %></td>
+                <td><%= link_to rule, remote: true, confirm: 'Are you sure?', disable_with: 'deleting...', method: :delete, class: 'btn-mini btn-danger btn' do %><span class="glyphicon glyphicon-trash"></span><% end %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>    
+    </div>
   </div>
 </div>
 
 
-<%= link_to 'Edit', edit_p42_menu_item_path(@p42_menu_item), :class => 'btn btn-info' %> 
+<%= link_to 'Edit', edit_p42_menu_item_path(@p42_menu_item), :class => 'btn btn-default' %> 
 <%= link_to 'Back', p42_menu_items_path %>
+
+
+
+<%# Bootstrap modal markup. @see: http://getbootstrap.com/javascript/#modals %>
+<div class="modal fade" id="new_rule_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Create new meal count rule</h4>
+      </div>
+      <div class="modal-body">
+        <h3 style="margin-top:0px;">Rule for <%= @p42_menu_item.name %></h3>
+        <%# Render the new rule form  %>
+        <%= render :partial => 'p42/meal_count_rules/modalform.html.erb' %>
+      </div>
+    </div>
+  </div>
+</div>

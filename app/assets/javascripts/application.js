@@ -20,9 +20,7 @@
 
 
 $(document).ready(function(){
-	$('.datepicker').datepicker({
-		autoclose: true
-	});
+
 /*
 	var recipe_tbl = $('#menu_items_tbl').dataTable({
 		"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
@@ -34,4 +32,6 @@ $(document).ready(function(){
 		]
 	});
 */
+
+
 })

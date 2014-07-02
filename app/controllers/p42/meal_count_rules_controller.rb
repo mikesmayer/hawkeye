@@ -30,9 +30,11 @@ class P42::MealCountRulesController < ApplicationController
       if @p42_meal_count_rule.save
         format.html { redirect_to @p42_meal_count_rule, notice: 'Meal count rule was successfully created.' }
         format.json { render action: 'show', status: :created, location: @p42_meal_count_rule }
+        format.js   { render action: 'show', status: :created, location: @p42_meal_count_rule }
       else
         format.html { render action: 'new' }
         format.json { render json: @p42_meal_count_rule.errors, status: :unprocessable_entity }
+        format.js   { render json: @p42_meal_count_rule.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -54,10 +56,13 @@ class P42::MealCountRulesController < ApplicationController
   # DELETE /p42/meal_count_rules/1
   # DELETE /p42/meal_count_rules/1.json
   def destroy
+    @rule_id = @p42_meal_count_rule.id
     @p42_meal_count_rule.destroy
+
     respond_to do |format|
       format.html { redirect_to p42_meal_count_rules_url }
       format.json { head :no_content }
+      format.js    { render action: 'delete' }
     end
   end
 

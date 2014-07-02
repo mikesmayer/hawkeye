@@ -1,9 +1,70 @@
-<h1>Pitza 42 Menu Items</h1>
 <div class="row">
-    <div class="col-md-2">
-        <p><%= link_to "Sync Menu Items", {:controller => 'p42/menu_items', :action => 'sync_menu_items'}, :method => 'POST', :class => 'btn btn-primary' %>
-        </p>
+    <h1 class="pull-left">Pitza 42 Menu Items</h1> 
+    <div class="col-md-2 pull-left">
+        <h1 style="letter-spacing:0px;"><%= link_to "Sync Menu Items", {:controller => 'p42/menu_items', :action => 'sync_menu_items'}, :method => 'POST', :class => 'btn btn-success' %>
+        </h1>
     </div>
+</div>
+
+
+<% @p42_item_categories.each_with_index do |category, index| %>
+<% category_items = P42::MenuItem.where("menu_item_group_id = ?", category.id) %>
+    <% if index%3 == 0 %>
+        <div class="row">
+    <% end %>
+            <div class="col-md-4">
+                <div class="row" style="border-bottom:1px solid lightgray; margin-right:2px;">
+                    <div class="col-md-6">
+                        <h3><%= category.name %></h3>
+                    </div>
+                    <div class="col-md-6" style="margin-top:20px;">
+                        <% if category.default_meal_modifier.nil? %>
+                            <%= link_to 'Default modifier not set', edit_p42_menu_item_group_path(category), :class => 'label label-danger' %>
+                        <% else %>
+                            <span class="label label-primary">Default Modifier: <%= category.default_meal_modifier %></span>
+                        <% end %>
+                    </div>
+                </div>
+                
+                <div class="col-md-12 table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>Name</th>
+                                <th>Meal Rule</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% category_items.each do |item| %>
+                            <tr>
+                                <td><%=item.id %></td>
+                                <td><%= link_to item.name, item %></td>
+                                <td>
+                                    <% if item.meal_count_rules.empty? %>
+                                        <span class="label label-danger">No meal modifier set</span>
+                                    <% else %>
+                                        <% item.meal_count_rules.each do |rule| %>
+                                        
+                                            <% if (rule.start_date..rule.end_date).include?(Date.today) %>
+                                                <span class="label label-success">Modifier: <%= rule.meal_modifier %></span>
+                                            <% else %>
+                                                <span class="label label-default">Modifier: <%= rule.meal_modifier %></span>
+                                            <% end %>
+                                        <% end %>
+                                    <% end %>
+                                </td>
+                            </tr>
+                            <% end %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    <% if (index+1)%3 == 0 %>
+        </div>
+    <% end %>
+<% end %>
+<div class="row">
     <div class="col-md-3 well">
         <p class="bold">Items possibly needing an update. Not currently used in meal count:</p>
         <% @food_not_counted.all.each do |item| %>
