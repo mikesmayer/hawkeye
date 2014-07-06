@@ -1,0 +1,6 @@
+<h3>Files in Pitza 42 Reports</h3>
+<% @file_list.each do |item| %>
+<p><a href="files/save_to_local?file_id=<%= item['id'] %>" data-method="post"><%= item['id'] %></a>
+<b><%= item['title'] %></b>
+</p>
+<% end %> 
