@@ -2,7 +2,7 @@ $(document).ready(function(){
 	if( $('#gdrive_file_list').length > 0 ){
 		console.log("Getting files from google drive");
 		$.ajax({
-			url: "file_list",
+			url: "ticket_items/file_list",
 			cache: false,
 			success: function(html){
 				console.log(html);
