@@ -54,7 +54,7 @@
             </thead>
             <tbody>
               <% @p42_menu_item.meal_count_rules.each do |rule| %>  
-                <tr class="success" id="rule-<%= rule.id %>">
+                <tr id="rule-<%= rule.id %>">
                   <% if rule.start_date == P42::MealCountRule.RULE_START_DATE_FLAG && rule.end_date == P42::MealCountRule.RULE_END_DATE_FLAG %>
                     <td colspan="2" class="text-center"><b>Modifier active for all time</b></td>
                   <% else %>
@@ -72,7 +72,7 @@
                   <% end %>
                   <td><%= rule.meal_modifier %></td>
                   <td><%= link_to edit_p42_meal_count_rule_path(rule, :menu_item => @p42_menu_item.id), remote: true, method: :get, class: 'btn-mini btn-primary btn' do %><span class="glyphicon glyphicon-pencil"></span><% end %>
-                    <%= link_to rule, remote: true, confirm: 'Are you sure?', disable_with: 'deleting...', method: :delete, class: 'btn-mini btn-danger btn' do %><span class="glyphicon glyphicon-trash"></span><% end %></td>
+                    <%= link_to rule, remote: true, confirm: 'Are you sure?', method: :delete, class: 'btn-mini btn-danger btn' do %><span class="glyphicon glyphicon-trash"></span><% end %></td>
                 </tr>
               <% end %>
             </tbody>

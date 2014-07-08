@@ -18,11 +18,6 @@ class P42::TicketItem < ActiveRecord::Base
 		self.save
 	end
 
-	def get_p42_report_file_list
-
-
-	end
-
 
 	##
 	#  Only using my @pitza42 account. It's the owner of the P42 Reports Folder and

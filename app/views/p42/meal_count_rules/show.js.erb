@@ -1,41 +1,46 @@
-var num_rules = $('#num_rules').html();
-num_rules = parseInt(num_rules);
-
-console.log(num_rules);
-
-if(num_rules == 0){
-	var table_str = "<table class=\"table\" id=\"rules_table\">";
-    table_str += "<thead>";
-    table_str += "<tr>";
-    table_str += "<th>Start Date</th>";
-    table_str += "<th>End Date</th>";
-    table_str += "<th>Meal Modifier</th>";
-    table_str += "<th></th>";
-    table_str += "</tr>";
-    table_str += "</thead>";
-    table_str += "<tbody>";
-    table_str += "</tbody>";
-    table_str += "</table>";
-
-    $('#rules_table_container').html(table_str);
-}
-if( $("#rule-<%= @p42_meal_count_rule.id %>").length > 0){
-	console.log(<%= @p42_meal_count_rule.meal_modifier %>);
-
-	$('#rule-<%= @p42_meal_count_rule.id %>').html("<%= j render partial: 'p42/meal_count_rules/update_table_row', local: { p42_meal_count_rule: @p42_meal_count_rule } %>");
+//if the menu_items_tbl div is found on the page then we are dealing with the index page of
+//the menu items
+if( $('#menu_items_tbl').length > 0 ){
+	console.log('index page');
+	$('#rule-<%= @p42_meal_count_rule.id %>').html("<%= j render partial: 'p42/meal_count_rules/modifier_label', local: {p42_meal_count_rule: @p42_meal_count_rule } %>")
 	$('#rule-modal').modal_success();
-
 } else {
-	console.log('test');
-	$('#rules_table').append("<%= j render partial: 'p42/meal_count_rules/table_row', local: {p42_meal_count_rule: @p42_meal_count_rule } %>");
+	console.log('show page');
+	// the container menu_items_tbl was not found on the page meaning the modal save was triggered
+	// from the show page of a menu item
+	var num_rules = $('#num_rules').html();
+	num_rules = parseInt(num_rules);
 
-	num_rules += 1;
-	$('#num_rules').html(num_rules);
+	if(num_rules == 0){
+		var table_str = "<table class=\"table\" id=\"rules_table\">";
+	    table_str += "<thead>";
+	    table_str += "<tr>";
+	    table_str += "<th>Start Date</th>";
+	    table_str += "<th>End Date</th>";
+	    table_str += "<th>Meal Modifier</th>";
+	    table_str += "<th></th>";
+	    table_str += "</tr>";
+	    table_str += "</thead>";
+	    table_str += "<tbody>";
+	    table_str += "</tbody>";
+	    table_str += "</table>";
 
-	$('#new_rule_modal').modal_success();
+	    $('#rules_table_container').html(table_str);
+	}
+
+	//If the condition is true that means we're editing a rule else we're adding a new rule
+	if( $("#rule-<%= @p42_meal_count_rule.id %>").length > 0){
+
+		$('#rule-<%= @p42_meal_count_rule.id %>').html("<%= j render partial: 'p42/meal_count_rules/update_table_row', local: { p42_meal_count_rule: @p42_meal_count_rule } %>");
+		$('#rule-modal').modal_success();
+
+	} else {
+		$('#rules_table').append("<%= j render partial: 'p42/meal_count_rules/table_row', local: {p42_meal_count_rule: @p42_meal_count_rule } %>");
+
+		num_rules += 1;
+		$('#num_rules').html(num_rules);
+
+		$('#new_rule_modal').modal_success();
+	}
 }
 
-
-
-
-$('#new_rule_modal').modal_success();

@@ -45,12 +45,17 @@
                                         <span class="label label-danger">No meal modifier set</span>
                                     <% else %>
                                         <% item.meal_count_rules.each do |rule| %>
-                                        
-                                            <% if (rule.start_date..rule.end_date).include?(Date.today) %>
-                                                <span class="label label-success">Modifier: <%= rule.meal_modifier %></span>
+                                         <div id="rule-<%= rule.id %>">
+                                             <% if (rule.start_date..rule.end_date).include?(Date.today) %>
+                                                <%= link_to edit_p42_meal_count_rule_path(rule, :menu_item => item.id), remote: true, method: :get do %>
+                                                    <span class="label label-success">Modifier: <%= rule.meal_modifier %></span>
+                                                <% end %>                                                
                                             <% else %>
-                                                <span class="label label-default">Modifier: <%= rule.meal_modifier %></span>
+                                                <%= link_to edit_p42_meal_count_rule_path(rule, :menu_item => item.id), remote: true, method: :get do %>
+                                                    <span class="label label-default">Modifier: <%= rule.meal_modifier %></span>
+                                                <% end %> 
                                             <% end %>
+                                        </div>
                                         <% end %>
                                     <% end %>
                                 </td>
@@ -133,3 +138,5 @@
         </table>
     </div>
 </div>
+
+<div id="rule-modal" class="modal fade" aria-hidden="true"></div>

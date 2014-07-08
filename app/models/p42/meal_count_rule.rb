@@ -4,9 +4,9 @@ class P42::MealCountRule < ActiveRecord::Base
 	validates :meal_modifier, presence: true
 	validates :meal_modifier, :numericality => { :greater_than_or_equal_to => 0 }
 	validates :menu_item_id, presence: true
-	validates :start_date, date: { message: "Not a valid date. Use the format YYYY-MM-DD" }
-	validates :end_date, date: { message: "Not a valid date. Use the format YYYY-MM-DD" }
-	
+	validates :start_date, date: { message: "Not a valid start date. Use the format YYYY-MM-DD", allow_nil: true }
+	validates :end_date, date: { message: "Not a valid end date. Use the format YYYY-MM-DD", allow_nil: true }
+	validate :end_date_after_start_date, :rule_conflict
 	
 
 	before_save :set_empty_dates
@@ -41,4 +41,33 @@ class P42::MealCountRule < ActiveRecord::Base
 			self.end_date = P42::MealCountRule.RULE_END_DATE_FLAG
 		end
 	end
+
+
+	def end_date_after_start_date
+		set_empty_dates
+
+		if end_date < start_date
+			errors.add(:end_date, "End date must be after the start date")
+		end
+	end
+
+	# This method check to make sure the rule does not conflict with a rule that's
+	# already in place for the specified menu item. i.e. you cannot have a rule that 
+	# sets a meal modifier for a menu item for a given date when a rule already exists 
+	# for that date
+	def rule_conflict
+		menu_item = P42::MenuItem.find(menu_item_id)
+		rules = menu_item.meal_count_rules
+
+		rules.each do |rule|
+			if rule.id != self.id && overlaps?(rule)
+				errors.add(:end_date, "The dates for this rule overlap with a rule already created for this menu item.")
+			end
+		end
+	end
+
+	def overlaps?(other)
+		(start_date - other.end_date) * (other.start_date - end_date) >= 0
+	end
+
 end

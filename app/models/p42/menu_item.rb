@@ -11,6 +11,10 @@ class P42::MenuItem < ActiveRecord::Base
 
 
 
+  def get_multiplier(ticket_date)
+    
+  end
+
   def self.sync_menu_items
     initialize_soap
     

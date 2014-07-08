@@ -7,6 +7,13 @@ $(document).ready(function(){
 
   });
 
+  $(document).bind('ajaxError', 'form.edit_p42_meal_count_rule', function(event, jqxhr, settings, exception){
+
+    // note: jqxhr.responseJSON undefined, parsing responseText instead
+    $(event.data).render_form_errors( $.parseJSON(jqxhr.responseText) );
+
+  });
+
 });
 
 (function($) {
