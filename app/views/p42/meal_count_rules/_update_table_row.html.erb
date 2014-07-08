@@ -1,0 +1,22 @@
+
+<% if @p42_meal_count_rule.start_date == P42::MealCountRule.RULE_START_DATE_FLAG && @p42_meal_count_rule.end_date == P42::MealCountRule.RULE_END_DATE_FLAG %>
+	<td colspan="2" class="text-center"><b>Modifier active for all time</b></td>
+<% else %>
+	<% if @p42_meal_count_rule.start_date == P42::MealCountRule.RULE_START_DATE_FLAG %>
+		<td>Applicable from the beginning</td>
+	<% else %>
+		<td><%= @p42_meal_count_rule.start_date.strftime("%B %e, %Y") %></td>
+	<% end %>
+
+<% if @p42_meal_count_rule.end_date == P42::MealCountRule.RULE_END_DATE_FLAG %>
+	<td>Rule does not end</td>
+<% else %>
+	<td><%= @p42_meal_count_rule.end_date.strftime("%B %e, %Y") %></td>
+<% end %>
+<% end %>
+
+<td><%= @p42_meal_count_rule.meal_modifier %></td>
+<td><%= link_to edit_p42_meal_count_rule_path(@p42_meal_count_rule, :menu_item => @p42_meal_count_rule.menu_item_id), remote: true, method: :get, class: 'btn-mini btn-primary btn' do %>
+<span class='glyphicon glyphicon-pencil'></span><% end %>
+
+ <%= link_to @p42_meal_count_rule, remote: true, confirm: 'Are you sure?', disable_with: 'deleting...', method: :delete, class: 'btn-mini btn-danger btn' do %><span class="glyphicon glyphicon-trash"></span><% end %></td>

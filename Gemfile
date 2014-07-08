@@ -39,4 +39,4 @@ gem 'daemons'
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 
 gem 'google-api-client'
-gem 'activeadmin', github: 'gregbell/active_admin'
+gem 'date_validator'

@@ -2,8 +2,11 @@ class P42::MealCountRule < ActiveRecord::Base
 	belongs_to :menu_item
 
 	validates :meal_modifier, presence: true
-	validates :meal_modifier, numericality: true
+	validates :meal_modifier, :numericality => { :greater_than_or_equal_to => 0 }
 	validates :menu_item_id, presence: true
+	validates :start_date, date: { message: "Not a valid date. Use the format YYYY-MM-DD" }
+	validates :end_date, date: { message: "Not a valid date. Use the format YYYY-MM-DD" }
+	
 	
 
 	before_save :set_empty_dates

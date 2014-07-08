@@ -1,3 +1,41 @@
-$('#rules_table').append("<%= j render partial: 'p42/meal_count_rules/table_row', local: {p42_meal_count_rule: @p42_meal_count_rule } %>");
+var num_rules = $('#num_rules').html();
+num_rules = parseInt(num_rules);
+
+console.log(num_rules);
+
+if(num_rules == 0){
+	var table_str = "<table class=\"table\" id=\"rules_table\">";
+    table_str += "<thead>";
+    table_str += "<tr>";
+    table_str += "<th>Start Date</th>";
+    table_str += "<th>End Date</th>";
+    table_str += "<th>Meal Modifier</th>";
+    table_str += "<th></th>";
+    table_str += "</tr>";
+    table_str += "</thead>";
+    table_str += "<tbody>";
+    table_str += "</tbody>";
+    table_str += "</table>";
+
+    $('#rules_table_container').html(table_str);
+}
+if( $("#rule-<%= @p42_meal_count_rule.id %>").length > 0){
+	console.log(<%= @p42_meal_count_rule.meal_modifier %>);
+
+	$('#rule-<%= @p42_meal_count_rule.id %>').html("<%= j render partial: 'p42/meal_count_rules/update_table_row', local: { p42_meal_count_rule: @p42_meal_count_rule } %>");
+	$('#rule-modal').modal_success();
+
+} else {
+	console.log('test');
+	$('#rules_table').append("<%= j render partial: 'p42/meal_count_rules/table_row', local: {p42_meal_count_rule: @p42_meal_count_rule } %>");
+
+	num_rules += 1;
+	$('#num_rules').html(num_rules);
+
+	$('#new_rule_modal').modal_success();
+}
+
+
+
 
 $('#new_rule_modal').modal_success();

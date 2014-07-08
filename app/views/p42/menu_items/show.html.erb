@@ -27,51 +27,61 @@
     <div class="panel panel-default">
      
       <div class="panel-body">
-
-            <h3 class="pull-left">Meal for Meal Rules</h3>
-          
-            <%= link_to 'Add Rule', '#new_rule_modal', 'data-toggle' => 'modal', :class => 'btn btn-success pull-right' %>
+            <div class="bs-callout bs-callout-info">
+              <h3>Meal for Meal Rules</h3>
+            </div>
+            <%= link_to 'Add Rule', '#new_rule_modal', 'data-toggle' => 'modal', :class => 'btn btn-success pull-left' %>
   
         
         <div class="hidden" id="num_rules"><%= @num_rules %></div>
-        <p>
-          
-        </p>
-        <% if @num_rules == 0 %>
-          <p><blockquote>No meal count rules are set.</blockquote></p>
-        <% end %>        
+      
       </div>
+
       <div id="rules_table_container" class="table-responsive">
-        <table class="table" id="rules_table">
-          <thead>
-            <tr>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Meal Modifier</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @p42_menu_item.meal_count_rules.each do |rule| %>  
-              <tr class="success" id="rule-<%= rule.id %>">
-                <% if rule.start_date == P42::MealCountRule.RULE_START_DATE_FLAG && rule.end_date == P42::MealCountRule.RULE_END_DATE_FLAG %>
-                  <td colspan="2" class="text-center"><b>Modifier active for all time</b></td>
-                <% else %>
-                  <td><%= rule.start_date %></td>
-                  <td><%= rule.end_date %></td>
-                <% end %>
+        <% if @num_rules == 0 %>
+          <h4 style="padding-left:20px;">No meal count rules are set.</h4>
+        <% else %>
 
-                
-                
-
-                <td><%= rule.meal_modifier %></td>
-                <td><%= link_to '#edit_rule_modal', 'data-toggle' => 'modal', class: 'btn-mini btn-danger btn' do %><span class="glyphicon glyphicon-pencil"></span><% end %>
-                  <%= link_to rule, remote: true, confirm: 'Are you sure?', disable_with: 'deleting...', method: :delete, class: 'btn-mini btn-danger btn' do %><span class="glyphicon glyphicon-trash"></span><% end %></td>
+        
+          <table class="table" id="rules_table">
+            <thead>
+              <tr>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Meal Modifier</th>
+                <th></th>
               </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>    
+            </thead>
+            <tbody>
+              <% @p42_menu_item.meal_count_rules.each do |rule| %>  
+                <tr class="success" id="rule-<%= rule.id %>">
+                  <% if rule.start_date == P42::MealCountRule.RULE_START_DATE_FLAG && rule.end_date == P42::MealCountRule.RULE_END_DATE_FLAG %>
+                    <td colspan="2" class="text-center"><b>Modifier active for all time</b></td>
+                  <% else %>
+                    <% if rule.start_date == P42::MealCountRule.RULE_START_DATE_FLAG %>
+                      <td>Applicable from the beginning</td>
+                    <% else %>
+                      <td><%= rule.start_date.strftime("%B %e, %Y") %></td>
+                    <% end %>
+
+                  <% if rule.end_date == P42::MealCountRule.RULE_END_DATE_FLAG %>
+                    <td>Rule does not end</td>
+                  <% else %>
+                    <td><%= rule.end_date.strftime("%B %e, %Y") %></td>
+                  <% end %>
+                  <% end %>
+                  <td><%= rule.meal_modifier %></td>
+                  <td><%= link_to edit_p42_meal_count_rule_path(rule, :menu_item => @p42_menu_item.id), remote: true, method: :get, class: 'btn-mini btn-primary btn' do %><span class="glyphicon glyphicon-pencil"></span><% end %>
+                    <%= link_to rule, remote: true, confirm: 'Are you sure?', disable_with: 'deleting...', method: :delete, class: 'btn-mini btn-danger btn' do %><span class="glyphicon glyphicon-trash"></span><% end %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        
+
+        <% end %>  
+      </div> 
+   
     </div>
   </div>
 </div>
@@ -81,6 +91,7 @@
 <%= link_to 'Back', p42_menu_items_path %>
 
 
+<div id="rule-modal" class="modal fade" aria-hidden="true"></div>
 
 <%# Bootstrap modal markup. @see: http://getbootstrap.com/javascript/#modals %>
 <div class="modal fade" id="new_rule_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

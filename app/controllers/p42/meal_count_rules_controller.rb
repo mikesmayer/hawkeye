@@ -19,6 +19,7 @@ class P42::MealCountRulesController < ApplicationController
 
   # GET /p42/meal_count_rules/1/edit
   def edit
+    @p42_menu_item = P42::MenuItem.find(params[:menu_item])
   end
 
   # POST /p42/meal_count_rules
@@ -46,9 +47,11 @@ class P42::MealCountRulesController < ApplicationController
       if @p42_meal_count_rule.update(p42_meal_count_rule_params)
         format.html { redirect_to @p42_meal_count_rule, notice: 'Meal count rule was successfully updated.' }
         format.json { head :no_content }
+        format.js { render action: 'show', status: :created, location: @p42_meal_count_rule }
       else
         format.html { render action: 'edit' }
         format.json { render json: @p42_meal_count_rule.errors, status: :unprocessable_entity }
+        format.js { render json: @p42_meal_count_rule.errors, status: :unprocessable_entity }
       end
     end
   end
