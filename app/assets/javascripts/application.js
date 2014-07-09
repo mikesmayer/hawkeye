@@ -32,6 +32,10 @@ $(document).ready(function(){
 		]
 	});
 */
-
+	$('.datepicker').datepicker({
+		format: 'yyyy/mm/dd',
+		//endDate: '-1d',
+		autoclose: false
+	});
 
 })

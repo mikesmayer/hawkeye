@@ -15,6 +15,7 @@ class P42::MealCountRulesController < ApplicationController
   # GET /p42/meal_count_rules/new
   def new
     @p42_meal_count_rule = P42::MealCountRule.new
+    @p42_menu_item = P42::MenuItem.find(params[:menu_item])
   end
 
   # GET /p42/meal_count_rules/1/edit

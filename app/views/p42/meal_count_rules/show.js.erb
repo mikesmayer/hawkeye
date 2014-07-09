@@ -2,8 +2,19 @@
 //the menu items
 if( $('#menu_items_tbl').length > 0 ){
 	console.log('index page');
-	$('#rule-<%= @p42_meal_count_rule.id %>').html("<%= j render partial: 'p42/meal_count_rules/modifier_label', local: {p42_meal_count_rule: @p42_meal_count_rule } %>")
+	
+	if( $('#no-rule-<%= @p42_meal_count_rule.menu_item_id %>').length > 0 ){
+		//no other rules existed for this item so we have to update the div that contained
+		//the label "No meal modifier set"
+		$('#no-rule-<%= @p42_meal_count_rule.menu_item_id %>').html("<%= j render partial: 'p42/meal_count_rules/modifier_label', local: { p42_meal_count_rule: @p42_meal_count_rule } %>")
+
+	}else{
+		//Other rules exist for this menu item so we need to find and update the correct rule
+		$('#rule-<%= @p42_meal_count_rule.id %>').html("<%= j render partial: 'p42/meal_count_rules/modifier_label', local: { p42_meal_count_rule: @p42_meal_count_rule } %>")
+	}
 	$('#rule-modal').modal_success();
+
+
 } else {
 	console.log('show page');
 	// the container menu_items_tbl was not found on the page meaning the modal save was triggered

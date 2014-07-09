@@ -40,9 +40,13 @@
                             <tr>
                                 <td><%=item.id %></td>
                                 <td><%= link_to item.name, item %></td>
-                                <td>
+                                <td>                                    
                                     <% if item.meal_count_rules.empty? %>
-                                        <span class="label label-danger">No meal modifier set</span>
+                                        <div id="no-rule-<%= item.id %>">
+                                            <%= link_to new_p42_meal_count_rule_path(:menu_item => item.id), remote: true, method: :get do %>
+                                                        <span class="label label-danger">No meal modifier set</span>
+                                            <% end %>   
+                                        </div>                                       
                                     <% else %>
                                         <% item.meal_count_rules.each do |rule| %>
                                          <div id="rule-<%= rule.id %>">

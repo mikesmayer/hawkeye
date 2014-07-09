@@ -2,12 +2,12 @@
   <div class="modal-content">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h4 class="modal-title" id="myModalLabel">Editing Meal Count Rule</h4>
+      <h4 class="modal-title" id="myModalLabel"><%= @title %></h4>
     </div>
     <div class="modal-body">
       <h3 style="margin-top:0px;">Rule for <%= @p42_menu_item.name %></h3>
         
-      <%= form_for(@p42_meal_count_rule, remote: true, method: :patch, html: {role: :form, 'data-model' => 'p42_meal_count_rule'}) do |f| %>
+      <%= form_for(@p42_meal_count_rule, remote: true, html: {role: :form, 'data-model' => 'p42_meal_count_rule'}) do |f| %>
       <% if @p42_meal_count_rule.errors.any? %>
         <div id="error_explanation">
           <h2><%= pluralize(@p42_meal_count_rule.errors.count, "error") %> prohibited this rule from being saved:</h2>
