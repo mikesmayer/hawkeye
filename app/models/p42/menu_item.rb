@@ -12,28 +12,33 @@ class P42::MenuItem < ActiveRecord::Base
 
 
   def get_multiplier(ticket_date)
-    
+
   end
 
-  def self.sync_menu_items
-    initialize_soap
-    
-   	menu_item_response = get_menu_items
-   	
-   	menu_item_response.each do |menu_item|
-		id = menu_item[:id]
-		name = menu_item[:item_name]
-		menu_item_group_id = menu_item[:price_cat_id]
-		if menu_item_group_id.nil?  || menu_item_group_id.to_i < 0 
-			menu_item_group_id = 0
-		end
-		revenue_class_id = menu_item[:revenue_class_id]
-		gross_price = menu_item[:price].to_f
-		
-		P42::MenuItem.find_or_update_by_id(id, name, menu_item_group_id, revenue_class_id, gross_price)
-   	end
-   	return "Sync completed successfully"
+
+  class << self
+    def sync_menu_items
+      initialize_soap
+      
+      menu_item_response = get_menu_items
+      
+      menu_item_response.each do |menu_item|
+      id = menu_item[:id]
+      name = menu_item[:item_name]
+      menu_item_group_id = menu_item[:price_cat_id]
+      if menu_item_group_id.nil?  || menu_item_group_id.to_i < 0 
+        menu_item_group_id = 0
+      end
+      revenue_class_id = menu_item[:revenue_class_id]
+      gross_price = menu_item[:price].to_f
+      
+      P42::MenuItem.find_or_update_by_id(id, name, menu_item_group_id, revenue_class_id, gross_price)
+      end
+      return "Sync initiated. Refresh page in a few minutes to see any updates."
+    end
+    handle_asynchronously :sync_menu_items
   end
+
 
   def get_all_associated_ticket_items
     ticket_ids = Array.new
