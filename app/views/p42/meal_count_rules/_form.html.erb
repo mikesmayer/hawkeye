@@ -7,7 +7,7 @@
     <div class="modal-body">
       <h3 style="margin-top:0px;">Rule for <%= @p42_menu_item.name %></h3>
         
-      <%= form_for(@p42_meal_count_rule, remote: true, html: {role: :form, 'data-model' => 'p42_meal_count_rule'}) do |f| %>
+      <%= form_for(@p42_meal_count_rule, remote: true, html: {role: :form, 'data-model' => 'p42_meal_count_rule', novalidate: true }) do |f| %>
       <% if @p42_meal_count_rule.errors.any? %>
         <div id="error_explanation">
           <h2><%= pluralize(@p42_meal_count_rule.errors.count, "error") %> prohibited this rule from being saved:</h2>

@@ -50,13 +50,13 @@
                                     <% else %>
                                         <% item.meal_count_rules.each do |rule| %>
                                          <div id="rule-<%= rule.id %>">
-                                             <% if (rule.start_date..rule.end_date).include?(Date.today) %>
+                                             <% if (rule.start_date..rule.end_date).include?(Date.today) && rule.meal_modifier != 0 %>
                                                 <%= link_to edit_p42_meal_count_rule_path(rule, :menu_item => item.id), remote: true, method: :get do %>
-                                                    <span class="label label-success">Modifier: <%= rule.meal_modifier %></span>
+                                                    <span class="label label-success">Modifier: <%= "%g" % ("%.2f" % rule.meal_modifier) %></span>
                                                 <% end %>                                                
                                             <% else %>
                                                 <%= link_to edit_p42_meal_count_rule_path(rule, :menu_item => item.id), remote: true, method: :get do %>
-                                                    <span class="label label-default">Modifier: <%= rule.meal_modifier %></span>
+                                                    <span class="label label-default">Modifier: <%= "%g" % ("%.2f" % rule.meal_modifier) %></span>
                                                 <% end %> 
                                             <% end %>
                                         </div>

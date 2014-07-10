@@ -11,9 +11,7 @@ class P42::MenuItem < ActiveRecord::Base
 
 
 
-  def get_multiplier(ticket_date)
 
-  end
 
 
   class << self
@@ -34,7 +32,6 @@ class P42::MenuItem < ActiveRecord::Base
       
       P42::MenuItem.find_or_update_by_id(id, name, menu_item_group_id, revenue_class_id, gross_price)
       end
-      return "Sync initiated. Refresh page in a few minutes to see any updates."
     end
     handle_asynchronously :sync_menu_items
   end

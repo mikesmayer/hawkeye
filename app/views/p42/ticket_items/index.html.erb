@@ -1,6 +1,28 @@
 <h1>Pitza 42 Ticket Items</h1>
 <div class="row">
-	<div class="col-md-8">
+
+    <div class="col-md-8">
+        <h4>Meal 4 Meal</h4>
+        <%= form_tag({:controller => 'p42/ticket_items', :action => 'calculate_meals'}, remote: true, :method => 'GET', :class => 'form-inline') do %>            
+                <%= label_tag :meal_start_date, "Start Date", :class => 'bold' %>
+                <%= text_field_tag :meal_start_date, params[:meal_start_date], :class => 'datepicker' %>            
+                <%= label_tag :meal_end_date, "End Date", :class => 'bold' %>
+                <%= text_field_tag :meal_end_date, params[:meal_end_date], :class => 'datepicker' %>
+            
+            <%= submit_tag "Calculate Meal Numbers", :class => 'btn' %>
+        <% end %>
+        <div id="meal_results">
+
+        </div>
+    </div>
+	<div class="col-md-4" id="gdrive_file_list">
+		Loading file list from Google Drive...
+		<!-- This div will be loaded via ajax - it's the list of files from google drive -->
+	</div>
+
+</div>
+<div class="row">
+    <div class="col-md-8">
         <h4>Get Tickets</h4>
         <%= form_tag({:controller => 'p42/ticket_items', :action => 'index'}, :method => 'GET', :class => 'form-inline') do %>            
                 <%= label_tag :view_start_date, "Start Date", :class => 'bold' %>
@@ -18,7 +40,7 @@
                         <b>Ticket Item Count:</b> <%= @p42_ticket_items.count %>
                     </p>
                     <p>
-                    	<b>Ticket Count</b> <%= @p42_ticket_items.count('pos_ticket_id', :distinct => true) %>
+                        <b>Ticket Count</b> <%= @p42_ticket_items.count('pos_ticket_id', :distinct => true) %>
                     </p>
                     <p>
                         <b>Meal for Meal Total:</b> <%= @meal_countjjjj %>
@@ -64,9 +86,5 @@
             </table>
         <% end %>
     
-	</div>
-	<div class="col-md-4" id="gdrive_file_list">
-		Loading file list from Google Drive...
-		<!-- This div will be loaded via ajax - it's the list of files from google drive -->
-	</div>
+    </div>
 </div>

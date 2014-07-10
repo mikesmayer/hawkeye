@@ -28,6 +28,17 @@ class P42::MealCountRule < ActiveRecord::Base
 		Date.new(2100,12,31)
 	end
 
+	def self.get_multiplier(menu_item_id, ticket_date)
+	    mod = P42::MealCountRule.select("meal_modifier").where(menu_item_id: menu_item_id).where("start_date <= ? AND end_date >= ?", ticket_date, ticket_date)
+	    puts mod.inspect
+	    if mod.empty?
+	      mod = 0
+	    else
+	      mod = mod[0][:meal_modifier]
+	    end
+	    mod
+	  end
+
 	private
 
 	#Method called before save, it just checks to see if the dates are empty and 

@@ -279,4 +279,33 @@ class P42::TicketItem < ActiveRecord::Base
 		ticket_item
 	end
 
+
+	# This method is used to update the meal_for_meal field for every ticket item in the given
+	# date range - it will return the ticket stats for the date range for display 
+	def self.update_all_tickets_meal_count(start_date, end_date)
+		all_items = P42::TicketItem.where(:ticket_close_time => start_date.beginning_of_day..end_date.end_of_day)
+		ticket_item_count = all_items.count
+		total_meals = 0
+		all_items.each do |item|
+			modifier = P42::MealCountRule.get_multiplier(item.menu_item_id, item.ticket_close_time)
+			puts "modifier:"
+			puts modifier.to_s
+			meals = modifier * item.quantity
+			total_meals += meals
+
+			item.update_attributes(:meal_for_meal => meals)
+			puts "meals:"
+			puts meals.to_s
+
+			puts "total meals"
+			puts total_meals.to_s
+		end
+		
+
+		{ :total_meals => total_meals, :ticket_item_count => ticket_item_count }
+	end
+
+
+
+
 end

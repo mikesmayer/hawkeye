@@ -83,6 +83,17 @@ class P42::TicketItemsController < ApplicationController
   end
 =end
 
+  def calculate_meals
+    start_date = DateTime.parse(params[:meal_start_date])
+    end_date = DateTime.parse(params[:meal_end_date])
+
+    @results = P42::TicketItem.update_all_tickets_meal_count(start_date, end_date)
+
+    respond_to do |format|
+      format.js { render action: 'calculate_meals' }
+    end
+  end
+
   def parse_csv    
     @csv_contents = P42::TicketItem.parse_csv(params[:file_id])
     flash[:notice] = @row_array

@@ -2,6 +2,8 @@ RailsBootstrap::Application.routes.draw do
 
 #post 'p42/ticket_items/files/save_to_local', :controller => 'p42/ticket_items', :action => 'save_file_to_local'
   post 'p42/ticket_items/parse_csv', :controller => 'p42/ticket_items', :action => 'parse_csv'
+  get 'p42/ticket_items/calculate_meals', :controller => 'p42/ticket_items', :action => 'calculate_meals'
+  match "/delayed_job" => DelayedJobWeb, :anchor => false, via: [:get, :post]
 
 
   namespace :p42 do

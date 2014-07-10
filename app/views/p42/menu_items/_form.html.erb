@@ -15,17 +15,10 @@
       <div class="well">
         <h4>Meal count settings</h4>
         <div class="form-group">
-          <%= f.label :count_meal, "Used in meal count", :class => 'bold col-sm-4 control-label' %>
-          <div class="col-sm-8">
-            <%= f.select :count_meal, [['True', true], ['False', false]], {:prompt => 'Select One'}, {:class => "form-control"} %>
-          </div>          
+        
         </div>
-        <div class="form-group">
-          <%= f.label :count_meal_modifier, "Count modifier (this gets multiplied by the quantity of this item sold", :class => 'bold col-sm-6 control-label' %>
-          <div class="col-sm-6">
-            <%= f.number_field :count_meal_modifier, {:class => "form-control"} %>
-          </div>
-        </div>
+
+       
       </div>
     </div>
   </div>

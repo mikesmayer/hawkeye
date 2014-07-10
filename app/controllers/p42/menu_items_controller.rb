@@ -11,7 +11,7 @@ class P42::MenuItemsController < ApplicationController
         menu_item_group_id = 41 OR menu_item_group_id = 42 OR menu_item_group_id = 43 OR
         menu_item_group_id = 52 OR menu_item_group_id = 53 OR menu_item_group_id = 54 OR
         menu_item_group_id = 50 OR menu_item_group_id = 47)")
-    @apparel_items_modifier_not_set = P42::MenuItem.where("revenue_group_id = 18")
+    @apparel_items_modifier_not_set = P42::MenuItem.includes('meal_count_rules').where("p42_meal_count_rules.id IS NULL AND revenue_group_id = 18")
     
 
     respond_to do |format|
