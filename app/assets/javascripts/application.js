@@ -16,6 +16,8 @@
 //= require bootstrap
 //= require bootstrap-datepicker
 //= require 'rest_in_place'
+//= require dataTables/jquery.dataTables
+//= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
 //= require_tree .
 
 
@@ -37,5 +39,28 @@ $(document).ready(function(){
 		//endDate: '-1d',
 		autoclose: false
 	});
+
+	$('#daterange').popover({
+		html: true,
+		content: "Test Content",
+		placement: "bottom",
+		container: "#daterange"
+	});
+
+	//JS for the meals index page
+	if( $('#m4m_stats_tbl').length > 0 ){
+
+
+		$.ajax({
+			url: "meals/day_counts",
+			cache: false,
+			success: function(html){
+				console.log(html);
+				$('#m4m_stats_tbl').dataTable({
+				  "sPaginationType": "bootstrap"
+				});
+			}
+		});
+	}
 
 })

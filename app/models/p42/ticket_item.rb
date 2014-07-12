@@ -2,16 +2,48 @@ require 'csv'
 class P42::TicketItem < ActiveRecord::Base
 
 
-	 def recalculate_meal_numbers
-		menu_item = P42::MenuItem.find(self.menu_item_id)
+
+	# Updates the meal count for the ticket item
+	def update_meal_count
+		modifier = P42::MealCountRule.get_multiplier(menu_item_id, ticket_close_time)
+		self.update_attributes( :meal_for_meal => (modifier * quantity) )
+	end
+
+	def self.get_meal_totals
+		totals = P42::TicketItem.sum(:meal_for_meal)
+		m4m_total = P42::TicketItem.where("pos_revenue_class_id != 15 AND pos_revenue_class_id != 18").sum(:meal_for_meal)
+		dym_total = P42::TicketItem.where("pos_revenue_class_id = 15").sum(:meal_for_meal)
+		apparel_total = P42::TicketItem.where("pos_revenue_class_id = 18").sum(:meal_for_meal)
+
+		{:total => totals, :m4m => m4m_total, 
+			:dym => dym_total, :apparel => apparel_total}
+	end
+
+
+	def self.get_meal_breakdown
+		dates = P42::TicketItem.select("date(ticket_close_time) as date").group("date(ticket_close_time)")
+
+		#P42::TicketItem.select("date(ticket_close_time) as date, sum(meal_for_meal) as m4m").group("date(ticket_close_time)")
 		
-		# get multiplier method takes the ticket date and searches the menu item's meal rules 
-		# for the correct meal multiplier for the given date 
-		meal_multipier = menu_item.get_multiplier(self.ticket_close_time)
-		meal_num = self.quantity * P42::MenuItem.find_by_id(self.menu_item_id)
-			  	
-		self.meal_for_meal = meal_num
-		self.save
+		days_tbl = P42::TicketItem.find_by_sql("SELECT t1.date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, t4.total FROM 
+			(SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS m4m
+			FROM p42_ticket_items 
+			WHERE pos_revenue_class_id != 15 OR pos_revenue_class_id != 18
+			GROUP BY CAST(ticket_close_time AS DATE)) t1
+		LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS dym
+			FROM p42_ticket_items
+			WHERE pos_revenue_class_id = 15
+			GROUP BY CAST(ticket_close_time AS DATE)) t2
+		ON t1.date = t2.date
+		LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS apparel
+			FROM p42_ticket_items
+			WHERE pos_revenue_class_id = 18
+			GROUP BY CAST(ticket_close_time AS DATE)) t3
+		ON t1.date = t3.date
+		LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS total
+			FROM p42_ticket_items
+			GROUP BY CAST(ticket_close_time AS DATE)) t4
+		ON t1.date = t4.date")	
 	end
 
 
@@ -268,7 +300,7 @@ class P42::TicketItem < ActiveRecord::Base
 				:menu_item_id => menu_item_id, :pos_category_id => pos_category_id, :pos_revenue_class_id => pos_revenue_class_id,
 				:customer_original_id => customer_original_id, :quantity => quantity, :net_price => net_price, :discount_total => discount_total,
 				:item_menu_price => item_menu_price, :choice_additions_total => choice_additions_total, :ticket_close_time => ticket_close_time,
-				:meal_for_meal => meal_for_meal)
+				:meal_for_meal => meal_for_meal)			
 		else
 			ticket_item.update_attributes(:pos_ticket_id => pos_ticket_id, 
 				:menu_item_id => menu_item_id, :pos_category_id => pos_category_id, :pos_revenue_class_id => pos_revenue_class_id,
@@ -276,6 +308,7 @@ class P42::TicketItem < ActiveRecord::Base
 				:item_menu_price => item_menu_price, :choice_additions_total => choice_additions_total, :ticket_close_time => ticket_close_time,
 				:meal_for_meal => meal_for_meal)
 		end
+		ticket_item.update_meal_count
 		ticket_item
 	end
 
@@ -285,27 +318,15 @@ class P42::TicketItem < ActiveRecord::Base
 	def self.update_all_tickets_meal_count(start_date, end_date)
 		all_items = P42::TicketItem.where(:ticket_close_time => start_date.beginning_of_day..end_date.end_of_day)
 		ticket_item_count = all_items.count
-		total_meals = 0
+		#total_meals = 0
 		all_items.each do |item|
-			modifier = P42::MealCountRule.get_multiplier(item.menu_item_id, item.ticket_close_time)
-			puts "modifier:"
-			puts modifier.to_s
-			meals = modifier * item.quantity
-			total_meals += meals
 
-			item.update_attributes(:meal_for_meal => meals)
-			puts "meals:"
-			puts meals.to_s
-
-			puts "total meals"
-			puts total_meals.to_s
+			item.update_meal_count
 		end
 		
-
+		total_meals = all_items.sum(:meal_for_meal)
 		{ :total_meals => total_meals, :ticket_item_count => ticket_item_count }
 	end
-
-
 
 
 end

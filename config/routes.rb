@@ -4,7 +4,13 @@ RailsBootstrap::Application.routes.draw do
   post 'p42/ticket_items/parse_csv', :controller => 'p42/ticket_items', :action => 'parse_csv'
   get 'p42/ticket_items/calculate_meals', :controller => 'p42/ticket_items', :action => 'calculate_meals'
   match "/delayed_job" => DelayedJobWeb, :anchor => false, via: [:get, :post]
+  get 'meals/day_counts', :controller => 'meals', :action => 'counts'
 
+  resources :meals, :only => [] do
+    collection do
+      get :index
+    end
+  end
 
   namespace :p42 do
     resources :ticket_items do
@@ -63,6 +69,7 @@ RailsBootstrap::Application.routes.draw do
   resources :users  
   resources :ftp_connects
   resources :restaurants
+
 
 
 end
