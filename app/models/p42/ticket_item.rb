@@ -23,30 +23,97 @@ class P42::TicketItem < ActiveRecord::Base
 		P42::TicketItem.select("DATE_TRUNC('month', ticket_close_time) as month, sum(meal_for_meal) as total").group("DATE_TRUNC('month', ticket_close_time)").order("DATE_TRUNC('month', ticket_close_time) ASC")
 	end
 
-	def self.get_meal_breakdown
-		dates = P42::TicketItem.select("date(ticket_close_time) as date").group("date(ticket_close_time)")
+	def self.get_year_breakdown
+		P42::TicketItem.select("DATE_TRUNC('year', ticket_close_time) as year, sum(meal_for_meal) as total").group("DATE_TRUNC('year', ticket_close_time)").order("DATE_TRUNC('year', ticket_close_time) ASC")
+	end
+
+	def self.get_meal_breakdown(granularity)
+		#dates = P42::TicketItem.select("date(ticket_close_time) as date").group("date(ticket_close_time)")
 
 		#P42::TicketItem.select("date(ticket_close_time) as date, sum(meal_for_meal) as m4m").group("date(ticket_close_time)")
-		
-		days_tbl = P42::TicketItem.find_by_sql("SELECT t1.date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, t4.total FROM 
-			(SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS m4m
-			FROM p42_ticket_items 
-			WHERE pos_revenue_class_id != 15 AND pos_revenue_class_id != 18
-			GROUP BY CAST(ticket_close_time AS DATE)) t1
-		LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS dym
-			FROM p42_ticket_items
-			WHERE pos_revenue_class_id = 15
-			GROUP BY CAST(ticket_close_time AS DATE)) t2
-		ON t1.date = t2.date
-		LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS apparel
-			FROM p42_ticket_items
-			WHERE pos_revenue_class_id = 18
-			GROUP BY CAST(ticket_close_time AS DATE)) t3
-		ON t1.date = t3.date
-		LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS total
-			FROM p42_ticket_items
-			GROUP BY CAST(ticket_close_time AS DATE)) t4
-		ON t1.date = t4.date")	
+		case granularity
+		when "day"
+			details_tbl = P42::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon-DD-YYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, t4.total FROM 
+				(SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS m4m
+				FROM p42_ticket_items 
+				WHERE pos_revenue_class_id != 15 AND pos_revenue_class_id != 18
+				GROUP BY CAST(ticket_close_time AS DATE)) t1
+			LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS dym
+				FROM p42_ticket_items
+				WHERE pos_revenue_class_id = 15
+				GROUP BY CAST(ticket_close_time AS DATE)) t2
+			ON t1.date = t2.date
+			LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS apparel
+				FROM p42_ticket_items
+				WHERE pos_revenue_class_id = 18
+				GROUP BY CAST(ticket_close_time AS DATE)) t3
+			ON t1.date = t3.date
+			LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS total
+				FROM p42_ticket_items
+				GROUP BY CAST(ticket_close_time AS DATE)) t4
+			ON t1.date = t4.date")	
+		when "month"
+			details_tbl = P42::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, t4.total FROM 
+				(SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
+				FROM p42_ticket_items 
+				WHERE pos_revenue_class_id != 15 AND pos_revenue_class_id != 18
+				GROUP BY DATE_TRUNC('month', ticket_close_time)) t1
+			LEFT JOIN (SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS dym
+				FROM p42_ticket_items
+				WHERE pos_revenue_class_id = 15
+				GROUP BY DATE_TRUNC('month', ticket_close_time)) t2
+			ON t1.date = t2.date
+			LEFT JOIN (SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS apparel
+				FROM p42_ticket_items
+				WHERE pos_revenue_class_id = 18
+				GROUP BY DATE_TRUNC('month', ticket_close_time)) t3
+			ON t1.date = t3.date
+			LEFT JOIN (SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS total
+				FROM p42_ticket_items
+				GROUP BY DATE_TRUNC('month', ticket_close_time)) t4
+			ON t1.date = t4.date")
+		when "quarter"
+			details_tbl = P42::TicketItem.find_by_sql("SELECT ('Q' || to_char(t1.date, 'Q YYYY')) AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, t4.total FROM 
+				(SELECT DATE_TRUNC('quarter', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
+				FROM p42_ticket_items 
+				WHERE pos_revenue_class_id != 15 AND pos_revenue_class_id != 18
+				GROUP BY DATE_TRUNC('quarter', ticket_close_time)) t1
+			LEFT JOIN (SELECT DATE_TRUNC('quarter', ticket_close_time) as date, SUM(meal_for_meal) AS dym
+				FROM p42_ticket_items
+				WHERE pos_revenue_class_id = 15
+				GROUP BY DATE_TRUNC('quarter', ticket_close_time)) t2
+			ON t1.date = t2.date
+			LEFT JOIN (SELECT DATE_TRUNC('quarter', ticket_close_time) as date, SUM(meal_for_meal) AS apparel
+				FROM p42_ticket_items
+				WHERE pos_revenue_class_id = 18
+				GROUP BY DATE_TRUNC('quarter', ticket_close_time)) t3
+			ON t1.date = t3.date
+			LEFT JOIN (SELECT DATE_TRUNC('quarter', ticket_close_time) as date, SUM(meal_for_meal) AS total
+				FROM p42_ticket_items
+				GROUP BY DATE_TRUNC('quarter', ticket_close_time)) t4
+			ON t1.date = t4.date")
+		when "year"
+			details_tbl = P42::TicketItem.find_by_sql("SELECT to_char(t1.date, 'YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, t4.total FROM 
+				(SELECT DATE_TRUNC('year', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
+				FROM p42_ticket_items 
+				WHERE pos_revenue_class_id != 15 AND pos_revenue_class_id != 18
+				GROUP BY DATE_TRUNC('year', ticket_close_time)) t1
+			LEFT JOIN (SELECT DATE_TRUNC('year', ticket_close_time) as date, SUM(meal_for_meal) AS dym
+				FROM p42_ticket_items
+				WHERE pos_revenue_class_id = 15
+				GROUP BY DATE_TRUNC('year', ticket_close_time)) t2
+			ON t1.date = t2.date
+			LEFT JOIN (SELECT DATE_TRUNC('year', ticket_close_time) as date, SUM(meal_for_meal) AS apparel
+				FROM p42_ticket_items
+				WHERE pos_revenue_class_id = 18
+				GROUP BY DATE_TRUNC('year', ticket_close_time)) t3
+			ON t1.date = t3.date
+			LEFT JOIN (SELECT DATE_TRUNC('year', ticket_close_time) as date, SUM(meal_for_meal) AS total
+				FROM p42_ticket_items
+				GROUP BY DATE_TRUNC('year', ticket_close_time)) t4
+			ON t1.date = t4.date")
+		end
+		details_tbl
 	end
 
 

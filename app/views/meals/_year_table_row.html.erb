@@ -1,0 +1,6 @@
+<% @year_totals.each do |year| %>
+	<tr>
+		<td><%= year.year.strftime("%Y") %></td>
+		<td><%= number_with_precision(year.total, :precision => 0, :delimiter => ",") %></td>
+	</tr>
+<% end %>

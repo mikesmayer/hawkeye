@@ -22,6 +22,9 @@
 
 
 $(document).ready(function(){
+	var nowTemp = new Date();
+	var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+	
 
 /*
 	var recipe_tbl = $('#menu_items_tbl').dataTable({
@@ -47,28 +50,154 @@ $(document).ready(function(){
 		container: "#daterange"
 	});
 
-	//JS for the meals index page
-	if( $('#m4m_stats_tbl').length > 0 ){
+	/* START JS for the meals index page */
+	if( $('#meals_index_page').length > 0 ){
 
 
-		$.ajax({
-			url: "meals/day_counts",
-			cache: false,
-			success: function(html){
-				console.log(html);
-				$('#m4m_stats_tbl').dataTable({
-				  "sPaginationType": "bootstrap"
-				});
-			}
-		});
+		update_count_breakdown("day");
+
 
 		$.ajax({
 			url: "meals/month_counts",
 			cache: false,
 			success: function(html){
-				console.log(html);
+				console.log("meals/month_counts");
 			}
-		})
+		});
+
+		$.ajax({
+			url: "meals/year_counts",
+			cache: false,
+			success: function(html){
+				console.log("meals/year_counts")
+			}
+		});
+
+		$('#breakdown_by_day_selector').click(function(){
+			console.log("day selected");
+			update_count_breakdown("day");
+		});
+
+		$('#breakdown_by_month_selector').click(function(){
+			console.log("month selected");
+			update_count_breakdown("month");
+		});
+
+		$('#breakdown_by_quarter_selector').click(function(){
+			console.log("quarter selected");
+			update_count_breakdown("quarter");
+		});
+
+		$('#breakdown_by_year_selector').click(function(){
+			console.log("year selected");
+			update_count_breakdown("year");
+		});
+	}
+	/* END meals index page specific js */
+
+	if( $('#gdrive_file_list').length > 0 ){
+		console.log("Getting files from google drive");
+		$.ajax({
+			url: "ticket_items/file_list",
+			cache: false,
+			success: function(html){
+				console.log(html);
+				$('#gdrive_file_list').html(html);
+			}
+		});
 	}
 
-})
+	/* Only used on menu item group index page right now */
+	$('.rest-in-place').each(function(i, obj){
+		$(this).bind('failure.rest-in-place', function(event, json){
+			var error_count_html = "<div class=\"alert alert-danger fade in\">";
+			error_count_html += "Failed to update default meal number. Please enter an integer.";
+			error_count_html += "<button type=\"button\"";
+			error_count_html += "class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">x</button></div>";
+			$('#error_cont').html(error_count_html);
+			$(".alert").alert();
+		});
+	});
+
+
+
+	/* these binds are used in error handling for the ajax modals used throughout the site */
+	$(document).bind('ajaxError', 'form#new_p42_meal_count_rule', function(event, jqxhr, settings, exception){
+		// note: jqxhr.responseJSON undefined, parsing responseText instead
+		$(event.data).render_form_errors( $.parseJSON(jqxhr.responseText) );
+	});
+
+	$(document).bind('ajaxError', 'form.edit_p42_meal_count_rule', function(event, jqxhr, settings, exception){
+		// note: jqxhr.responseJSON undefined, parsing responseText instead
+		$(event.data).render_form_errors( $.parseJSON(jqxhr.responseText) );
+	});
+
+});
+
+
+function update_count_breakdown(selected_granularity){
+	console.log(selected_granularity);
+		
+
+	$.ajax({
+	  url: "meals/detail_counts",
+	  type: "GET", 
+	  data: { granularity: selected_granularity }, 
+	  cache: false,
+	  beforeSend: function() {
+		$('#count_ajax_loading').show();	
+		$('#detail_tbl_container').hide();
+
+	  },
+	  success: function(html) {
+	    console.log("meals/detail_counts?" + selected_granularity);
+
+		$('#m4m_stats_tbl').dataTable({
+		  "sPaginationType": "bootstrap"
+		});
+		console.log('test');
+		$('#count_ajax_loading').hide();	
+		$('#detail_tbl_container').show();
+
+	  }
+	});
+
+}
+
+(function($) {
+
+  $.fn.modal_success = function(){
+    // close modal
+    this.modal('hide');
+
+    // clear form input elements
+    // todo/note: handle textarea, select, etc
+    this.find('form input[type="text"]').val('');
+    this.find('form input[type="number"]').val('');
+
+    // clear error state
+    this.clear_previous_errors();
+  };
+
+  $.fn.render_form_errors = function(errors){
+
+    $form = this;
+    this.clear_previous_errors();
+    model = this.data('model');
+
+    // show error messages in input form-group help-block
+    $.each(errors, function(field, messages){
+      $input = $('input[name="' + model + '[' + field + ']"]');
+      $input.closest('.form-group').addClass('has-error').find('.help-block').html( messages.join(' & ') );
+    });
+
+  };
+
+  $.fn.clear_previous_errors = function(){
+    $('.form-group.has-error', this).each(function(){
+      $('.help-block', $(this)).html('');
+      $(this).removeClass('has-error');
+    });
+  }
+
+}(jQuery));

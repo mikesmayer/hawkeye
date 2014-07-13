@@ -1,9 +1,0 @@
-<% @day_totals.each do |day| %>
-	<tr>
-		<td><%= day.date.strftime("%b %d, %y") %></td>
-		<td><%= sprintf('%.0f', day.m4m) %></td>
-		<td><%= sprintf('%.0f', day.dym) %></td>
-		<td><%= sprintf('%.0f', day.apparel) %></td>
-		<td><%= sprintf('%.0f', day.total) %></td>
-	</tr>
-<% end %>

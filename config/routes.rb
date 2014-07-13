@@ -6,9 +6,9 @@ RailsBootstrap::Application.routes.draw do
   post 'p42/ticket_items/parse_csv', :controller => 'p42/ticket_items', :action => 'parse_csv'
   get 'p42/ticket_items/calculate_meals', :controller => 'p42/ticket_items', :action => 'calculate_meals'
   match "/delayed_job" => DelayedJobWeb, :anchor => false, via: [:get, :post]
-  get 'meals/day_counts', :controller => 'meals', :action => 'counts'
+  get 'meals/detail_counts', :controller => 'meals', :action => 'counts'
   get 'meals/month_counts', :controller => 'meals', :action => 'month_counts'
-
+  get 'meals/year_counts', :controller => 'meals', :action => 'year_counts'
   resources :meals, :only => [] do
     collection do
       get :index

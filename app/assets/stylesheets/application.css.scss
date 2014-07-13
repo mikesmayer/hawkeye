@@ -131,3 +131,14 @@ body { padding-top: 60px; }
         -o-transition: opacity 0.1s linear;
            transition: opacity 0.1s linear;
  }
+
+ .padding-right {
+    padding-right: 10px;
+ }
+
+ #count_ajax_loading {
+  background-image: url("loading.GIF");
+  height: 35px;
+  background-repeat: no-repeat;
+  margin-left: 50%;
+ }
