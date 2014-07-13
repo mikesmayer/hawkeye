@@ -1,0 +1,33 @@
+<h1>Listing tip_jar_donations</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Amount</th>
+      <th>Meals</th>
+      <th>Deposit date</th>
+      <th>Restaurant</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tip_jar_donations.each do |tip_jar_donation| %>
+      <tr>
+        <td><%= tip_jar_donation.amount %></td>
+        <td><%= tip_jar_donation.meals %></td>
+        <td><%= tip_jar_donation.deposit_date %></td>
+        <td><%= tip_jar_donation.restaurant_id %></td>
+        <td><%= link_to 'Show', tip_jar_donation %></td>
+        <td><%= link_to 'Edit', edit_tip_jar_donation_path(tip_jar_donation) %></td>
+        <td><%= link_to 'Destroy', tip_jar_donation, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Tip jar donation', new_tip_jar_donation_path %>

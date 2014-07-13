@@ -121,3 +121,13 @@ body { padding-top: 60px; }
 	text-align: center;
 	margin: 0px;
 }
+
+
+ .fade {
+   opacity: 0;
+   -webkit-transition: opacity 0.1s linear;
+      -moz-transition: opacity 0.1s linear;
+       -ms-transition: opacity 0.1s linear;
+        -o-transition: opacity 0.1s linear;
+           transition: opacity 0.1s linear;
+ }

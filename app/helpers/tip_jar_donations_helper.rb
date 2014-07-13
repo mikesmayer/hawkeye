@@ -1,0 +1,2 @@
+module TipJarDonationsHelper
+end

@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @tip_jar_donation.amount %>
+</p>
+
+<p>
+  <strong>Meals:</strong>
+  <%= @tip_jar_donation.meals %>
+</p>
+
+<p>
+  <strong>Deposit date:</strong>
+  <%= @tip_jar_donation.deposit_date %>
+</p>
+
+<p>
+  <strong>Restaurant:</strong>
+  <%= @tip_jar_donation.restaurant_id %>
+</p>
+
+<%= link_to 'Edit', edit_tip_jar_donation_path(@tip_jar_donation) %> |
+<%= link_to 'Back', tip_jar_donations_path %>
