@@ -95,8 +95,8 @@ class P42::TicketItemsController < ApplicationController
   end
 
   def parse_csv    
-    @csv_contents = P42::TicketItem.parse_csv(params[:file_id])
-    flash[:notice] = @row_array
+    @results = P42::TicketItem.parse_csv(params[:file_id])
+    flash[:notice] = @results
   end
 
 

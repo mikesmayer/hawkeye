@@ -296,7 +296,7 @@ class P42::TicketItem < ActiveRecord::Base
 		csv = CSV.new(file_body, :headers => true, :header_converters => :symbol, :converters => :all, :col_sep => ";", :quote_char => "|")
 		csv = csv.to_a.map {|row| row.to_hash }
 
-		items = Array.new
+		
 		items = P42::TicketItem.add_tickets_to_db(csv)
 =begin
 		csv.each do |row|
@@ -306,11 +306,11 @@ class P42::TicketItem < ActiveRecord::Base
 		end
 =end
 
-		{ :body => csv, :items => items }
+		"Successfully parsed csv - #{items} added"
 	end
 
 	def self.add_tickets_to_db(csv_body)
-		items = Array.new
+		items = 0
 
 		csv_body.each do |row|
 			if (row[:ticket_item_id].is_a? Numeric)
@@ -325,7 +325,7 @@ class P42::TicketItem < ActiveRecord::Base
 					row[:customer_original_id] = 0
 				end
 
-				items << P42::TicketItem.find_or_update_by_ticket_item_id(
+				P42::TicketItem.find_or_update_by_ticket_item_id(
 					row[:ticket_item_id],
 					row[:ticket_id],
 					row[:menu_item_id],
@@ -339,6 +339,7 @@ class P42::TicketItem < ActiveRecord::Base
 					row[:choice_additions_total],				
 					row[:ticket_close_time],					
 					-1)
+				items += 1
 			end
 			
 		end
