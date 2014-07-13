@@ -1,0 +1,6 @@
+<% @month_totals.each do |month| %>
+	<tr>
+		<td><%= month.month.strftime("%B %Y") %></td>
+		<td><%= sprintf('%.0f', month.total) %></td>
+	</tr>
+<% end %>

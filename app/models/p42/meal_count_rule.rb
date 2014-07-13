@@ -10,8 +10,16 @@ class P42::MealCountRule < ActiveRecord::Base
 	
 
 	before_save :set_empty_dates
-	## TODO Add custom validation to verify dates are okay
 
+	after_save :update_meal_counts
+
+	def update_meal_counts
+		items = P42::TicketItem.where("menu_item_id = ?", self.menu_item_id)
+		puts items
+		items.each do |item|
+			item.update_meal_count
+		end
+	end
 
 
 	## this is the date that all meal count rules use to indicate that the rule

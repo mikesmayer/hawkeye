@@ -14,4 +14,9 @@ class MealsController < ApplicationController
 		render :layout => false
 	end
 
+	# GET /meals/month_counts
+	def month_counts
+		@month_totals = P42::TicketItem.get_month_breakdown
+		render :layout => false
+	end
 end

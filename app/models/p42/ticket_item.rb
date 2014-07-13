@@ -19,6 +19,9 @@ class P42::TicketItem < ActiveRecord::Base
 			:dym => dym_total, :apparel => apparel_total}
 	end
 
+	def self.get_month_breakdown
+		P42::TicketItem.select("DATE_TRUNC('month', ticket_close_time) as month, sum(meal_for_meal) as total").group("DATE_TRUNC('month', ticket_close_time)").order("DATE_TRUNC('month', ticket_close_time) ASC")
+	end
 
 	def self.get_meal_breakdown
 		dates = P42::TicketItem.select("date(ticket_close_time) as date").group("date(ticket_close_time)")
@@ -28,7 +31,7 @@ class P42::TicketItem < ActiveRecord::Base
 		days_tbl = P42::TicketItem.find_by_sql("SELECT t1.date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, t4.total FROM 
 			(SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS m4m
 			FROM p42_ticket_items 
-			WHERE pos_revenue_class_id != 15 OR pos_revenue_class_id != 18
+			WHERE pos_revenue_class_id != 15 AND pos_revenue_class_id != 18
 			GROUP BY CAST(ticket_close_time AS DATE)) t1
 		LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS dym
 			FROM p42_ticket_items

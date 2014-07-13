@@ -54,6 +54,9 @@
                     <p>
                         <b>Discount Total:</b> <%= @p42_ticket_items.sum(:discount_total) %>
                     </p>
+                    <p>
+                        <b>Meal4Meal Total:</b> <%= @p42_ticket_items.sum(:meal_for_meal) %>
+                    </p>
                 </div>
 
             </div>
@@ -64,6 +67,7 @@
                         <th>ID</th>
                         <th>POS Ticket ID</th>
                         <th>POS Ticket Item ID</th>
+                        <th>Menu Item ID</th>
                         <th>Net Price</th>
                         <th>Total Discount</th>
                         <th>Meal Count</th>
@@ -76,6 +80,7 @@
                         <td><%= ticket_item.id %></td>
                         <td><%= ticket_item.pos_ticket_id %></td>
                         <td><%= ticket_item.pos_ticket_item_id %></td>
+                        <td><%= ticket_item.menu_item_id %></td>
                         <td><%= ticket_item.net_price %></td>
                         <td><%= ticket_item.discount_total %></td>
                         <td><%= ticket_item.meal_for_meal %></td>

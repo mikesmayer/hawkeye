@@ -43,3 +43,4 @@ gem 'date_validator'
 gem "delayed_job_web"
 gem 'bootswatch-rails'
 gem 'jquery-datatables-rails'
+gem 'dbf'

@@ -61,6 +61,14 @@ $(document).ready(function(){
 				});
 			}
 		});
+
+		$.ajax({
+			url: "meals/month_counts",
+			cache: false,
+			success: function(html){
+				console.log(html);
+			}
+		})
 	}
 
 })
