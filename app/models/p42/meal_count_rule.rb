@@ -10,8 +10,8 @@ class P42::MealCountRule < ActiveRecord::Base
 	
 
 	before_save :set_empty_dates
-
 	after_save :update_meal_counts
+	after_destroy :update_meal_counts
 
 	def update_meal_counts
 		items = P42::TicketItem.where("menu_item_id = ?", self.menu_item_id)

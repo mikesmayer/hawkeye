@@ -94,53 +94,7 @@
     </div>
     <% end %>
 </div>
-<div class="row">
-    <div class="col-md-12 table-responsive">
-        <table class="table table-hover" id="menu_items_tbl">
-            <thead>
-              <tr>
-                <th>id</th>
-                <th>Name</th>
-                <th>Item group</th>
-                <th>Revenue class</th>
-                <th>Gross price</th>
-                <th></th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-            <% @p42_menu_items.each do |p42_menu_item| %>
-              <tr>
-                <td><%= p42_menu_item.id %></td>
-                <td><%= p42_menu_item.name %></td>
-                <td><%= p42_menu_item.menu_item_group.try(:name) %></td>
-                <td><%= p42_menu_item.revenue_group.try(:name) %></td>
-                <td><%= number_to_currency(p42_menu_item.gross_price) %></td>
-                <td><%= link_to 'Show', p42_menu_item, :class => 'btn btn-default btn-mini' %></td>
-                <td><%= link_to 'Edit', edit_p42_menu_item_path(p42_menu_item), :class => 'btn btn-mini btn-primary' %></td>
-                <td><%= link_to 'Destroy', p42_menu_item, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-mini btn-danger' %></td>
-              </tr>
-                <!-- Add detail row to the table that lists the menu item's meal rules -->
-                <% unless p42_menu_item.meal_count_rules.empty? %>
-                  
-                    
-                <% p42_menu_item.meal_count_rules.each_with_index do |rule, index| %>
-                    <tr>
-                        <% if index == 0 %>
-                            <td colspan="2" rowspan="<%= p42_menu_item.meal_count_rules.count %>"style="border-top-width: 0px;">Meal Count Rules</td>
-                        <% end %>
-                        <td colspan="2" style="border-top-width: 0px;">Start:<%= rule.start_date %></td>
-                        <td colspan="2" style="border-top-width: 0px;">End: <%= rule.end_date %></td>
-                        <td colspan="2" style="border-top-width: 0px;">Multiplier: <%= rule.meal_modifier %></td>
-                    </tr>                        
-                <% end %>                    
-                  
-                <% end %>
-            <% end %>
-            </tbody>
-        </table>
-    </div>
-</div>
 
 <div id="rule-modal" class="modal fade" aria-hidden="true"></div>
+<!-- Hidden div is here just to identify the page -->
+<div style="display:none;" id="menu_items_index"></div>

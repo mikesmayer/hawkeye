@@ -22,7 +22,7 @@
         <td><%= p42_meal_count_rule.meal_modifier %></td>
         <td><%= link_to 'Show', p42_meal_count_rule %></td>
         <td><%= link_to 'Edit', edit_p42_meal_count_rule_path(p42_meal_count_rule) %></td>
-        <td><%= link_to 'Destroy', p42_meal_count_rule, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Destroy', p42_meal_count_rule, method: :delete, disable_with: "Deleting...", data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>

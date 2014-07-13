@@ -72,7 +72,7 @@
                   <% end %>
                   <td><%= rule.meal_modifier %></td>
                   <td><%= link_to edit_p42_meal_count_rule_path(rule, :menu_item => @p42_menu_item.id), remote: true, method: :get, class: 'btn-mini btn-primary btn' do %><span class="glyphicon glyphicon-pencil"></span><% end %>
-                    <%= link_to rule, remote: true, confirm: 'Are you sure?', method: :delete, class: 'btn-mini btn-danger btn' do %><span class="glyphicon glyphicon-trash"></span><% end %></td>
+                    <%= link_to rule, remote: true, confirm: 'Are you sure?', method: :delete, disable_with: "Deleting...", class: 'btn-mini btn-danger btn' do %><span class="glyphicon glyphicon-trash"></span><% end %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -86,6 +86,7 @@
   </div>
 </div>
 
+<%= link_to 'Destroy', @p42_menu_item, method: :delete, data: { confirm: 'Are you sure?' } %>
 
 <%= link_to 'Edit', edit_p42_menu_item_path(@p42_menu_item), :class => 'btn btn-default' %> 
 <%= link_to 'Back', p42_menu_items_path %>
