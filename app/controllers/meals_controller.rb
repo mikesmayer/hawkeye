@@ -6,6 +6,7 @@ class MealsController < ApplicationController
 		@m4m = totals[:m4m]
 		@dym = totals[:dym]
 		@apparel = totals[:apparel]
+		@tip_jar = totals[:tip_jar]
 	end
 
 	# GET /meals/counts

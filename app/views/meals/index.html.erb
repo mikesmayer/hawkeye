@@ -17,7 +17,7 @@
 
 
 <div class="row">
-	<div class="col-md-2">
+	<div class="col-md-1">
 
 	</div>
 		<div class="col-md-2">
@@ -61,6 +61,16 @@
 		</div>
 	</div><!-- end 2 col cont -->
 	<div class="col-md-2">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title text-centered"><span class="glyphicon glyphicon-usd"></span> Tip Jar</h3>
+			</div>
+			<div class="panel-body">
+				<h2 class="meal-info-box" id="tip_jar_meals_info_box"><%= number_with_precision(@tip_jar, :precision => 0, :delimiter => ",") %></h2>
+			</div>
+		</div>
+	</div><!-- end 2 col cont -->
+	<div class="col-md-1">
 
 	</div>
 </div><!-- End row of meal info boxes -->
@@ -94,7 +104,7 @@
 		  	</div>
 		  </div>
 		  <div class="panel-body">
-		  	<div id="count_ajax_loading"></div>
+		  	<div class="ajax_loading" id="count_detail_body_container"></div>
 		    <div class="table-responsive" id="detail_tbl_container">
 		    	<!-- load from js as ajax request -->
 			</div>
@@ -109,18 +119,9 @@
 				Counts by month
 			</div>
 			<div class="panel-body">
-				<div class="table-responsive">
-					<table class="table table-hover" id="m4m_month_tbl">
-						<thead>
-							<tr>
-								<th>Month</th>
-								<th>Total</th>
-							</tr>
-						</thead>
-						<tbody>
-							<!-- load from js as ajax request -->
-						</tbody>
-					</table>
+				<div class="ajax_loading" id="count_month_body_container"></div>
+				<div class="table-responsive" id="m4m_month_container">
+					<!-- load from js as ajax request -->
 				</div>
 			</div>
 		</div>
@@ -132,6 +133,7 @@
 				Counts by year
 			</div>
 			<div class="panel-body">
+				<div class="ajax_loading" id="count_year_body_container"></div>
 				<div class="table-responsive">
 					<table class="table table-hover" id="m4m_year_tbl">
 						<thead>
@@ -148,6 +150,16 @@
 			</div>
 		</div>
 	</div><!-- end three column containing meal number by year -->
+	<div class="col-md-2">
+		<%= link_to 'Edit Tip jar donation', tip_jar_donations_path, :class => 'btn btn-warning' %>
+	</div>
 </div> <!-- end row -->
+
+<div class="row">
+	<div class="col-md-6">
+		
+	</div>
+</div> <!-- end row -->
+
 <!-- hidden div used just for page identification from js -->
 <div id="meals_index_page" style="display:none;"></div>

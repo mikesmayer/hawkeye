@@ -16,7 +16,7 @@
 				<td><%= sprintf('%.0f', row.m4m) %></td>
 				<td><%= sprintf('%.0f', row.dym) %></td>
 				<td><%= sprintf('%.0f', row.apparel) %></td>
-				<td>0</td>
+				<td><%= number_with_precision(row.tip_jar, :precision => 0, :delimiter => ",") %></td>
 				<td><%= sprintf('%.0f', row.total) %></td>
 			</tr>
 		<% end %>

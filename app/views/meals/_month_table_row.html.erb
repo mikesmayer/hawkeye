@@ -1,6 +1,0 @@
-<% @month_totals.each do |month| %>
-	<tr>
-		<td><%= month.month.strftime("%B %Y") %></td>
-		<td><%= number_with_precision(month.total, :precision => 0, :delimiter => ",") %></td>
-	</tr>
-<% end %>

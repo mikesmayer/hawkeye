@@ -1,6 +1,6 @@
-<h1>Listing tip_jar_donations</h1>
+<h1>Tip Jar Donations</h1>
 
-<table>
+<table class="table">
   <thead>
     <tr>
       <th>Amount</th>
@@ -30,4 +30,7 @@
 
 <br>
 
-<%= link_to 'New Tip jar donation', new_tip_jar_donation_path %>
+
+<%= link_to 'Add New Tip jar donation', new_tip_jar_donation_path, :class => 'btn btn-success' %>
+
+  <%= link_to 'Back to meal counts page', meals_path, :class => 'btn btn-primary btn-sm' %>

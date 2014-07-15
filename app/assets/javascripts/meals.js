@@ -6,7 +6,16 @@ function init_meals_index(){
 		url: "meals/month_counts",
 		cache: false,
 		success: function(html){
+			$('#count_month_body_container').hide();
 			console.log("meals/month_counts");
+			
+			$('#m4m_month_tbl').dataTable({
+			  "sPaginationType": "bootstrap",
+			  "pagingType": "simple",
+			  "ordering": false,
+			  "bFilter": false,
+			  "bLengthChange": false
+			});
 		}
 	});
 
@@ -14,6 +23,7 @@ function init_meals_index(){
 		url: "meals/year_counts",
 		cache: false,
 		success: function(html){
+			$('#count_year_body_container').hide();
 			console.log("meals/year_counts")
 		}
 	});
@@ -49,7 +59,7 @@ function update_count_breakdown(selected_granularity){
 	  data: { granularity: selected_granularity }, 
 	  cache: false,
 	  beforeSend: function() {
-		$('#count_ajax_loading').show();	
+		$('#count_detail_body_container').show();	
 		$('#detail_tbl_container').hide();
 
 	  },
@@ -60,7 +70,7 @@ function update_count_breakdown(selected_granularity){
 		  "sPaginationType": "bootstrap"
 		});
 		console.log('test');
-		$('#count_ajax_loading').hide();	
+		$('#count_detail_body_container').hide();	
 		$('#detail_tbl_container').show();
 
 	  }
