@@ -1,4 +1,4 @@
-<%= form_for(@tip_jar_donation) do |f| %>
+<%= form_for(@tip_jar_donation, html: { novalidate: true }) do |f| %>
 
   <% if @tip_jar_donation.errors.any? %>
     <div id="error_explanation">
