@@ -43,17 +43,12 @@ $(document).ready(function(){
 		autoclose: false
 	});
 
-	$('#daterange').popover({
-		html: true,
-		content: "Test Content",
-		placement: "bottom",
-		container: "#daterange"
-	});
+
 
 	/* JS for the meals index page */
 	if( $('#meals_index_page').length > 0 ){
 		//function found in meals.js
-		init_meals_index();		
+		init_meals_index();	
 	}
 
 
@@ -93,6 +88,8 @@ $(document).ready(function(){
 		// note: jqxhr.responseJSON undefined, parsing responseText instead
 		$(event.data).render_form_errors( $.parseJSON(jqxhr.responseText) );
 	});
+
+
 
 });
 

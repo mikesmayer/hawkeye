@@ -5,11 +5,23 @@
 		  <span class="glyphicon glyphicon-retweet"></span> <span>Meal 4 Meal Stats</span>
 		</h1>
 		<div class="pull-right">
-		  <div class="btn-group">
-		    <button class="btn btn-primary btn-sm">Last month</button>
-		    <button class="btn btn-primary btn-sm">Last week</button>
-		    <button class="btn btn-primary btn-sm">Yesterday</button>
-		    <button class="btn btn-primary btn-sm" id="daterange">Custom</button>
+		  <div class="" id="loading_spinner_date_picker"></div>
+		  <div class="btn-group" data-toggle="buttons">
+		  	<label id="date_filter_all_time" class="btn btn-primary btn-xs active">
+	            <input type="radio"  value="all">All
+	        </label>
+	        <label id="date_filter_current_year" class="btn btn-primary btn-xs">
+	        	<input type="radio" value="current_year">Current year
+	        </label>
+	        <label id="date_filter_current_month" class="btn btn-primary btn-xs">
+	        	<input type="radio" value="current_month">Current month
+	        </label>
+	        <label id="date_filter_current_week" class="btn btn-primary btn-xs">
+	        	<input type="radio" value="current_week">Current week
+	        </label>
+	        <label id="date_filter_daterange" class="btn btn-primary btn-xs">
+	        	<input type="radio" value="custom">Custom range
+	        </label>
 		  </div>
 		</div>
 	</div>
@@ -56,7 +68,7 @@
 		    <h3 class="panel-title text-centered"><span class="glyphicon glyphicon-shopping-cart"></span> Apparel</h3>
 		  </div>
 		  <div class="panel-body">
-		    <h2 class="meal-info-box" id="apperal_meals_info_box"><%= number_with_precision(@apparel, :precision => 0, :delimiter => ",") %></h2>
+		    <h2 class="meal-info-box" id="apparel_meals_info_box"><%= number_with_precision(@apparel, :precision => 0, :delimiter => ",") %></h2>
 		  </div>
 		</div>
 	</div><!-- end 2 col cont -->
@@ -134,7 +146,7 @@
 			</div>
 			<div class="panel-body">
 				<div class="ajax_loading" id="count_year_body_container"></div>
-				<div class="table-responsive">
+				<div class="table-responsive" id="m4m_year_container">
 					<table class="table table-hover" id="m4m_year_tbl">
 						<thead>
 							<tr>

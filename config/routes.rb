@@ -9,6 +9,9 @@ RailsBootstrap::Application.routes.draw do
   get 'meals/detail_counts', :controller => 'meals', :action => 'counts'
   get 'meals/month_counts', :controller => 'meals', :action => 'month_counts'
   get 'meals/year_counts', :controller => 'meals', :action => 'year_counts'
+  get 'meals/count_totals', :controller => 'meals', :action => 'count_totals'
+
+  
   resources :meals, :only => [] do
     collection do
       get :index
