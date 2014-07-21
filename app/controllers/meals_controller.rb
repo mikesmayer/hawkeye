@@ -13,6 +13,7 @@ class MealsController < ApplicationController
 
 	#GET /meals/counts
 	def counts
+		granularity = params[:granularity]
 		@detail_totals = P42::TicketItem.get_meal_breakdown(params[:granularity], @start_date, @end_date)
 		render :layout => false
 	end
@@ -41,7 +42,16 @@ class MealsController < ApplicationController
 
 	private
 	  def convert_daterange
-		case params[:date_range]
+	  	date_range = params[:date_range]
+
+	  	#Sets granularity to custom if it isn't one of the presets
+		unless ["current_year", "current_month", "current_week", "all"].include?(date_range) || date_range.nil?
+			start_end = date_range
+			date_range = "custom"
+		end
+
+
+		case date_range
 		when "current_year"
 			@start_date = Date.today.beginning_of_year
 			@end_date = Date.today
@@ -52,9 +62,12 @@ class MealsController < ApplicationController
 			@start_date = Date.today.beginning_of_week
 			@end_date = Date.today
 		when "custom"
-			@start_date = Date.today - 100.years
-			@end_date = Date.today + 100.years
-		else 
+			
+			dates = start_end.split('T', 2)
+			@start_date = Date.parse(dates[0])
+			@end_date = Date.parse(dates[1])
+			
+		else
 			@start_date = Date.today - 100.years
 			@end_date = Date.today + 100.years
 		end

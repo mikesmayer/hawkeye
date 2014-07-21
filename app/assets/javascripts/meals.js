@@ -1,6 +1,9 @@
 var breakdown_tbl_granularity;
 var date_range;
 
+var custom_range_flyout_html = "<h4>Test</h4>";
+
+
 function init_meals_index(){
 	breakdown_tbl_granularity = "day";
 	date_range = "all";
@@ -15,12 +18,7 @@ function init_meals_index(){
 
 
 
-	$('#date_filter_daterange').popover({
-		html: true,
-		content: "Test Content",
-		placement: "bottom",
-		container: "#date_filter_daterange"
-	});	
+
 }
 
 
@@ -178,27 +176,42 @@ function setup_click_handlers(){
 
 	/* click hanlders for page date scope */
 	$('#date_filter_all_time').click(function(){
+		$('#custom_range_input').hide();
 		date_range = "all";
 		update_date_range();
 	});
 
 	$('#date_filter_current_year').click(function(){
+		$('#custom_range_input').hide();
 		date_range = "current_year";
 		update_date_range();
 	});
 
 	$('#date_filter_current_month').click(function(){
+		$('#custom_range_input').hide();
 		date_range = "current_month";
 		update_date_range();
 	});
 
 	$('#date_filter_current_week').click(function(){
+		$('#custom_range_input').hide();
 		date_range = "current_week";
 		update_date_range();
 	});
 
-	$('#daet_filter_daterange').click(function(){
-		date_range = "custom";
+
+	$('#date_filter_daterange').click(function(){
+		$('#custom_range_input').show();
+	});
+
+
+	$('#date_range_filter_btn').click(function(){
+		var start_range = $('#date_range_start').val();
+		var end_range = $('#date_range_end').val();
+		console.log("start" + start_range);
+		console.log("end" + end_range);
+		date_range = start_range + "T" + end_range;
+		console.log(date_range);
 		update_date_range();
 	});
 	/* end click handlers for page date scope */
