@@ -90,6 +90,13 @@ $(document).ready(function(){
 	});
 
 
+	$('#tip_jar_stats_tbl').dataTable({
+	  "sPaginationType": "bootstrap",
+	  "order": [2, 'desc'],
+	  "columnDefs": [
+	  	{ "orderable": false, "targets": [ 4, 5, 6 ] }
+	  ]
+	});
 
 });
 

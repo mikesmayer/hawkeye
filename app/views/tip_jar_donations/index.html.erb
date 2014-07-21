@@ -1,36 +1,39 @@
 <h1>Tip Jar Donations</h1>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th>Amount</th>
-      <th>Meals</th>
-      <th>Deposit date</th>
-      <th>Restaurant</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @tip_jar_donations.each do |tip_jar_donation| %>
-      <tr>
-        <td><%= tip_jar_donation.amount %></td>
-        <td><%= tip_jar_donation.meals %></td>
-        <td><%= tip_jar_donation.deposit_date %></td>
-        <td><%= tip_jar_donation.restaurant_id %></td>
-        <td><%= link_to 'Show', tip_jar_donation %></td>
-        <td><%= link_to 'Edit', edit_tip_jar_donation_path(tip_jar_donation) %></td>
-        <td><%= link_to 'Destroy', tip_jar_donation, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-
-<%= link_to 'Add New Tip jar donation', new_tip_jar_donation_path, :class => 'btn btn-success' %>
+<div class="row">
+  <%= link_to 'Add New Tip jar donation', new_tip_jar_donation_path, :class => 'btn btn-success' %>
 
   <%= link_to 'Back to meal counts page', meals_path, :class => 'btn btn-primary btn-sm' %>
+</div>
+<br />
+<div class="row">
+  <table class="table table-striped table-hover datatable" id="tip_jar_stats_tbl">
+    <thead>
+      <tr>
+        <th>Amount</th>
+        <th>Meals</th>
+        <th>Deposit date</th>
+        <th>Restaurant</th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @tip_jar_donations.each do |tip_jar_donation| %>
+        <tr>
+          <td>$<%= number_with_precision(tip_jar_donation.amount, :precision => 2, :delimiter => ",") %></td>
+          <td><%= number_with_precision(tip_jar_donation.meals, :precision => 0, :delimiter => ",") %></td>
+          <td><%= tip_jar_donation.deposit_date.strftime("%b %d, %Y") %></td>
+          <td><%= tip_jar_donation.restaurant.name %></td>
+          <td><%= link_to 'Show', tip_jar_donation %></td>
+          <td><%= link_to 'Edit', edit_tip_jar_donation_path(tip_jar_donation) %></td>
+          <td><%= link_to 'Destroy', tip_jar_donation, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+
+
