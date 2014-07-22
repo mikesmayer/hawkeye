@@ -11,11 +11,18 @@ class MealsController < ApplicationController
 		@tip_jar = totals["tip_jar"]
 	end
 
-	#GET /meals/counts
+	#GET /meals/detail_counts
 	def counts
-		granularity = params[:granularity]
-		@detail_totals = P42::TicketItem.get_meal_breakdown(params[:granularity], @start_date, @end_date)
-		render :layout => false
+		@granularity = params[:granularity]
+		@detail_totals = P42::TicketItem.get_meal_breakdown(@granularity, @start_date, @end_date)
+		
+		
+		respond_to do |format|
+			format.js { render :layout => false }
+			format.csv { send_data Meal.details_to_csv(@detail_totals) }
+		end
+		
+
 	end
 
 	#GET /meals/month_counts

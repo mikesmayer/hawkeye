@@ -58,7 +58,8 @@ function update_count_breakdown(){
 	    //console.log("meals/detail_counts?" + breakdown_tbl_granularity);
 
 		$('#m4m_stats_tbl').dataTable({
-		  "sPaginationType": "bootstrap"
+			"sPaginationType": "bootstrap",
+			"bFilter": false
 		});
 		
 		$('#count_detail_body_container').hide();	
