@@ -3,7 +3,7 @@ class MealsController < ApplicationController
 	before_action :convert_daterange, only: [:index, :counts, :month_counts, :year_counts, :count_totals]
 
 	def index
-		totals = JSON.parse(P42::TicketItem.get_meal_totals(@start_date, @end_date))
+		totals = JSON.parse(Meal.get_meal_totals(@start_date, @end_date))
 		@total_meals = totals["total"]
 		@m4m = totals["m4m"]
 		@dym = totals["dym"]
@@ -14,7 +14,7 @@ class MealsController < ApplicationController
 	#GET /meals/detail_counts
 	def counts
 		@granularity = params[:granularity]
-		@detail_totals = P42::TicketItem.get_meal_breakdown(@granularity, @start_date, @end_date)
+		@detail_totals = Meal.get_meal_breakdown(@granularity, @start_date, @end_date)
 		
 		
 		respond_to do |format|
@@ -27,18 +27,18 @@ class MealsController < ApplicationController
 
 	#GET /meals/month_counts
 	def month_counts
-		@month_totals = P42::TicketItem.get_month_breakdown(@start_date, @end_date)
+		@month_totals = Meal.get_month_breakdown(@start_date, @end_date)
 		render :layout => false
 	end
 
 	#GET /meals/year_counts
 	def year_counts
-		@year_totals = P42::TicketItem.get_year_breakdown(@start_date, @end_date)
+		@year_totals = Meal.get_year_breakdown(@start_date, @end_date)
 		render :layout => false
 	end
 
 	def count_totals
-		@count_totals = P42::TicketItem.get_meal_totals(@start_date, @end_date)
+		@count_totals = Meal.get_meal_totals(@start_date, @end_date)
 		
 		response.header['Content-Type'] = 'application/json'
 		respond_to do |format|
