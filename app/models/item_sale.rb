@@ -58,6 +58,21 @@ class ItemSale
 
 	end
 
+
+
+	def self.get_sales_totals(start_date, end_date)
+		start_date = start_date.to_s+"T00:00:00"
+		end_date = end_date.to_s+"T23:59:59"
+
+		net_sales = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:net_price)
+		discount_totals = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:discount_total)
+		m4m_totals = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:meal_for_meal)
+
+		totals = {:net_sales => net_sales, :discount_totals => discount_totals, :m4m_totals => m4m_totals}
+		totals.to_json
+	end
+
+
 	def self.getAggregateSales(granularity, start_date, end_date)
 		
 	   # start_date = '2000-01-01'

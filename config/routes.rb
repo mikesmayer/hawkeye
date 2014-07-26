@@ -10,10 +10,16 @@ RailsBootstrap::Application.routes.draw do
   get 'meals/month_counts', :controller => 'meals', :action => 'month_counts'
   get 'meals/year_counts', :controller => 'meals', :action => 'year_counts'
   get 'meals/count_totals', :controller => 'meals', :action => 'count_totals'
+  
+
   get 'item_sales/items', :controller => 'item_sales', :action => 'items'
   get 'items', :controller => 'item_sales', :action => 'items'
   get 'item_sales/aggregate_items', :controller => 'item_sales', :action => 'aggregate_items'
   get 'aggregate_items', :controller => 'item_sales', :action => 'aggregate_items'
+  get 'item_sales/sales_totals', :controller => 'item_sales', :action => 'sales_totals'
+  get 'sales_totals', :controller => 'item_sales', :action => 'sales_totals'
+
+
   resources :item_sales
     
   resources :meals, :only => [] do

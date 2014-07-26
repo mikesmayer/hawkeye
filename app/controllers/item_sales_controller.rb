@@ -1,8 +1,8 @@
 class ItemSalesController < ApplicationController
-	before_action :convert_daterange, only: [:index, :aggregate_items, :items]
+	before_action :convert_daterange, only: [:index, :aggregate_items, :items, :sales_totals]
 
 	def index
-		@item_sales = P42::TicketItem.find(:all, :limit => 5)
+
 
 		respond_to do |format|
 			format.html
@@ -24,6 +24,16 @@ class ItemSalesController < ApplicationController
 		respond_to do |format|
 			format.js { render :layout => false  }
 			format.csv { send_data ItemSale.details_to_csv(@aggregate_table_rows) }
+		end
+	end
+
+	def sales_totals
+		@totals = ItemSale.get_sales_totals(@start_date, @end_date)
+
+		response.header['Content-Type'] = 'application/json'
+		respond_to do |format|
+			format.js { render json: @totals }
+			format.json { render json: @totals }
 		end
 	end
 

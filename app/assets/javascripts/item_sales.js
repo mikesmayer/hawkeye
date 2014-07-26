@@ -8,6 +8,7 @@ function init_item_sales_index(){
 
 	update_aggregate_item_sales_breakdown();
 	update_item_sales_details();
+	update_sales_info_boxes();
 
 	item_sales_setup_click_handlers();
 }
@@ -82,8 +83,36 @@ function update_aggregate_item_sales_breakdown(){
 
 }
 
+function update_sales_info_boxes(){
+	$.ajax({
+		url: "sales_totals",
+		cache: false,
+		data: {
+			date_range: item_sales_index_date_range 
+		},
+		beforeSend: function(){
+			//$('#loading_spinner_date_picker').show();
+			
+		},
+		success: function(data){
+			//$('#loading_spinner_date_picker').hide();
+			console.log(data);
+			net_sales = addCommas( data.net_sales.toFixed(0) );
+			discount_totals = addCommas( data.discount_totals.toFixed(0) );
+			m4m_totals = addCommas( data.m4m_totals.toFixed(0) );
+
+			$('#net_sales_info_box').html("$" + net_sales);
+			$('#discounts_info_box').html("$" + discount_totals);
+			$('#m4m_info_box').html(m4m_totals);
+		}
+	});	
+}
+
+
 function item_sales_update_date_range(){
 	update_aggregate_item_sales_breakdown();
+	update_sales_info_boxes();
+
 }
 
 function item_sales_setup_click_handlers(){

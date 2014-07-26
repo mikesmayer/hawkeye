@@ -12,6 +12,9 @@ class Meal
 	end
 
 	def self.get_meal_totals(start_date, end_date)
+		start_date = start_date.to_s+"T00:00:00"
+		end_date = end_date.to_s+"T23:59:59"
+
 		totals = P42::TicketItem
 			.where("ticket_close_time between ? AND ?", start_date, end_date)
 			.sum(:meal_for_meal)
@@ -43,6 +46,9 @@ class Meal
 	end
 
 	def self.get_month_breakdown(start_date, end_date)
+		start_date = start_date.to_s+"T00:00:00"
+		end_date = end_date.to_s+"T23:59:59"
+
 		P42::TicketItem.select("DATE_TRUNC('month', ticket_close_time) as month, sum(meal_for_meal) as total")
 		.where("ticket_close_time between ? AND ?", start_date, end_date)
 		.group("DATE_TRUNC('month', ticket_close_time)")
@@ -50,6 +56,9 @@ class Meal
 	end
 
 	def self.get_year_breakdown(start_date, end_date)
+		start_date = start_date.to_s+"T00:00:00"
+		end_date = end_date.to_s+"T23:59:59"
+
 		P42::TicketItem.select("DATE_TRUNC('year', ticket_close_time) as year, sum(meal_for_meal) as total")
 		.where("ticket_close_time between ? AND ?", start_date, end_date)
 		.group("DATE_TRUNC('year', ticket_close_time)")
@@ -57,6 +66,8 @@ class Meal
 	end
 
 	def self.get_meal_breakdown(granularity, start_date, end_date)
+		start_date = start_date.to_s+"T00:00:00"
+		end_date = end_date.to_s+"T23:59:59"
 		#dates = P42::TicketItem.select("date(ticket_close_time) as date").group("date(ticket_close_time)")
 
 		#P42::TicketItem.select("date(ticket_close_time) as date, sum(meal_for_meal) as m4m").group("date(ticket_close_time)")
