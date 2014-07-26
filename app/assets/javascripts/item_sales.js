@@ -23,7 +23,7 @@ function update_item_sales_details(){
 	    "processing": true,
 	    "serverSide": true,
 	    //"ajax": $('#item-sales-table').data('source'),
-	    "ajax": "http://localhost:3000/item_sales/items.json?granularity="+item_sales_breakdown_granulatrity,
+	    "ajax": "item_sales/items.json?granularity="+item_sales_breakdown_granulatrity,
 	    "pagingType": "simple_numbers",
 	    "stateSave": true,
 	    "bFilter": false
