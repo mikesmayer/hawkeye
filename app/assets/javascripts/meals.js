@@ -1,7 +1,6 @@
 var breakdown_tbl_granularity;
 var date_range;
 
-var custom_range_flyout_html = "<h4>Test</h4>";
 
 
 function init_meals_index(){

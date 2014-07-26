@@ -2,7 +2,8 @@ require 'csv'
 require 'json'
 
 class P42::TicketItem < ActiveRecord::Base
-
+	belongs_to :menu_item_group, :foreign_key => :pos_category_id
+	belongs_to :menu_item
 
 
 	# Updates the meal count for the ticket item

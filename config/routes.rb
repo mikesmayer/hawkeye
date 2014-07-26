@@ -10,8 +10,11 @@ RailsBootstrap::Application.routes.draw do
   get 'meals/month_counts', :controller => 'meals', :action => 'month_counts'
   get 'meals/year_counts', :controller => 'meals', :action => 'year_counts'
   get 'meals/count_totals', :controller => 'meals', :action => 'count_totals'
-
-  
+  get 'item_sales/items', :controller => 'item_sales', :action => 'items'
+  get 'item_sales/aggregate_items', :controller => 'item_sales', :action => 'aggregate_items'
+  get 'aggregate_items', :controller => 'item_sales', :action => 'aggregate_items'
+  resources :item_sales
+    
   resources :meals, :only => [] do
     collection do
       get :index
@@ -69,7 +72,7 @@ RailsBootstrap::Application.routes.draw do
   end
 
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
-  root :to => 'home#index'
+  root :to => 'item_sales#index'
 
   resources :approved_users
   resources :users  

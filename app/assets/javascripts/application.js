@@ -26,6 +26,7 @@ $(document).ready(function(){
 	var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
 	
 
+
 /*
 	var recipe_tbl = $('#menu_items_tbl').dataTable({
 		"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
@@ -51,6 +52,10 @@ $(document).ready(function(){
 		init_meals_index();	
 	}
 
+	/* JS for item sales index page */
+	if( $('#item_sales_index_page').length > 0 ){
+		init_item_sales_index();
+	}
 
 	if( $('#gdrive_file_list').length > 0 ){
 		console.log("Getting files from google drive");

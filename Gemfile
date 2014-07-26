@@ -43,4 +43,7 @@ gem 'date_validator'
 gem "delayed_job_web"
 gem 'bootswatch-rails'
 gem 'jquery-datatables-rails'
+gem 'ajax-datatables-rails'
+gem 'will_paginate', '~> 3.0'
+
 gem 'dbf'
