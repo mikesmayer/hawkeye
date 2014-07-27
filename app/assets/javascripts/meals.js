@@ -1,11 +1,12 @@
 var breakdown_tbl_granularity;
 var date_range;
-
+var meals_selected_restaurant;
 
 
 function init_meals_index(){
 	breakdown_tbl_granularity = "day";
 	date_range = "all";
+	meals_selected_restaurant = "p42";
 	
 	update_count_breakdown();
 	update_counts_by_month();
@@ -35,6 +36,13 @@ function update_date_range(){
 	update_meal_info_boxes();
 }
 
+function meals_update_restaurant_selection(){
+	console.log(meals_selected_restaurant);
+	update_count_breakdown();
+	update_counts_by_month();
+	update_counts_by_year();
+	update_meal_info_boxes();
+}
 
 function update_count_breakdown(){
 	console.log(breakdown_tbl_granularity);
@@ -45,7 +53,8 @@ function update_count_breakdown(){
 	  type: "GET", 
 	  data: { 
 	  	granularity: breakdown_tbl_granularity,
-	  	date_range: date_range
+	  	date_range: date_range,
+	  	restaurant: meals_selected_restaurant
 	  }, 
 	  cache: false,
 	  beforeSend: function() {
@@ -75,7 +84,8 @@ function update_counts_by_month(){
 		url: "meals/month_counts",
 		cache: false,
 		data: {
-			date_range: date_range 
+			date_range: date_range,
+			restaurant: meals_selected_restaurant
 		},
 		beforeSend: function(){
 			$('#count_month_body_container').show();
@@ -104,7 +114,8 @@ function update_counts_by_year(){
 		url: "meals/year_counts",
 		cache: false,
 		data: {
-			date_range: date_range 
+			date_range: date_range,
+			restaurant: meals_selected_restaurant
 		},
 		beforeSend: function(){
 			$('#count_year_body_container').show();
@@ -124,7 +135,8 @@ function update_meal_info_boxes(){
 		url: "meals/count_totals",
 		cache: false,
 		data: {
-			date_range: date_range 
+			date_range: date_range, 
+			restaurant: meals_selected_restaurant
 		},
 		beforeSend: function(){
 			$('#loading_spinner_date_picker').show();
@@ -215,6 +227,20 @@ function setup_click_handlers(){
 		update_date_range();
 	});
 	/* end click handlers for page date scope */
+
+
+	/* click handlers for restaurant selection */
+	$('#meals_p42_selector').click(function(){
+		meals_selected_restaurant = "p42";
+		meals_update_restaurant_selection();
+	});
+
+	$('#meals_tacos_selector').click(function(){
+		meals_selected_restaurant = "tacos";
+		meals_update_restaurant_selection();
+	});
+
+	/* end click handlers for restaurant selection */
 
 }
 
