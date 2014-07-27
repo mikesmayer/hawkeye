@@ -1,25 +1,40 @@
 <div class="row">
 	<div class="page-header">
 		<h1 class="pull-left">Item Sales</h1>
-	
+		
 		<div class="pull-right">
-			<div id="spinner"></div>
-			<div class="btn-group" data-toggle="buttons">
-				<label id="date_filter_all_time" class="btn btn-primary btn-xs">
-			    <input type="radio"  value="all">All
-			</label>
-			<label id="date_filter_current_year" class="btn btn-primary btn-xs active">
-				<input type="radio" value="current_year">Current year
-			</label>
-			<label id="date_filter_current_month" class="btn btn-primary btn-xs">
-				<input type="radio" value="current_month">Current month
-			</label>
-			<label id="date_filter_current_week" class="btn btn-primary btn-xs">
-				<input type="radio" value="current_week">Current week
-			</label>
-			<label id="date_filter_daterange" class="btn btn-primary btn-xs">
-				<input type="radio" value="custom">Custom range
-			</label>
+
+		</div>
+
+
+		<div class="pull-right">
+			<div class="btn-toolbar" role="toolbar">
+				<div class="btn-group" data-toggle="buttons">
+					<label id="p42_selector" class="btn btn-success btn-xs active">
+					    <input type="radio"  value="p42">Pitza 42
+					</label>
+					<label id="tacos_selector" class="btn btn-success btn-xs">
+						<input type="radio" value="tacos">Tacos
+					</label>
+				</div>
+				
+				<div class="btn-group" data-toggle="buttons">
+					<label id="date_filter_all_time" class="btn btn-primary btn-xs">
+					    <input type="radio"  value="all">All
+					</label>
+					<label id="date_filter_current_year" class="btn btn-primary btn-xs active">
+						<input type="radio" value="current_year">Current year
+					</label>
+					<label id="date_filter_current_month" class="btn btn-primary btn-xs">
+						<input type="radio" value="current_month">Current month
+					</label>
+					<label id="date_filter_current_week" class="btn btn-primary btn-xs">
+						<input type="radio" value="current_week">Current week
+					</label>
+					<label id="date_filter_daterange" class="btn btn-primary btn-xs">
+						<input type="radio" value="custom">Custom range
+					</label>
+				</div>
 			</div>
 		</div>
 
@@ -116,10 +131,10 @@
 
 	<div class="col-md-12">
 		<div class="panel panel-default">
-		  <div class="panel-heading">Item Sales Details - NOT WORKING PROPERLY, NEED TO FIX
+		  <div class="panel-heading">Item Sales Details
 		  </div>
 		  <div class="panel-body">
-		    <div class="table-responsive" id="detail_tbl_container">
+		    <div class="table-responsive" id="item_sales_detail_tbl_container">
 		    	
 				<%= render "detail_table" %>
 

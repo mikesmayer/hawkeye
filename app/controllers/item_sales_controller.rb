@@ -14,6 +14,7 @@ class ItemSalesController < ApplicationController
 			format.json { render json: ItemSaleDatatable.new(view_context,
 				{ :start_date => @start_date, :end_date => @end_date }) }
 			format.csv { send_data ItemSale.item_sales_details_to_csv(@start_date, @end_date) }
+			
 		end
 	end
 

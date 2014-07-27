@@ -1,5 +1,4 @@
-
-<%= link_to "Download CSV", { :controller => 'item_sales', :date_range => "#{@start_date}T#{@end_date}", :action => 'items', :format => :csv }, class: 'btn btn-primary btn-xs pull-right' %>
+<span id="item_sales_csv_btn"></span>
 
 <table id="item-sales-table", data-source="<%= item_sales_path(format: :json) %>" class="table table-striped table-hover datatable">
   <thead>

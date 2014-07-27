@@ -40,20 +40,20 @@ class ItemSale
 										p42_menu_item_groups.name AS \"category_name\", quantity, net_price, meal_for_meal")
 					.joins("LEFT JOIN p42_menu_items ON p42_menu_items.id = p42_ticket_items.menu_item_id")
 					.joins("LEFT JOIN p42_menu_item_groups ON p42_menu_item_groups.id = p42_ticket_items.pos_category_id")
-					.where("ticket_close_time BETWEEN '2000-01-01T00:00:00' AND '2100-01-01T23:59:59'")
+					.where("ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'")
 					.order("ticket_close_time ASC")
 					
 
 					
-		uncached do
-			CSV.generate do |csv|
-				csv << ["Ticket Item Id", "Ticket Id", "Time", "Item Name", "Category Name", "Quantity", "Net Price", "M4M"]
 
-				finder.find_each(batch_size: 10000) do |row|
-					csv << [row.pos_ticket_item_id, row.pos_ticket_id, row.time, row.item_name, row.category_name, row.quantity, row.net_price, row.meal_for_meal]
-				end
+		CSV.generate do |csv|
+			csv << ["Ticket Item Id", "Ticket Id", "Time", "Item Name", "Category Name", "Quantity", "Net Price", "M4M"]
+
+			finder.find_each(batch_size: 10000) do |row|
+				csv << [row.pos_ticket_item_id, row.pos_ticket_id, row.time, row.item_name, row.category_name, row.quantity, row.net_price, row.meal_for_meal]
 			end
 		end
+		
 		
 
 	end
