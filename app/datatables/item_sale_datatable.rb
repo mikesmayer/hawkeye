@@ -8,6 +8,7 @@ class ItemSaleDatatable < AjaxDatatablesRails::Base
   def sortable_columns
     # list columns inside the Array in string dot notation.
     # Example: 'users.email'
+    
     @sortable_columns ||= ['p42_ticket_items.ticket_close_time']
   end
 
@@ -38,7 +39,12 @@ class ItemSaleDatatable < AjaxDatatablesRails::Base
     #start_date = '2000-01-01T00:00:00'
     #end_date = '2100-01-01T23:59:59'
 
-    P42::TicketItem.where("ticket_close_time between ? AND ?", start_date, end_date)
+    if self.options[:restaurant] == "p42"
+      P42::TicketItem.where("ticket_close_time between ? AND ?", start_date, end_date)
+    elsif self.options[:tacos] == "tacos"
+      P42::TicketItem.where("ticket_close_time between ? AND ?", start_date, end_date)
+
+    end
   end
 
   # ==== Insert 'presenter'-like methods below if necessary

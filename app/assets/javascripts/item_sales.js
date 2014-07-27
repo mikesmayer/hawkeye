@@ -1,19 +1,36 @@
 var item_sales_breakdown_granulatrity;
 var item_sales_index_date_range;
+var selected_restaurant;
 
 
 function init_item_sales_index(){
 	item_sales_breakdown_granulatrity = "month";
 	item_sales_index_date_range = "current_year";
+	selected_restaurant = "p42";
 
 	update_aggregate_item_sales_breakdown();
 	update_item_sales_details();
 	update_sales_info_boxes();
-	$('#item_sales_csv_btn').html("<a class=\"btn btn-primary btn-xs pull-right\" href=\"/items.csv?date_range="+item_sales_index_date_range+"\">Download CSV</a>");
+	$('#item_sales_csv_btn').html("<a class=\"btn btn-primary btn-xs pull-right\" href=\"/items.csv?date_range="+item_sales_index_date_range+"&restaurant="+selected_restaurant+"\">Download CSV</a>");
 
 	item_sales_setup_click_handlers();
 }
 
+function item_sales_update_date_range(){
+	update_aggregate_item_sales_breakdown();
+	update_sales_info_boxes();
+	update_item_sales_details();
+
+	$('#item_sales_csv_btn').html("<a class=\"btn btn-primary btn-xs pull-right\" href=\"/items.csv?date_range="+item_sales_index_date_range+"&restaurant="+selected_restaurant+"\">Download CSV</a>");
+}
+
+function update_restaurant_selection(){
+	console.log("update restaurant" + selected_restaurant);
+	update_sales_info_boxes();
+	update_item_sales_details();
+	update_aggregate_item_sales_breakdown();
+
+}
 
 function update_item_sales_details(){
 
@@ -25,7 +42,7 @@ function update_item_sales_details(){
 	    "processing": true,
 	    "serverSide": true,
 	    //"ajax": $('#item-sales-table').data('source'),
-	    "ajax": "item_sales/items.json?date_range="+item_sales_index_date_range,
+	    "ajax": "item_sales/items.json?date_range="+item_sales_index_date_range+"&restaurant="+selected_restaurant,
 	    "pagingType": "simple_numbers",
 	    "stateSave": true,
 	    "bFilter": false
@@ -60,7 +77,8 @@ function update_aggregate_item_sales_breakdown(){
 	  type: "GET", 
 	  data: { 
 	  	granularity: item_sales_breakdown_granulatrity,
-	  	date_range: item_sales_index_date_range
+	  	date_range: item_sales_index_date_range,
+	  	restaurant: selected_restaurant
 	  }, 
 	  cache: false,
 	  beforeSend: function() {
@@ -89,7 +107,8 @@ function update_sales_info_boxes(){
 		url: "sales_totals",
 		cache: false,
 		data: {
-			date_range: item_sales_index_date_range 
+			date_range: item_sales_index_date_range,
+			restaurant: selected_restaurant
 		},
 		beforeSend: function(){
 			//$('#loading_spinner_date_picker').show();
@@ -110,13 +129,7 @@ function update_sales_info_boxes(){
 }
 
 
-function item_sales_update_date_range(){
-	update_aggregate_item_sales_breakdown();
-	update_sales_info_boxes();
-	update_item_sales_details();
 
-	$('#item_sales_csv_btn').html("<a class=\"btn btn-primary btn-xs pull-right\" href=\"/items.csv?date_range="+item_sales_index_date_range+"\">Download CSV</a>");
-}
 
 function item_sales_setup_click_handlers(){
 
@@ -185,5 +198,19 @@ function item_sales_setup_click_handlers(){
 		item_sales_update_date_range();
 	});
 	/* end click handlers for page date scope */
+
+
+	/* click handlers for restaurant selection */
+	$('#p42_selector').click(function(){
+		selected_restaurant = "p42";
+		update_restaurant_selection();
+	});
+
+	$('#tacos_selector').click(function(){
+		selected_restaurant = "tacos";
+		update_restaurant_selection();
+	});
+
+	/* end click handlers for restaurant selection */
 
 }

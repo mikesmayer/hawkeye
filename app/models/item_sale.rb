@@ -13,7 +13,7 @@ class ItemSale
 	end
 
 	# Generates a csv of item level sales data between the start and end dates
-	def self.item_sales_details_to_csv(start_date, end_date)
+	def self.item_sales_details_to_csv(restaurant, start_date, end_date)
 =begin
 		items = P42::TicketItem.find_by_sql("SELECT to_char(ticket_close_time, 'YYYY-MM-DD HH:MMam') AS time,
 			item_name,
@@ -34,8 +34,9 @@ class ItemSale
 		WHERE ticket_close_time BETWEEN '2000-01-01T00:00:00' AND '2100-01-01T23:59:59'
 		ORDER BY ticket_close_time) t1")
 =end
-
-		finder = P42::TicketItem.select("p42_ticket_items.id, pos_ticket_item_id, pos_ticket_id, 
+		
+		if restaurant == "p42"
+			finder = P42::TicketItem.select("p42_ticket_items.id, pos_ticket_item_id, pos_ticket_id, 
 										ticket_close_time AS \"time\", p42_menu_items.name AS \"item_name\", 
 										p42_menu_item_groups.name AS \"category_name\", quantity, net_price, meal_for_meal")
 					.joins("LEFT JOIN p42_menu_items ON p42_menu_items.id = p42_ticket_items.menu_item_id")
@@ -46,13 +47,18 @@ class ItemSale
 
 					
 
-		CSV.generate do |csv|
-			csv << ["Ticket Item Id", "Ticket Id", "Time", "Item Name", "Category Name", "Quantity", "Net Price", "M4M"]
+			CSV.generate do |csv|
+				csv << ["Ticket Item Id", "Ticket Id", "Time", "Item Name", "Category Name", "Quantity", "Net Price", "M4M"]
 
-			finder.find_each(batch_size: 10000) do |row|
-				csv << [row.pos_ticket_item_id, row.pos_ticket_id, row.time, row.item_name, row.category_name, row.quantity, row.net_price, row.meal_for_meal]
+				finder.find_each(batch_size: 10000) do |row|
+					csv << [row.pos_ticket_item_id, row.pos_ticket_id, row.time, row.item_name, row.category_name, row.quantity, row.net_price, row.meal_for_meal]
+				end
 			end
+
+		elsif restaurant == "tacos"
+
 		end
+
 		
 		
 
@@ -60,20 +66,28 @@ class ItemSale
 
 
 
-	def self.get_sales_totals(start_date, end_date)
+	def self.get_sales_totals(restaurant, start_date, end_date)
 		start_date = start_date.to_s+"T00:00:00"
 		end_date = end_date.to_s+"T23:59:59"
 
-		net_sales = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:net_price)
-		discount_totals = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:discount_total)
-		m4m_totals = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:meal_for_meal)
+		if restaurant == "p42"
+			net_sales = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:net_price)
+			discount_totals = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:discount_total)
+			m4m_totals = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:meal_for_meal)
+		elsif restaurant == "tacos"
+
+		end
+
+		net_sales = net_sales.nil? ? 0 : net_sales
+		discount_totals = discount_totals.nil? ? 0 : discount_totals
+		m4m_totals = m4m_totals.nil? ? 0 : m4m_totals
 
 		totals = {:net_sales => net_sales, :discount_totals => discount_totals, :m4m_totals => m4m_totals}
 		totals.to_json
 	end
 
 
-	def self.getAggregateSales(granularity, start_date, end_date)
+	def self.getAggregateSales(restaurant, granularity, start_date, end_date)
 		
 	   # start_date = '2000-01-01'
 	   # end_date = '2100-01-01'
@@ -89,8 +103,8 @@ class ItemSale
 	    	outer_query_date = "to_char(date, 'YYYY')"
 	    end
 	    
-
-	    P42::TicketItem.find_by_sql("SELECT #{outer_query_date} AS date, total_net_sales, total_discounts, meal_for_meal 
+	    if restaurant == "p42"
+	    	P42::TicketItem.find_by_sql("SELECT #{outer_query_date} AS date, total_net_sales, total_discounts, meal_for_meal 
 			FROM 
 			(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
 				SUM(net_price) AS total_net_sales,
@@ -100,6 +114,11 @@ class ItemSale
 				WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
 				GROUP BY date
 				ORDER BY date ) t1")
+	    elsif restaurant == "tacos"
+
+	    end
+
+
 	end
 
 

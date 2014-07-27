@@ -10,17 +10,19 @@ class ItemSalesController < ApplicationController
 	end
 
 	def items
+		@restaurant = params[:restaurant]
 		respond_to do |format|
 			format.json { render json: ItemSaleDatatable.new(view_context,
-				{ :start_date => @start_date, :end_date => @end_date }) }
-			format.csv { send_data ItemSale.item_sales_details_to_csv(@start_date, @end_date) }
+				{ :restaurant => @restaurant, :start_date => @start_date, :end_date => @end_date }) }
+			format.csv { send_data ItemSale.item_sales_details_to_csv(@restaurant, @start_date, @end_date) }
 			
 		end
 	end
 
 	def aggregate_items
+		@restaurant = params[:restaurant]
 		@granularity = params[:granularity]
-		@aggregate_table_rows = ItemSale.getAggregateSales(@granularity, @start_date, @end_date)
+		@aggregate_table_rows = ItemSale.getAggregateSales(@restaurant, @granularity, @start_date, @end_date)
 
 		respond_to do |format|
 			format.js { render :layout => false  }
@@ -29,7 +31,8 @@ class ItemSalesController < ApplicationController
 	end
 
 	def sales_totals
-		@totals = ItemSale.get_sales_totals(@start_date, @end_date)
+		@restaurant = params[:restaurant]
+		@totals = ItemSale.get_sales_totals(@restaurant, @start_date, @end_date)
 
 		response.header['Content-Type'] = 'application/json'
 		respond_to do |format|
