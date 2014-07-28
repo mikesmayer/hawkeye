@@ -1,0 +1,59 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Pos ticket item:</strong>
+  <%= @tacos_ticket_item.pos_ticket_item_id %>
+</p>
+
+<p>
+  <strong>Pos ticket:</strong>
+  <%= @tacos_ticket_item.pos_ticket_id %>
+</p>
+
+<p>
+  <strong>Menu item:</strong>
+  <%= @tacos_ticket_item.menu_item_id %>
+</p>
+
+<p>
+  <strong>Pos category:</strong>
+  <%= @tacos_ticket_item.pos_category_id %>
+</p>
+
+<p>
+  <strong>Pos revenue class:</strong>
+  <%= @tacos_ticket_item.pos_revenue_class_id %>
+</p>
+
+<p>
+  <strong>Quantity:</strong>
+  <%= @tacos_ticket_item.quantity %>
+</p>
+
+<p>
+  <strong>Net price:</strong>
+  <%= @tacos_ticket_item.net_price %>
+</p>
+
+<p>
+  <strong>Discount total:</strong>
+  <%= @tacos_ticket_item.discount_total %>
+</p>
+
+<p>
+  <strong>Item menu price:</strong>
+  <%= @tacos_ticket_item.item_menu_price %>
+</p>
+
+<p>
+  <strong>Ticket close time:</strong>
+  <%= @tacos_ticket_item.ticket_close_time %>
+</p>
+
+<p>
+  <strong>Meal for meal:</strong>
+  <%= @tacos_ticket_item.meal_for_meal %>
+</p>
+
+<%= link_to 'Edit', edit_tacos_ticket_item_path(@tacos_ticket_item) %> |
+<%= link_to 'Back', tacos_ticket_items_path %>

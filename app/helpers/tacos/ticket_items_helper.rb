@@ -1,0 +1,2 @@
+module Tacos::TicketItemsHelper
+end

@@ -75,7 +75,9 @@ class ItemSale
 			discount_totals = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:discount_total)
 			m4m_totals = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:meal_for_meal)
 		elsif restaurant == "tacos"
-
+			net_sales = Tacos::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:net_price)
+			discount_totals = Tacos::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:discount_total)
+			m4m_totals = Tacos::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:meal_for_meal)
 		end
 
 		net_sales = net_sales.nil? ? 0 : net_sales
@@ -104,6 +106,7 @@ class ItemSale
 	    end
 	    
 	    if restaurant == "p42"
+	    	
 	    	P42::TicketItem.find_by_sql("SELECT #{outer_query_date} AS date, total_net_sales, total_discounts, meal_for_meal 
 			FROM 
 			(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
@@ -115,7 +118,16 @@ class ItemSale
 				GROUP BY date
 				ORDER BY date ) t1")
 	    elsif restaurant == "tacos"
-
+	    	Tacos::TicketItem.find_by_sql("SELECT #{outer_query_date} AS date, total_net_sales, total_discounts, meal_for_meal 
+			FROM 
+			(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
+				SUM(net_price) AS total_net_sales,
+				SUM(discount_total) AS total_discounts,
+				SUM(meal_for_meal) AS meal_for_meal
+				FROM tacos_ticket_items
+				WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+				GROUP BY date
+				ORDER BY date ) t1")
 	    end
 
 

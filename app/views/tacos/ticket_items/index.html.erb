@@ -1,0 +1,47 @@
+<h1>Listing tacos_ticket_items</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Pos ticket item</th>
+      <th>Pos ticket</th>
+      <th>Menu item</th>
+      <th>Pos category</th>
+      <th>Pos revenue class</th>
+      <th>Quantity</th>
+      <th>Net price</th>
+      <th>Discount total</th>
+      <th>Item menu price</th>
+      <th>Ticket close time</th>
+      <th>Meal for meal</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tacos_ticket_items.each do |tacos_ticket_item| %>
+      <tr>
+        <td><%= tacos_ticket_item.pos_ticket_item_id %></td>
+        <td><%= tacos_ticket_item.pos_ticket_id %></td>
+        <td><%= tacos_ticket_item.menu_item_id %></td>
+        <td><%= tacos_ticket_item.pos_category_id %></td>
+        <td><%= tacos_ticket_item.pos_revenue_class_id %></td>
+        <td><%= tacos_ticket_item.quantity %></td>
+        <td><%= tacos_ticket_item.net_price %></td>
+        <td><%= tacos_ticket_item.discount_total %></td>
+        <td><%= tacos_ticket_item.item_menu_price %></td>
+        <td><%= tacos_ticket_item.ticket_close_time %></td>
+        <td><%= tacos_ticket_item.meal_for_meal %></td>
+        <td><%= link_to 'Show', tacos_ticket_item %></td>
+        <td><%= link_to 'Edit', edit_tacos_ticket_item_path(tacos_ticket_item) %></td>
+        <td><%= link_to 'Destroy', tacos_ticket_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Ticket item', new_tacos_ticket_item_path %>

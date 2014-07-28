@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140727195113) do
+ActiveRecord::Schema.define(version: 20140728024557) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -179,6 +179,24 @@ ActiveRecord::Schema.define(version: 20140727195113) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "tacos_ticket_items", force: true do |t|
+    t.integer  "pos_ticket_item_id"
+    t.integer  "pos_ticket_id"
+    t.integer  "menu_item_id"
+    t.integer  "pos_category_id"
+    t.integer  "pos_revenue_class_id"
+    t.float    "quantity"
+    t.float    "net_price"
+    t.float    "discount_total"
+    t.float    "item_menu_price"
+    t.datetime "ticket_close_time"
+    t.float    "meal_for_meal"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tacos_ticket_items", ["pos_ticket_item_id"], name: "index_tacos_ticket_items_on_pos_ticket_item_id", using: :btree
 
   create_table "tip_jar_donations", force: true do |t|
     t.float    "amount"

@@ -9,7 +9,7 @@ class ItemSaleDatatable < AjaxDatatablesRails::Base
     # list columns inside the Array in string dot notation.
     # Example: 'users.email'
     
-    @sortable_columns ||= ['p42_ticket_items.ticket_close_time']
+    @sortable_columns ||= ['ticket_close_time']
   end
 
   def searchable_columns
@@ -24,7 +24,8 @@ class ItemSaleDatatable < AjaxDatatablesRails::Base
     records.map do |record|
       [
         record.ticket_close_time.strftime("%-m-%e-%Y %l:%M"),
-        record.menu_item.name,
+        #record.menu_item.name,
+        record.menu_item_id,
         record.menu_item_group.name,
         record.quantity,
         record.net_price,
@@ -41,8 +42,8 @@ class ItemSaleDatatable < AjaxDatatablesRails::Base
 
     if self.options[:restaurant] == "p42"
       P42::TicketItem.where("ticket_close_time between ? AND ?", start_date, end_date)
-    elsif self.options[:tacos] == "tacos"
-      P42::TicketItem.where("ticket_close_time between ? AND ?", start_date, end_date)
+    elsif self.options[:restaurant] == "tacos"
+      Tacos::TicketItem.where("ticket_close_time between ? AND ?", start_date, end_date)
 
     end
   end

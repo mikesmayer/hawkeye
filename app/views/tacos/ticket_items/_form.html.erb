@@ -1,0 +1,21 @@
+<%= simple_form_for(@tacos_ticket_item) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :pos_ticket_item_id %>
+    <%= f.input :pos_ticket_id %>
+    <%= f.input :menu_item_id %>
+    <%= f.input :pos_category_id %>
+    <%= f.input :pos_revenue_class_id %>
+    <%= f.input :quantity %>
+    <%= f.input :net_price %>
+    <%= f.input :discount_total %>
+    <%= f.input :item_menu_price %>
+    <%= f.input :ticket_close_time %>
+    <%= f.input :meal_for_meal %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

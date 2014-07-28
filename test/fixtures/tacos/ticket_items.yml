@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  pos_ticket_item_id: 1
+  pos_ticket_id: 1
+  menu_item_id: 1
+  pos_category_id: 1
+  pos_revenue_class_id: 1
+  quantity: 1.5
+  net_price: 1.5
+  discount_total: 1.5
+  item_menu_price: 1.5
+  ticket_close_time: 2014-07-27 19:41:49
+  meal_for_meal: 1.5
+
+two:
+  pos_ticket_item_id: 1
+  pos_ticket_id: 1
+  menu_item_id: 1
+  pos_category_id: 1
+  pos_revenue_class_id: 1
+  quantity: 1.5
+  net_price: 1.5
+  discount_total: 1.5
+  item_menu_price: 1.5
+  ticket_close_time: 2014-07-27 19:41:49
+  meal_for_meal: 1.5

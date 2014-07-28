@@ -157,12 +157,24 @@ class GoogleDriveSync
 			file = File.binwrite("cat.dbf", body)
 			cat_tbl = DBF::Table.new("cat.dbf")
 			num_processed = GoogleDriveSync.process_tacos_category_dbf(cat_tbl)
+		elsif title == "GNDITEM.DBF"
+			file = File.binwrite("gnditem.dbf", body)
+			item_tbl = DBF::Table.new("gnditem.dbf")
+			num_processed = GoogleDriveSync.process_tacos_ticket_items_dbf(item_tbl)
 		end
 		
 		
 		#body is a string containing the contents of the downloaded file
 		body
 		num_processed
+	end
+
+	def self.search_files(search_term)
+		if @drive.nil?
+			setup_client
+		end
+
+
 	end
 
 
@@ -174,5 +186,29 @@ class GoogleDriveSync
 		end
 		num_processed
 	end
+
+
+	def self.process_tacos_ticket_items_dbf(gnditem_dbf)
+		num_processed = 0
+		gnditem_dbf.each do |record|
+			pos_ticket_item_id = record.entryid
+			pos_ticket_id = record.check
+			menu_item_id = record.item
+			pos_category_id = record.category
+			pos_revenue_class_id = record.revid
+			quantity = record.quantity
+			net_price = record.discpric
+			discount_total = (record.price - record.discpric)
+			item_menu_price = record.price
+			ticket_close_time = DateTime.parse("#{record.dob}T#{record.hour}:#{record.minute}")
+
+
+			Tacos::TicketItem.find_or_update_by_ticket_item_id(pos_ticket_item_id, pos_ticket_id, menu_item_id, pos_category_id, 
+				pos_revenue_class_id, quantity, net_price, discount_total, item_menu_price, ticket_close_time)
+			num_processed += 1
+		end
+		num_processed
+	end
+
 
 end
