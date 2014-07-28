@@ -1,0 +1,2 @@
+module Tacos::MenuItemGroupsHelper
+end

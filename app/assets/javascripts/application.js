@@ -69,6 +69,10 @@ $(document).ready(function(){
 		});
 	}
 
+	if ( $('#google_drive_sync_index').length > 0 ){
+		init_google_drive();
+	}
+
 	/* Only used on menu item group index page right now */
 	$('.rest-in-place').each(function(i, obj){
 		$(this).bind('failure.rest-in-place', function(event, json){

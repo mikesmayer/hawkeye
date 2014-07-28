@@ -1,0 +1,36 @@
+<h1>Tacos Menu Categories</h1>
+
+
+<div class="row">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Default meal modifier</th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @tacos_menu_item_groups.each do |tacos_menu_item_group| %>
+        <tr>
+          <td><%= tacos_menu_item_group.id %></td>
+          <td><%= tacos_menu_item_group.name %></td>
+          <td><%= tacos_menu_item_group.default_meal_modifier %></td>
+          <td><%= link_to 'Show', tacos_menu_item_group %></td>
+          <td><%= link_to 'Edit', edit_tacos_menu_item_group_path(tacos_menu_item_group) %></td>
+          <td><%= link_to 'Destroy', tacos_menu_item_group, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<br>
+
+<%= link_to 'New Menu item group', new_tacos_menu_item_group_path %>
+
+<!-- div for id'ing the page from js -->
+<div id="tacos_menu_item_groups_index"></div>

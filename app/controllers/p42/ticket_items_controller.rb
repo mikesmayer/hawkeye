@@ -101,7 +101,8 @@ class P42::TicketItemsController < ApplicationController
 
 
   def file_list
-    @file_list = P42::TicketItem.get_file_list
+    # The id is the id for P42 Reports folder in Drive
+    @file_list = GoogleDriveSync.get_file_list('0B3s566IfxmitNVcwTE9rY0JkYmM')
     render :layout => false
   end
 

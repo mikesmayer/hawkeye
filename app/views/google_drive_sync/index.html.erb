@@ -1,0 +1,18 @@
+<h1>Google Drive</h1>
+
+<a href="/google_drive_sync/get_file?file_id=0B3s566IfxmitekFUSWhwUGZGc28">Get file</a>
+<div class="row">
+  <div class="col-md-6">
+  	<h3>Tacos Daily Sales Folder</h3>
+    <div id="gdrive_tacos_file_list">
+    	<button id="get_folder_btn">Get folder</button>
+    	Loading file list from Google Drive...
+    	<!-- This div will be loaded via ajax - it's the list of files from Drive -->
+    </div>    
+  </div>
+  <div class="col-md-6" id="gdrive_folder_contents">
+  		<!-- This div will hold the contents of the folder selected from the file list -->
+  </div>
+</div>
+
+<div id="google_drive_sync_index"></div>

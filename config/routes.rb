@@ -1,5 +1,9 @@
 RailsBootstrap::Application.routes.draw do
 
+  namespace :tacos do
+    resources :menu_item_groups
+  end
+
   resources :tip_jar_donations
 
 #post 'p42/ticket_items/files/save_to_local', :controller => 'p42/ticket_items', :action => 'save_file_to_local'
@@ -19,6 +23,10 @@ RailsBootstrap::Application.routes.draw do
   get 'item_sales/sales_totals', :controller => 'item_sales', :action => 'sales_totals'
   get 'sales_totals', :controller => 'item_sales', :action => 'sales_totals'
 
+  get 'google_drive_sync', :controller => 'google_drive_sync', :action => 'index'
+  get 'google_drive_sync/file_list', :controller => 'google_drive_sync', :action => 'file_list'
+  get 'google_drive_sync/folder', :controller => 'google_drive_sync', :action => 'folder'
+  get 'google_drive_sync/get_file', :controller => 'google_drive_sync', :action => 'get_file'
 
   resources :item_sales
     

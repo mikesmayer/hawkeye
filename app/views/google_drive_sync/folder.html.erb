@@ -1,0 +1,21 @@
+<h3><b><%= @folder_name %></b> contents</h3>
+<table class="table">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>File Type</th>
+			<th>Name</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @file_list.each do |file| %>
+			<tr>
+				<td><%= file['id'] %></td>
+				<td><%= file['mimeType'] %></td>
+				<td><a href="/google_drive_sync/get_file?file_id=<%= file['id'] %>"><%= file['title'] %></a></td>
+				<td></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>

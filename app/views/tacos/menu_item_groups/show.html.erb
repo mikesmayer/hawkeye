@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @tacos_menu_item_group.name %>
+</p>
+
+<p>
+  <strong>Default meal modifier:</strong>
+  <%= @tacos_menu_item_group.default_meal_modifier %>
+</p>
+
+<%= link_to 'Edit', edit_tacos_menu_item_group_path(@tacos_menu_item_group) %> |
+<%= link_to 'Back', tacos_menu_item_groups_path %>

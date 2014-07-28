@@ -1,0 +1,21 @@
+<table class="table">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>File Type</th>
+			<th>Name</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @file_list.each do |file| %>
+		<% file_type = file['mimeType'] == "application/vnd.google-apps.folder" ? 'Folder' : file['mimeType'] %> 
+			<tr>
+				<td><%= file['id'] %></td>
+				<td><%= file_type %></td>
+				<td><%= file['title'] %></td>
+				<td><button data-foldername="<%= file['title'] %>" id="<%= file['id'] %>" class="view_folder btn btn-xs">View Folder</button></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
