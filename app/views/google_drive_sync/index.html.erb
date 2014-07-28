@@ -1,16 +1,11 @@
 <h1>Google Drive</h1>
 
-<a href="/google_drive_sync/get_file?file_id=0B3s566IfxmitekFUSWhwUGZGc28">Get file</a>
-
-<a href="/google_drive_sync/get_file?file_id=0B3s566IfxmitN1BWWUo1RnhSTWM">Get file</a>
-
-
 <div class="row">
   <div class="col-md-6">
   	<h3>Tacos Daily Sales Folder</h3>
     <div id="gdrive_tacos_file_list">
-    	<button id="get_folder_btn">Get folder</button>
-    	Loading file list from Google Drive...
+    	<button class="btn" id="get_folder_btn">Get folder</button>
+    	<!-- Loading file list from Google Drive... -->
     	<!-- This div will be loaded via ajax - it's the list of files from Drive -->
     </div>    
   </div>
@@ -19,4 +14,25 @@
   </div>
 </div>
 
+<div>
+  <h3>Drive search results for GNDITEM</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Folder Title</th>
+        <th>File Title</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @gnditem_results.each do |item| %>
+        <tr>
+          <td><a href="/google_drive_sync/get_file?file_id=<%= item[:id] %>"><%= item[:id] %></a></td>
+          <td><%= item[:parent_title] %></td>
+          <td><%= item[:title] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 <div id="google_drive_sync_index"></div>

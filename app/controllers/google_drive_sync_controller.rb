@@ -1,7 +1,7 @@
 class GoogleDriveSyncController < ApplicationController
 
 	def index
-		@gnditem_results = GoogleDriveSync.search_files("GNDITEM.DBF")
+		@gnditem_results = GoogleDriveSync.search_files("GNDITEM")
 	end
 
 	def file_list

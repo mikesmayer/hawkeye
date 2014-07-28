@@ -174,7 +174,64 @@ class GoogleDriveSync
 			setup_client
 		end
 
+		
+	  result = Array.new
+	  page_token = nil
+	  begin
+	    parameters = {'fields' => 'items(id,kind,mimeType,parents/id,title)',
+	    				'q' => "title contains '#{search_term}'"}
+	    if page_token.to_s != ''
+	      parameters['pageToken'] = page_token
+	    end
+	    api_result = @client.execute(
+	      :api_method => @drive.files.list,
+	      :parameters => parameters)
+	    if api_result.status == 200
+	      files = api_result.data
 
+	      result.concat(files.items)
+	      page_token = files.next_page_token
+	    else
+	      puts "An error occurred: #{result.data['error']['message']}"
+	      page_token = nil
+	    end
+	  end while page_token.to_s != ''
+	  result
+
+	  cleaned_array = Array.new
+	  result.each do |file|
+
+	  	parent_title = GoogleDriveSync.get_file_title(file.parents[0].id)
+	  	cleaned_array << {:id => file.id, :title => file.title, :parent_title => parent_title }
+	  end
+		YAML::dump(cleaned_array)
+
+		cleaned_array
+
+	end
+
+	def self.get_file_title(file_id)
+		if @drive.nil?
+			setup_client
+		end
+
+		api_result = @client.execute(
+			:api_method => @drive.files.get,
+			:parameters => { 'fileId' => file_id, 
+							'fields' => 'title'} )
+
+		title = "File not found"
+
+
+		#Get file
+		if api_result.status == 200
+			file = api_result.data 
+
+			title = file.title
+		else
+			#status was not 200
+		end
+		title
 	end
 
 
