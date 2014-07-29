@@ -1,0 +1,57 @@
+//if the menu_items_index div is found on the page then we are dealing with the index page of
+//the menu items
+if( $('#tacos_menu_items_index').length > 0 ){
+	console.log('tacos menu items index page');
+	
+	if( $('#no-rule-<%= @tacos_meal_count_rule.menu_item_id %>').length > 0 ){
+		//no other rules existed for this item so we have to update the div that contained
+		//the label "No meal modifier set"
+		$('#no-rule-<%= @tacos_meal_count_rule.menu_item_id %>').html("<%= j render partial: 'tacos/meal_count_rules/modifier_label', local: { tacos_meal_count_rule: @tacos_meal_count_rule } %>")
+
+	}else{
+		//Other rules exist for this menu item so we need to find and update the correct rule
+		$('#rule-<%= @tacos_meal_count_rule.id %>').html("<%= j render partial: 'tacos/meal_count_rules/modifier_label', local: { tacos_meal_count_rule: @tacos_meal_count_rule } %>")
+	}
+	$('#tacos-rule-modal').modal_success();
+
+
+} else {
+	console.log('tacos meal rule show page');
+	// the container tacos_menu_items_tbl was not found on the page meaning the modal save was triggered
+	// from the show page of a menu item
+	var num_rules = $('#num_rules').html();
+	num_rules = parseInt(num_rules);
+
+	if(num_rules == 0){
+		var table_str = "<table class=\"table\" id=\"rules_table\">";
+	    table_str += "<thead>";
+	    table_str += "<tr>";
+	    table_str += "<th>Start Date</th>";
+	    table_str += "<th>End Date</th>";
+	    table_str += "<th>Meal Modifier</th>";
+	    table_str += "<th></th>";
+	    table_str += "</tr>";
+	    table_str += "</thead>";
+	    table_str += "<tbody>";
+	    table_str += "</tbody>";
+	    table_str += "</table>";
+
+	    $('#rules_table_container').html(table_str);
+	}
+
+	//If the condition is true that means we're editing a rule else we're adding a new rule
+	if( $("#rule-<%= @tacos_meal_count_rule.id %>").length > 0){
+
+		$('#rule-<%= @tacos_meal_count_rule.id %>').html("<%= j render partial: 'tacos/meal_count_rules/update_table_row', local: { tacos_meal_count_rule: @tacos_meal_count_rule } %>");
+		$('#rule-modal').modal_success();
+
+	} else {
+		$('#rules_table').append("<%= j render partial: 'tacos/meal_count_rules/table_row', local: {tacos_meal_count_rule: @tacos_meal_count_rule } %>");
+
+		num_rules += 1;
+		$('#num_rules').html(num_rules);
+
+		$('#new_rule_modal').modal_success();
+	}
+}
+

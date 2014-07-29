@@ -1,0 +1,2 @@
+module Tacos::MealCountRulesHelper
+end

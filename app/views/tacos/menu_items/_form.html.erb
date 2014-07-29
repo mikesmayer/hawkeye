@@ -1,0 +1,29 @@
+<%= form_for @tacos_menu_item, :validate => true, :html => {:class => "form-horizontal", :role => "form"} do |f| %>
+  <% if @tacos_menu_item.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@tacos_menu_item.errors.count, "error") %> prohibited this tacos_menu_item from being saved:</h2>
+
+      <ul>
+      <% @tacos_menu_item.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class='row'>
+    <div class="col-md-6">
+      <div class="well">
+        <h4>Meal count settings</h4>
+        <div class="form-group">
+        
+        </div>
+
+       
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <%= f.submit :class => 'btn' %>
+  </div>
+<% end %>

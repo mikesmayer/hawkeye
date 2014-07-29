@@ -1,4 +1,4 @@
-class P42::MealCountRule < ActiveRecord::Base
+class Tacos::MealCountRule < ActiveRecord::Base
 	belongs_to :menu_item
 
 	validates :meal_modifier, presence: true
@@ -7,20 +7,18 @@ class P42::MealCountRule < ActiveRecord::Base
 	validates :start_date, date: { message: "Not a valid start date. Use the format YYYY-MM-DD", allow_nil: true }
 	validates :end_date, date: { message: "Not a valid end date. Use the format YYYY-MM-DD", allow_nil: true }
 	validate :end_date_after_start_date, :rule_conflict
-	
 
 	before_save :set_empty_dates
 	after_save :update_meal_counts
 	after_destroy :update_meal_counts
 
 	def update_meal_counts
-		items = P42::TicketItem.where("menu_item_id = ?", self.menu_item_id)
+		items = Tacos::TicketItem.where("menu_item_id = ?", self.menu_item_id)
 		puts items
 		items.each do |item|
 			item.update_meal_count
 		end
 	end
-
 
 	## this is the date that all meal count rules use to indicate that the rule
 	# starts from the beginning of restaurant time
@@ -37,7 +35,7 @@ class P42::MealCountRule < ActiveRecord::Base
 	end
 
 	def self.get_multiplier(menu_item_id, ticket_date)
-	    mod = P42::MealCountRule.select("meal_modifier").where(menu_item_id: menu_item_id).where("start_date <= ? AND end_date >= ?", ticket_date, ticket_date)
+	    mod = Tacos::MealCountRule.select("meal_modifier").where(menu_item_id: menu_item_id).where("start_date <= ? AND end_date >= ?", ticket_date, ticket_date)
 	    puts mod.inspect
 	    if mod.empty?
 	      mod = 0
@@ -75,7 +73,7 @@ class P42::MealCountRule < ActiveRecord::Base
 	# sets a meal modifier for a menu item for a given date when a rule already exists 
 	# for that date
 	def rule_conflict
-		menu_item = P42::MenuItem.find(menu_item_id)
+		menu_item = Tacos::MenuItem.find(menu_item_id)
 		rules = menu_item.meal_count_rules
 
 		rules.each do |rule|
@@ -88,5 +86,6 @@ class P42::MealCountRule < ActiveRecord::Base
 	def overlaps?(other)
 		(start_date - other.end_date) * (other.start_date - end_date) >= 0
 	end
+
 
 end

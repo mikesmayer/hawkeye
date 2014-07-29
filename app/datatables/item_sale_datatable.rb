@@ -24,8 +24,8 @@ class ItemSaleDatatable < AjaxDatatablesRails::Base
     records.map do |record|
       [
         record.ticket_close_time.strftime("%-m-%e-%Y %l:%M"),
-        #record.menu_item.name,
-        record.menu_item_id,
+        record.menu_item.name,
+        #record.menu_item_id,
         record.menu_item_group.name,
         record.quantity,
         record.net_price,

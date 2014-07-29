@@ -1,6 +1,14 @@
 RailsBootstrap::Application.routes.draw do
 
   namespace :tacos do
+    resources :meal_count_rules
+  end
+
+  namespace :tacos do
+    resources :menu_items
+  end
+
+  namespace :tacos do
     resources :ticket_items
   end
 

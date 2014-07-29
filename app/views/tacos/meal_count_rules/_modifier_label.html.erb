@@ -1,0 +1,9 @@
+<% if (@tacos_meal_count_rule.start_date..@tacos_meal_count_rule.end_date).include?(Date.today) && @tacos_meal_count_rule.meal_modifier != 0  %>
+    <%= link_to edit_tacos_meal_count_rule_path(@tacos_meal_count_rule, :menu_item => @tacos_meal_count_rule.menu_item_id), remote: true, method: :get do %>
+        <span class="label label-success">Modifier: <%= @tacos_meal_count_rule.meal_modifier %></span>
+    <% end %>                                                
+<% else %>
+        <%= link_to edit_tacos_meal_count_rule_path(@tacos_meal_count_rule, :menu_item => @tacos_meal_count_rule.menu_item_id), remote: true, method: :get do %>
+        <span class="label label-default">Modifier: <%= @tacos_meal_count_rule.meal_modifier %></span>
+    <% end %> 
+<% end %>

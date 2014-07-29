@@ -1,0 +1,121 @@
+<p id="notice"><%= notice %></p>
+<h1><%= @tacos_menu_item.name %></h1>
+<div class="row">
+  <div class="col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <p>
+          <strong>Name:</strong>
+          <%= @tacos_menu_item.name %>
+        </p>
+        <p>
+          <strong>Item category:</strong>
+          <%= @tacos_menu_item.menu_item_group.name %>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="panel panel-default">
+     
+      <div class="panel-body">
+            <div class="bs-callout bs-callout-info">
+              <h3>Meal for Meal Rules</h3>
+            </div>
+            <%= link_to 'Add Rule', '#new_rule_modal', 'data-toggle' => 'modal', :class => 'btn btn-success pull-left' %>
+  
+        
+        <div class="hidden" id="num_rules"><%= @num_rules %></div>
+      
+      </div>
+
+      <div id="rules_table_container" class="table-responsive">
+        <% if @num_rules == 0 %>
+          <h4 style="padding-left:20px;">No meal count rules are set.</h4>
+        <% else %>
+
+        
+          <table class="table" id="rules_table">
+            <thead>
+              <tr>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Meal Modifier</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @tacos_menu_item.meal_count_rules.each do |rule| %>  
+                <tr id="rule-<%= rule.id %>">
+                  <% if rule.start_date == P42::MealCountRule.RULE_START_DATE_FLAG && rule.end_date == P42::MealCountRule.RULE_END_DATE_FLAG %>
+                    <td colspan="2" class="text-center"><b>Modifier active for all time</b></td>
+                  <% else %>
+                    <% if rule.start_date == P42::MealCountRule.RULE_START_DATE_FLAG %>
+                      <td>Applicable from the beginning</td>
+                    <% else %>
+                      <td><%= rule.start_date.strftime("%B %e, %Y") %></td>
+                    <% end %>
+
+                  <% if rule.end_date == P42::MealCountRule.RULE_END_DATE_FLAG %>
+                    <td>Rule does not end</td>
+                  <% else %>
+                    <td><%= rule.end_date.strftime("%B %e, %Y") %></td>
+                  <% end %>
+                  <% end %>
+                  <td><%= rule.meal_modifier %></td>
+                  <td><%= link_to edit_tacos_meal_count_rule_path(rule, :menu_item => @tacos_menu_item.id), remote: true, method: :get, class: 'btn-mini btn-primary btn' do %><span class="glyphicon glyphicon-pencil"></span><% end %>
+                    <%= link_to rule, remote: true, confirm: 'Are you sure?', method: :delete, disable_with: "Deleting...", class: 'btn-mini btn-danger btn' do %><span class="glyphicon glyphicon-trash"></span><% end %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        
+
+        <% end %>  
+      </div> 
+   
+    </div>
+  </div>
+</div>
+
+<%= link_to 'Destroy', @tacos_menu_item, method: :delete, data: { confirm: 'Are you sure?' } %>
+
+<%= link_to 'Edit', edit_tacos_menu_item_path(@tacos_menu_item), :class => 'btn btn-default' %> 
+<%= link_to 'Back', tacos_menu_items_path %>
+
+
+<div id="rule-modal" class="modal fade" aria-hidden="true"></div>
+
+<%# Bootstrap modal markup. @see: http://getbootstrap.com/javascript/#modals %>
+<div class="modal fade" id="new_rule_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Create new meal count rule</h4>
+      </div>
+      <div class="modal-body">
+        <h3 style="margin-top:0px;">Rule for <%= @tacos_menu_item.name %></h3>
+        <%# Render the new rule form  %>
+        <%= render :partial => 'tacos/meal_count_rules/modalform.html.erb' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%# Bootstrap modal markup. @see: http://getbootstrap.com/javascript/#modals %>
+<div class="modal fade" id="edit_rule_modal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="editModalLabel">Edit meal count rule</h4>
+      </div>
+      <div class="modal-body">
+        <h3 style="margin-top:0px;">Rule for <%= @tacos_menu_item.name %></h3>
+        <%# Render the new rule form  %>
+        <%= render :partial => 'tacos/meal_count_rules/modalform.html.erb' %>
+      </div>
+    </div>
+  </div>
+</div>

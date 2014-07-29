@@ -1,0 +1,33 @@
+<h1>Listing tacos_meal_count_rules</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Menu item</th>
+      <th>Meal modifier</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tacos_meal_count_rules.each do |tacos_meal_count_rule| %>
+      <tr>
+        <td><%= tacos_meal_count_rule.menu_item_id %></td>
+        <td><%= tacos_meal_count_rule.meal_modifier %></td>
+        <td><%= tacos_meal_count_rule.start_date %></td>
+        <td><%= tacos_meal_count_rule.end_date %></td>
+        <td><%= link_to 'Show', tacos_meal_count_rule %></td>
+        <td><%= link_to 'Edit', edit_tacos_meal_count_rule_path(tacos_meal_count_rule) %></td>
+        <td><%= link_to 'Destroy', tacos_meal_count_rule, method: :delete, disable_with: "Deleting...", data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Meal count rule', new_tacos_meal_count_rule_path %>

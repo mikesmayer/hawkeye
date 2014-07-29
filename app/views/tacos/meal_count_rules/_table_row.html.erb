@@ -1,0 +1,23 @@
+<tr id="rule-<%= @tacos_meal_count_rule.id %>">
+  <% if @tacos_meal_count_rule.start_date == P42::MealCountRule.RULE_START_DATE_FLAG && @tacos_meal_count_rule.end_date == P42::MealCountRule.RULE_END_DATE_FLAG %>
+    <td colspan="2" class="text-center"><b>Modifier active for all time</b></td>
+  <% else %>
+  	<% if @tacos_meal_count_rule.start_date == P42::MealCountRule.RULE_START_DATE_FLAG %>
+  		<td>Applicable from the beginning</td>
+  	<% else %>
+  		<td><%= @tacos_meal_count_rule.start_date.strftime("%B %e, %Y") %></td>
+  	<% end %>
+    
+    <% if @tacos_meal_count_rule.end_date == P42::MealCountRule.RULE_END_DATE_FLAG %>
+    	<td>Rule does not end</td>
+    <% else %>
+    	<td><%= @tacos_meal_count_rule.end_date.strftime("%B %e, %Y") %></td>
+    <% end %>
+  <% end %>
+
+  <td><%= @tacos_meal_count_rule.meal_modifier %></td>
+<td><%= link_to edit_tacos_meal_count_rule_path(@tacos_meal_count_rule, :menu_item => @tacos_meal_count_rule.menu_item_id), remote: true, method: :get, class: 'btn-mini btn-primary btn' do %>
+<span class='glyphicon glyphicon-pencil'></span><% end %>
+
+ <%= link_to @tacos_meal_count_rule, remote: true, confirm: 'Are you sure?', method: :delete, disable_with: "Deleting...", class: 'btn-mini btn-danger btn' do %><span class="glyphicon glyphicon-trash"></span><% end %></td>
+</tr>

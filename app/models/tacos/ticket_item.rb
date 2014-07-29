@@ -1,14 +1,13 @@
 class Tacos::TicketItem < ActiveRecord::Base
 	belongs_to :menu_item_group, :foreign_key => :pos_category_id
+	belongs_to :menu_item
 
 	validates :pos_ticket_item_id, uniqueness: true
 
 	# Updates the meal count for the ticket item
 	def update_meal_count
-		#modifier = P42::MealCountRule.get_multiplier(menu_item_id, ticket_close_time)
-		#self.update_attributes( :meal_for_meal => (modifier * quantity) )
-		self.update_attributes( :meal_for_meal => (0 * quantity) )
-
+		modifier = Tacos::MealCountRule.get_multiplier(menu_item_id, ticket_close_time)
+		self.update_attributes( :meal_for_meal => (modifier * quantity) )
 	end
 
 

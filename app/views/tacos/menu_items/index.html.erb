@@ -1,0 +1,96 @@
+<div class="row">
+    <h1 class="pull-left">Tacos Menu Items</h1> 
+</div>
+
+
+<% @tacos_item_categories.each_with_index do |category, index| %>
+<% category_items = Tacos::MenuItem.where("menu_item_group_id = ?", category.id) %>
+    <% if index%3 == 0 %>
+        <div class="row">
+    <% end %>
+            <div class="col-md-4">
+                <div class="row" style="border-bottom:1px solid lightgray; margin-right:2px;">
+                    <div class="col-md-6">
+                        <h3><%= category.name %></h3>
+                    </div>
+                    <div class="col-md-6" style="margin-top:20px;">
+                        <% if category.default_meal_modifier.nil? %>
+                            <%= link_to 'Default modifier not set', edit_tacos_menu_item_group_path(category), :class => 'label label-danger' %>
+                        <% else %>
+                            <span class="label label-primary">Default Modifier: <%= category.default_meal_modifier %></span>
+                        <% end %>
+                    </div>
+                </div>
+                
+                <div class="col-md-12 table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>Name</th>
+                                <th>Meal Rule</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% category_items.each do |item| %>
+                            <tr>
+                                <td><%=item.id %></td>
+                                <td><%= link_to item.name, item %></td>
+                                <td>                                    
+                                    <% if item.meal_count_rules.empty? %>
+                                        <div id="no-rule-<%= item.id %>">
+                                            <%= link_to new_tacos_meal_count_rule_path(:menu_item => item.id), remote: true, method: :get do %>
+                                                        <span class="label label-danger">No meal modifier set</span>
+                                            <% end %>   
+                                        </div>                                       
+                                    <% else %>
+                                        <% item.meal_count_rules.each do |rule| %>
+                                         <div id="rule-<%= rule.id %>">
+                                             <% if (rule.start_date..rule.end_date).include?(Date.today) && rule.meal_modifier != 0 %>
+                                                <%= link_to edit_tacos_meal_count_rule_path(rule, :menu_item => item.id), remote: true, method: :get do %>
+                                                    <span class="label label-success">Modifier: <%= "%g" % ("%.2f" % rule.meal_modifier) %></span>
+                                                <% end %>                                                
+                                            <% else %>
+                                                <%= link_to edit_tacos_meal_count_rule_path(rule, :menu_item => item.id), remote: true, method: :get do %>
+                                                    <span class="label label-default">Modifier: <%= "%g" % ("%.2f" % rule.meal_modifier) %></span>
+                                                <% end %> 
+                                            <% end %>
+                                        </div>
+                                        <% end %>
+                                    <% end %>
+                                </td>
+                            </tr>
+                            <% end %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    <% if (index+1)%3 == 0 %>
+        </div>
+    <% end %>
+<% end %>
+<div class="row">
+    <div class="col-md-3 well">
+        <p class="bold">Items possibly needing an update. Not currently used in meal count:</p>
+        <% @food_not_counted.all.each do |item| %>
+            <p>
+                <%= link_to item.name, edit_tacos_menu_item_path(item) %>
+            </p>
+        <% end %>
+    </div>
+    <% unless @apparel_items_modifier_not_set.empty? %>
+    <div class="col-md-3 well">
+        <p class="bold">Items possibly needing an update. Modifier not set for these
+            apparel items:</p>
+        <% @apparel_items_modifier_not_set.all.each do |item| %>
+            <p>
+                <%= link_to item.name, edit_tacos_menu_item_path(item) %>
+            </p>
+        <% end %>
+    </div>
+    <% end %>
+</div>
+
+<div id="tacos-rule-modal" class="modal fade" aria-hidden="true"></div>
+<!-- div is here just to identify the page -->
+<div id="tacos_menu_items_index"></div>

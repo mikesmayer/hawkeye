@@ -41,7 +41,28 @@ class Meal
 
 			totals += tip_jar_total
 		elsif restaurant == "tacos"
+			totals = Tacos::TicketItem
+				.where("ticket_close_time between ? AND ?", start_date, end_date)
+				.sum(:meal_for_meal)
 
+			m4m_total = Tacos::TicketItem
+				.where("ticket_close_time between ? AND ?", start_date, end_date)
+				.where("pos_revenue_class_id != 15 AND pos_revenue_class_id != 18")
+				.sum(:meal_for_meal)
+			
+			dym_total = P42::TicketItem
+				.where("ticket_close_time between ? AND ?", start_date, end_date)
+				.where("menu_item_id = 7000")
+				.sum(:meal_for_meal)
+			
+			apparel_total = P42::TicketItem
+				.where("ticket_close_time between ? AND ?", start_date, end_date)
+				.where("pos_category_id = 11")
+				.sum(:meal_for_meal)
+			
+			tip_jar_total = 0
+
+			totals += tip_jar_total
 		end
 
 		totals = totals.nil? ? 0 : totals
@@ -65,7 +86,10 @@ class Meal
 			.group("DATE_TRUNC('month', ticket_close_time)")
 			.order("DATE_TRUNC('month', ticket_close_time) ASC")
 		elsif restaurant == "tacos"
-
+			Tacos::TicketItem.select("DATE_TRUNC('month', ticket_close_time) as month, sum(meal_for_meal) as total")
+			.where("ticket_close_time between ? AND ?", start_date, end_date)
+			.group("DATE_TRUNC('month', ticket_close_time)")
+			.order("DATE_TRUNC('month', ticket_close_time) ASC")
 		end
 
 
@@ -81,7 +105,10 @@ class Meal
 			.group("DATE_TRUNC('year', ticket_close_time)")
 			.order("DATE_TRUNC('year', ticket_close_time) ASC")
 		elsif restaurant == "tacos"
-
+			Tacos::TicketItem.select("DATE_TRUNC('year', ticket_close_time) as year, sum(meal_for_meal) as total")
+			.where("ticket_close_time between ? AND ?", start_date, end_date)
+			.group("DATE_TRUNC('year', ticket_close_time)")
+			.order("DATE_TRUNC('year', ticket_close_time) ASC")
 		end
 				
 

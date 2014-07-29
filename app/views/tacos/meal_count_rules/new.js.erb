@@ -1,0 +1,8 @@
+$('#tacos-rule-modal').html("<%= escape_javascript(render 'new') %>");
+$('#tacos-rule-modal').modal("show");
+
+$('.datepicker').datepicker({
+	format: 'yyyy/mm/dd',
+	//endDate: '-1d',
+	autoclose: false
+});

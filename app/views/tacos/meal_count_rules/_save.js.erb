@@ -1,0 +1,9 @@
+$("ul.errors").html("")
+<% if @tacos_meal_rule.errors.any? %>
+	<% @tacos_meal_rule.errors.full_messages.each do |message| %>
+		$('ul.errors').append($("<li />").html("<%= message.html_safe %>"))
+	<% end %>
+<% else %>
+
+	$("#tacos-rule-modal").hide();
+<% end %>

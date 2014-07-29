@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Menu item:</strong>
+  <%= @tacos_meal_count_rule.menu_item_id %>
+</p>
+
+<p>
+  <strong>Meal modifier:</strong>
+  <%= @tacos_meal_count_rule.meal_modifier %>
+</p>
+
+<p>
+  <strong>Start date:</strong>
+  <%= @tacos_meal_count_rule.start_date %>
+</p>
+
+<p>
+  <strong>End date:</strong>
+  <%= @tacos_meal_count_rule.end_date %>
+</p>
+
+<%= link_to 'Edit', edit_tacos_meal_count_rule_path(@tacos_meal_count_rule) %> |
+<%= link_to 'Back', tacos_meal_count_rules_path %>

@@ -161,6 +161,14 @@ class GoogleDriveSync
 			file = File.binwrite("gnditem.dbf", body)
 			item_tbl = DBF::Table.new("gnditem.dbf")
 			num_processed = GoogleDriveSync.process_tacos_ticket_items_dbf(item_tbl)
+		elsif title == "ITM.DBF"
+			file = File.binwrite("itm.dbf", body)
+			menu_time_tbl = DBF::Table.new("itm.dbf")
+			num_processed = GoogleDriveSync.process_tacos_menu_item_dbf(menu_time_tbl)
+		elsif title == "CIT.DBF"
+			file = File.binwrite("cit.dbf", body)
+			item_cat_join_tbl = DBF::Table.new("cit.dbf")
+			num_processed = GoogleDriveSync.process_tacos_menu_item_categories(item_cat_join_tbl)
 		end
 		
 		
@@ -267,5 +275,31 @@ class GoogleDriveSync
 		num_processed
 	end
 
+
+	def self.process_tacos_menu_item_dbf(itm_dbf)
+		num_processed = 0
+		itm_dbf.each do |menu_item|
+			unless menu_item.longname.empty? || menu_item.longname.include?('***')
+				Tacos::MenuItem.find_or_update_by_id(menu_item.id, menu_item.longname)
+				num_processed += 1
+			end			
+		end
+		num_processed
+	end
+
+	def self.process_tacos_menu_item_categories(item_cat_join_dbf)
+		num_processed = 0
+		item_cat_join_dbf.each do |record|
+			menu_item = Tacos::MenuItem.find_by_id(record.itemid)
+			unless menu_item.nil?
+				menu_item.update_attributes(:menu_item_group_id => record.category)
+			end
+			num_processed += 1			
+			
+		end
+		#category_record = itm_cat_join_dbf.find :first, :item_id => menu_item.id
+		#	category_id = category_record.category
+		num_processed
+	end
 
 end

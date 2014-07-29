@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140728024557) do
+ActiveRecord::Schema.define(version: 20140729023729) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -173,9 +173,26 @@ ActiveRecord::Schema.define(version: 20140728024557) do
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
+  create_table "tacos_meal_count_rules", force: true do |t|
+    t.integer  "menu_item_id"
+    t.float    "meal_modifier"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "tacos_menu_item_groups", force: true do |t|
     t.string   "name"
     t.integer  "default_meal_modifier"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tacos_menu_items", force: true do |t|
+    t.integer  "menu_item_group_id"
+    t.string   "name"
+    t.integer  "recipe_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
