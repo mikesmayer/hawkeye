@@ -1,7 +1,6 @@
 class GoogleDriveSyncController < ApplicationController
 
 	def index
-		@gnditem_results = GoogleDriveSync.search_files("GNDITEM")
 	end
 
 	def file_list
@@ -19,5 +18,10 @@ class GoogleDriveSyncController < ApplicationController
 	def get_file
 		@file_contents = GoogleDriveSync.get_file(params[:file_id])
 		
+	end
+
+	def search
+		@gnditem_results = GoogleDriveSync.search_files(params[:search_term])
+		render :layout => false
 	end
 end

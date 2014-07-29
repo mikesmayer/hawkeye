@@ -5,6 +5,13 @@ function init_google_drive(){
 		get_contents_tacos_daily_sales();
 	});
 	
+	/*
+	$('#searchSubmit').click(function( event ){
+		event.preventDefault();
+		var search_term = $('#searchTerm').val();
+		search_drive(search_term);
+	});	
+*/
 }
 
 
@@ -43,4 +50,18 @@ function get_folder_contents(folder_name, folder_id){
 		}
 	});
 
+}
+
+
+function search_drive(search_term){
+
+	$.ajax({
+		url: "google_drive_sync/search",
+		data: {
+			search_term: search_term
+		},
+		success: function(data){
+			console.log(data);
+		}
+	});
 }

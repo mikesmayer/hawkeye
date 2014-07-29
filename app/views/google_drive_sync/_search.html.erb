@@ -1,0 +1,19 @@
+<h3>Drive search results for GNDITEM</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Folder Title</th>
+      <th>File Title</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @gnditem_results.each do |item| %>
+      <tr>
+        <td><a href="/google_drive_sync/get_file?file_id=<%= item[:id] %>"><%= item[:id] %></a></td>
+        <td><%= item[:parent_title] %></td>
+        <td><%= item[:title] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

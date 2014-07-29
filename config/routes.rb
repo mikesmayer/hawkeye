@@ -31,7 +31,7 @@ RailsBootstrap::Application.routes.draw do
   get 'google_drive_sync/file_list', :controller => 'google_drive_sync', :action => 'file_list'
   get 'google_drive_sync/folder', :controller => 'google_drive_sync', :action => 'folder'
   get 'google_drive_sync/get_file', :controller => 'google_drive_sync', :action => 'get_file'
-
+  get 'google_drive_sync/search', :controller => 'google_drive_sync', :action => 'search'
   resources :item_sales
     
   resources :meals, :only => [] do
