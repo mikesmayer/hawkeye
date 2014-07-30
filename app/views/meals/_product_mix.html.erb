@@ -1,0 +1,24 @@
+<h2 class="text-center">Meal Count by Category</h2>
+<h5 class="text-center" id="product_mix_dates"><b>From</b> <%= @start_date.strftime("%b-%e-%Y") %> <b>to</b> <%= @end_date.strftime("%b-%e-%Y") %></h5>
+<table class="table table-hover ">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Qty</th>
+			<th>Net price</th>
+			<th>M4m</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @product_mix.each do |category| %>
+			<tr>
+				<td><%= category.id %></td>
+				<td><%= category.name %></td>
+				<td><%= number_with_precision(category.quantity, :precision => 0, :delimiter => ",") %></td>
+				<td>$<%= number_with_precision(category.net_price, :precision => 0, :delimiter => ",") %></td>
+				<td><%= number_with_precision(category.m4m, :precision => 0, :delimiter => ",") %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>

@@ -123,6 +123,35 @@ class Meal
 
 	end
 
+
+	def self.get_product_mix(restaurant, start_date, end_date)
+		start_date = start_date.to_s+"T00:00:00"
+		end_date = end_date.to_s+"T23:59:59"
+
+		if restaurant == "p42"
+			mix_table = P42::TicketItem.find_by_sql("SELECT p42_menu_item_groups.id, p42_menu_item_groups.name,
+			       SUM(quantity) AS quantity, SUM(net_price) AS net_price, SUM(discount_total) AS discount_total, SUM(item_menu_price) AS item_price, 
+			       SUM(meal_for_meal) AS m4m
+			  FROM p42_ticket_items
+			  INNER JOIN p42_menu_item_groups ON p42_ticket_items.pos_category_id = p42_menu_item_groups.id
+			  WHERE ticket_close_time BETWEEN '#{start_date}' AND '#{end_date}'
+			  GROUP BY p42_menu_item_groups.id, p42_menu_item_groups.name")
+		elsif restaurant == "tacos"
+			mix_table = Tacos::TicketItem.find_by_sql("SELECT tacos_menu_item_groups.id, tacos_menu_item_groups.name,
+			       SUM(quantity) AS quantity, SUM(net_price) AS net_price, SUM(discount_total) AS discount_total, SUM(item_menu_price) AS item_price, 
+			       SUM(meal_for_meal) AS m4m
+			  FROM tacos_ticket_items
+			  INNER JOIN tacos_menu_item_groups ON tacos_ticket_items.pos_category_id = tacos_menu_item_groups.id
+			  WHERE ticket_close_time BETWEEN '#{start_date}' AND '#{end_date}'
+			  GROUP BY tacos_menu_item_groups.id, tacos_menu_item_groups.name")
+
+		end
+
+
+
+		mix_table
+	end
+
 	def self.get_meal_breakdown(restaurant, granularity, start_date, end_date)
 		start_date = start_date.to_s+"T00:00:00"
 		end_date = end_date.to_s+"T23:59:59"

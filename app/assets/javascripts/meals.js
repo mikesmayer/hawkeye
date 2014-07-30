@@ -11,7 +11,7 @@ function init_meals_index(){
 	update_count_breakdown();
 	update_counts_by_month();
 	update_counts_by_year();
-
+	update_product_mix();
 
 	/* function that just sets up all of the click handlers for the page */
 	setup_click_handlers();
@@ -34,6 +34,7 @@ function update_date_range(){
 	update_counts_by_month();
 	update_counts_by_year();
 	update_meal_info_boxes();
+	update_product_mix();
 }
 
 function meals_update_restaurant_selection(){
@@ -42,6 +43,40 @@ function meals_update_restaurant_selection(){
 	update_counts_by_month();
 	update_counts_by_year();
 	update_meal_info_boxes();
+	update_product_mix();
+}
+
+function update_product_mix(){
+
+	$.ajax({
+		url: "meals/product_mix",
+		type: "GET",
+		data: {
+			restaurant: meals_selected_restaurant,
+			date_range: date_range
+		},
+		cache: false,
+		beforeSend: function() {
+			$('#product_mix_spinner').show();	
+			$('#product_mix_container').hide();
+		},
+		success: function(html){
+			$('#product_mix_spinner').hide();	
+			$('#product_mix_container').show();
+
+			if(date_range == "all"){
+				$('#product_mix_dates').html("<b>All time</b>");
+			}else if(date_range == "current_year"){
+				$('#product_mix_dates').html("<b>Current year</b>");
+			}else if(date_range == "current_month"){
+				$('#product_mix_dates').html("<b>Current month</b>");
+			}else if(date_range == "current_week"){
+				$('#product_mix_dates').html("<b>Current week</b>");
+			}
+			
+		}
+	});
+
 }
 
 function update_count_breakdown(){
