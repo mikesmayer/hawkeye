@@ -99,6 +99,17 @@ $(document).ready(function(){
 	});
 
 
+	$(document).bind('ajaxError', 'form#new_tacos_meal_count_rule', function(event, jqxhr, settings, exception){
+		// note: jqxhr.responseJSON undefined, parsing responseText instead
+		$(event.data).render_form_errors( $.parseJSON(jqxhr.responseText) );
+	});
+
+
+	$(document).bind('ajaxError', 'form.edit_tacos_meal_count_rule', function(event, jqxhr, settings, exception){
+		// note: jqxhr.responseJSON undefined, parsing responseText instead
+		$(event.data).render_form_errors( $.parseJSON(jqxhr.responseText) );
+	});
+
 	$('#tip_jar_stats_tbl').dataTable({
 	  "sPaginationType": "bootstrap",
 	  "order": [2, 'desc'],

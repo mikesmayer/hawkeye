@@ -14,15 +14,27 @@ body { padding-top: 60px; }
 @import "bootstrap-datepicker";
 @import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
 
-.bs-callout-info {
-	background-color: #f4f8fa;
-	border-color: #5bc0de;
-}
+
 
 .bs-callout {
-	margin: 20px 0;
-	padding: 20px;
-	border-left: 3px solid #eee;
+  padding: 10px;
+  margin: 20px 0;
+  border: 1px solid #eee;
+  border-left-width: 5px;
+  border-radius: 3px;
+}
+
+.bs-callout-info {
+  background-color: #f4f8fa;
+  border-color: #5bc0de;
+}
+
+.bs-callout-warning {
+  border-left-color: #f0ad4e;
+}
+
+.bs-callout-danger {
+  border-left-color: #d9534f;
 }
 
 #datepicket_meal_rule {

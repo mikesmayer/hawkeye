@@ -10,11 +10,25 @@
         </p>
         <p>
           <strong>Item category:</strong>
-          <%= @tacos_menu_item.menu_item_group.name %>
+          <% if @tacos_menu_item.menu_item_group.nil? %>
+            <p>No category set - this should be fixed in the next sync</p>
+            <p>Tell tyler if the problem persists</p>
+          <% else %>
+            <%= @tacos_menu_item.menu_item_group.try(:name) %>
+          <% end %>
         </p>
       </div>
     </div>
+
+    <div class="row" style="padding-bottom:5px; padding-left:15px;">
+        <%= link_to 'Destroy', @tacos_menu_item, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger' %>
+    </div>
+
+    <div class="row" style="padding-bottom:5px; padding-left:15px;">
+      <%= link_to 'All Menu Items', tacos_menu_items_path, :class => 'btn btn-default' %>
+    </div>
   </div>
+
   <div class="col-md-9">
     <div class="panel panel-default">
      
@@ -78,13 +92,8 @@
   </div>
 </div>
 
-<%= link_to 'Destroy', @tacos_menu_item, method: :delete, data: { confirm: 'Are you sure?' } %>
 
-<%= link_to 'Edit', edit_tacos_menu_item_path(@tacos_menu_item), :class => 'btn btn-default' %> 
-<%= link_to 'Back', tacos_menu_items_path %>
-
-
-<div id="rule-modal" class="modal fade" aria-hidden="true"></div>
+<div id="tacos-rule-modal" class="modal fade" aria-hidden="true"></div>
 
 <%# Bootstrap modal markup. @see: http://getbootstrap.com/javascript/#modals %>
 <div class="modal fade" id="new_rule_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

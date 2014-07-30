@@ -2,10 +2,6 @@ class Tacos::MenuItemGroup < ActiveRecord::Base
 	has_many :menu_items
 
 
-	def self.parse_menu_item_groups
-
-	end
-
 
 	def self.find_or_update_by_id(id, name)
   	

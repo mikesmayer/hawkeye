@@ -4,14 +4,24 @@ class Tacos::MenuItemsController < ApplicationController
   # GET /tacos/menu_items
   # GET /tacos/menu_items.json
   def index
-    @tacos_item_categories = Tacos::MenuItemGroup.order("name ASC").all
+    tacos_all_categories = Tacos::MenuItemGroup.order("name ASC").all
+    @tacos_categories_with_items = Array.new
+    @tacos_categories_no_items = Array.new
+    tacos_all_categories.each do |category|
+      if category.menu_items.count == 0
+        @tacos_categories_no_items << category
+      else
+        @tacos_categories_with_items << category
+      end
+    end
+
+    @menu_item_no_cat = Tacos::MenuItem.where("menu_item_group_id = -1")
 
     @tacos_menu_items = Tacos::MenuItem.order("id ASC").all
-    @food_not_counted = Tacos::MenuItem.includes('meal_count_rules').where("tacos_meal_count_rules.id IS NULL AND (menu_item_group_id = 40 OR
-        menu_item_group_id = 41 OR menu_item_group_id = 42 OR menu_item_group_id = 43 OR
-        menu_item_group_id = 52 OR menu_item_group_id = 53 OR menu_item_group_id = 54 OR
-        menu_item_group_id = 50 OR menu_item_group_id = 47)")
-    @apparel_items_modifier_not_set = Tacos::MenuItem.includes('meal_count_rules').where("tacos_meal_count_rules.id IS NULL")
+    @food_not_counted = Tacos::MenuItem.includes('meal_count_rules').where("tacos_meal_count_rules.id IS NULL AND (menu_item_group_id = 2 OR
+        menu_item_group_id = 5 OR menu_item_group_id = 4 OR menu_item_group_id = 3 OR
+        menu_item_group_id = 1)")
+    @apparel_items_modifier_not_set = Tacos::MenuItem.includes('meal_count_rules').where("tacos_meal_count_rules.id IS NULL AND menu_item_group_id = 11")
     
 
     respond_to do |format|

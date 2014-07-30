@@ -2,8 +2,64 @@
     <h1 class="pull-left">Tacos Menu Items</h1> 
 </div>
 
+<div class="row">
+    <div class="col-md-3">
+        <div class="bs-callout bs-callout-warning">
+            <h4>Categories with no menu items</h4>
+            <ol>
+                <% @tacos_categories_no_items.each do |cat| %>
+                    <li><%= link_to cat.name, cat %></li>
+                <% end %>
+            </ol>
+        </div>
+    </div>
+    <% unless @menu_item_no_cat.empty? %>
+        <div class="col-md-3">
+            <div class="bs-callout bs-callout-info">
+                <h4>Menu items without a category</h4>
+                <ol>
+                    <% @menu_item_no_cat.each do |menu_item| %>
+                        <li><%= link_to menu_item.name, menu_item %></li>
+                    <% end %>
+                </ol>   
+            </div>
+        </div>
+    <% end %>
+    <% unless @food_not_counted.empty? %>
+        <div class="col-md-3">
+            <div class="bs-callout bs-callout-danger">
+                <p class="bold">Items possibly needing an update. Not currently used in meal count:</p>
+                <ol>
+                    <% @food_not_counted.all.each do |item| %>
+                        <li>
+                            <%= link_to item.name, edit_tacos_menu_item_path(item) %>
+                        </li>
+                    <% end %>
+                </ol>
+            </div>
+            
 
-<% @tacos_item_categories.each_with_index do |category, index| %>
+        </div>
+    <% end %>
+    <% unless @apparel_items_modifier_not_set.empty? %>
+        <div class="col-md-3">
+            <div class="bs-callout bs-callout-warning">
+                <p class="bold">Items possibly needing an update. Modifier not set for these apparel items:</p>
+                <ol>
+                    <% @apparel_items_modifier_not_set.all.each do |item| %>
+                    <li>
+                        <%= link_to item.name, edit_tacos_menu_item_path(item) %>
+                    </li>
+                    <% end %>
+                </ol>
+            </div>
+
+
+        </div>
+    <% end %>
+</div>
+
+<% @tacos_categories_with_items.each_with_index do |category, index| %>
 <% category_items = Tacos::MenuItem.where("menu_item_group_id = ?", category.id) %>
     <% if index%3 == 0 %>
         <div class="row">
@@ -70,25 +126,7 @@
     <% end %>
 <% end %>
 <div class="row">
-    <div class="col-md-3 well">
-        <p class="bold">Items possibly needing an update. Not currently used in meal count:</p>
-        <% @food_not_counted.all.each do |item| %>
-            <p>
-                <%= link_to item.name, edit_tacos_menu_item_path(item) %>
-            </p>
-        <% end %>
-    </div>
-    <% unless @apparel_items_modifier_not_set.empty? %>
-    <div class="col-md-3 well">
-        <p class="bold">Items possibly needing an update. Modifier not set for these
-            apparel items:</p>
-        <% @apparel_items_modifier_not_set.all.each do |item| %>
-            <p>
-                <%= link_to item.name, edit_tacos_menu_item_path(item) %>
-            </p>
-        <% end %>
-    </div>
-    <% end %>
+
 </div>
 
 <div id="tacos-rule-modal" class="modal fade" aria-hidden="true"></div>

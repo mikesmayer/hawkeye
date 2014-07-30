@@ -43,7 +43,7 @@ if( $('#tacos_menu_items_index').length > 0 ){
 	if( $("#rule-<%= @tacos_meal_count_rule.id %>").length > 0){
 
 		$('#rule-<%= @tacos_meal_count_rule.id %>').html("<%= j render partial: 'tacos/meal_count_rules/update_table_row', local: { tacos_meal_count_rule: @tacos_meal_count_rule } %>");
-		$('#rule-modal').modal_success();
+		$('#tacos-rule-modal').modal_success();
 
 	} else {
 		$('#rules_table').append("<%= j render partial: 'tacos/meal_count_rules/table_row', local: {tacos_meal_count_rule: @tacos_meal_count_rule } %>");
