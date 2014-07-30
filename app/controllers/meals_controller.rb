@@ -1,6 +1,6 @@
 class MealsController < ApplicationController
-	before_action :set_restaurant, only: [:index, :counts, :month_counts, :year_counts, :count_totals, :product_mix]
-	before_action :convert_daterange, only: [:index, :counts, :month_counts, :year_counts, :count_totals, :product_mix]
+	before_action :set_restaurant, only: [:index, :counts, :month_counts, :year_counts, :count_totals, :product_mix, :category_product_mix]
+	before_action :convert_daterange, only: [:index, :counts, :month_counts, :year_counts, :count_totals, :product_mix, :category_product_mix]
 
 	def index
 		totals = JSON.parse(Meal.get_meal_totals(@restaurant, @start_date, @end_date))
@@ -9,6 +9,9 @@ class MealsController < ApplicationController
 		@dym = totals["dym"]
 		@apparel = totals["apparel"]
 		@tip_jar = totals["tip_jar"]
+
+		@p42_categories = P42::MenuItemGroup.all
+		@tacos_categories = Tacos::MenuItemGroup.all
 	end
 
 	#GET /meals/detail_counts
@@ -50,8 +53,18 @@ class MealsController < ApplicationController
 
 	def product_mix
 		@product_mix = Meal.get_product_mix(@restaurant, @start_date, @end_date)
-		render :layout => false
+		respond_to do |format|
+			format.js 	{ render :layout => false }
+		end
 	end
+
+	def category_product_mix
+		@item_mix_by_category = Meal.get_category_breakdown(@restaurant, params[:category_id], @start_date, @end_date)
+		respond_to do |format|
+			format.js 	{ render :layout => false }
+		end
+	end
+
 
 	private
 

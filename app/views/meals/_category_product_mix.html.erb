@@ -1,0 +1,23 @@
+
+<table class="table table-hover ">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Qty</th>
+			<th>Net price</th>
+			<th>M4m</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @item_mix_by_category.each do |item| %>
+			<tr>
+				<td><%= item.id %></td>
+				<td><%= item.name %></td>
+				<td><%= number_with_precision(item.quantity, :precision => 0, :delimiter => ",") %></td>
+				<td>$<%= number_with_precision(item.net_price, :precision => 0, :delimiter => ",") %></td>
+				<td><%= number_with_precision(item.m4m, :precision => 0, :delimiter => ",") %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>

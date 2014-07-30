@@ -1,6 +1,7 @@
 var breakdown_tbl_granularity;
 var date_range;
 var meals_selected_restaurant;
+var category_id;
 
 
 function init_meals_index(){
@@ -35,6 +36,7 @@ function update_date_range(){
 	update_counts_by_year();
 	update_meal_info_boxes();
 	update_product_mix();
+	get_category_breakdown();
 }
 
 function meals_update_restaurant_selection(){
@@ -44,7 +46,23 @@ function meals_update_restaurant_selection(){
 	update_counts_by_year();
 	update_meal_info_boxes();
 	update_product_mix();
+
+	update_category_selector();
 }
+
+
+function update_category_selector(){
+	$('#category_product_mix_container').html('');
+	category_id = null;
+	if(meals_selected_restaurant == "p42"){
+		$('#p42_category_select_cont').removeClass("hidden");
+		$('#tacos_category_select_cont').addClass("hidden");		
+	}else {
+		$('#p42_category_select_cont').addClass("hidden");
+		$('#tacos_category_select_cont').removeClass("hidden");				
+	}
+}
+
 
 function update_product_mix(){
 
@@ -196,6 +214,30 @@ function update_meal_info_boxes(){
 }
 
 
+function get_category_breakdown(){
+	console.log("Category: " + category_id);
+
+	if(category_id){
+		$.ajax({
+			url: "meals/category_product_mix",
+			cache: false,
+			data: {
+				restaurant: meals_selected_restaurant,
+				date_range: date_range,
+				category_id: category_id
+			},
+			beforeSend: function(){
+				$('#category_product_mix_spinner').show();
+				$('#category_product_mix_container').hide();
+			},
+			success: function(data){
+				$('#category_product_mix_spinner').hide();
+				$('#category_product_mix_container').show();
+			}
+		});
+	}
+}
+
 
 function setup_click_handlers(){
 	/* Click handlers for granulatrity on Counts breakdown table */
@@ -277,5 +319,16 @@ function setup_click_handlers(){
 
 	/* end click handlers for restaurant selection */
 
+	/* click event handler for the category select dropdown list */
+	$('#p42_cat_select').change(function(){
+		category_id = $(this).children(":selected").val();
+		get_category_breakdown();
+	});
+
+	$('#tacos_cat_select').change(function(){
+		category_id = $(this).children(":selected").val()
+		get_category_breakdown();
+	});
+	/* end click handler for category */
 }
 

@@ -27,6 +27,7 @@ RailsBootstrap::Application.routes.draw do
   get 'meals/year_counts', :controller => 'meals', :action => 'year_counts'
   get 'meals/count_totals', :controller => 'meals', :action => 'count_totals'
   get 'meals/product_mix', :controller => 'meals', :action => 'product_mix'
+  get 'meals/category_product_mix', :controller => 'meals', :action => 'category_product_mix'
   
 
   get 'item_sales/items', :controller => 'item_sales', :action => 'items'

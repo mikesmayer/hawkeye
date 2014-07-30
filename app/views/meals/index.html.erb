@@ -203,6 +203,48 @@
 			<!-- _product_mix.html.erb partial loaded from js via ajax -->
 		</div>
 	</div>
+
+	<div class="col-md-6">
+		<h2 class="text-center">Item Counts by Category</h2>
+
+		<div class="row" id="p42_category_select_cont">
+			<div class="col-md-3"></div>
+			<div class="col-md-6">
+				<form class="text-center" role="form">
+					<div class="form-group">
+						<label for="p42_cat_select" class="control-label">Select category</label>
+						<select name="p42_cat_select" id="p42_cat_select" class="form-control">
+							<option value="">Choose category</option>
+							<% @p42_categories.each do |cat| %>
+								<option value="<%= cat.id %>"><%= cat.name %></option>
+							<% end %>
+						</select>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="row hidden" id="tacos_category_select_cont">
+			<div class="col-md-3"></div>
+			<div class="col-md-6">
+				<form class="text-center" role="form">
+					<div class="form-group">
+						<label for="tacos_cat_select" class="control-label">Select category</label>
+						<select name="tacos_cat_select" id="tacos_cat_select" class="form-control">
+							<option value="">Choose category</option>
+							<% @tacos_categories.each do |cat| %>
+								<option value="<%= cat.id %>"><%= cat.name %></option>
+							<% end %>
+						</select>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="ajax_loading hidden" id="category_product_mix_spinner"></div>
+		<div id="category_product_mix_container">
+			<!-- _category_product_mix.html.erb parial -->
+		</div>
+	</div>
 </div> <!-- end row -->
 
 <!-- hidden div used just for page identification from js -->
