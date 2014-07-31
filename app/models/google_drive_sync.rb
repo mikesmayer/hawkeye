@@ -53,7 +53,7 @@ class GoogleDriveSync
 			  puts YAML::dump(file)
 			  
 
-				if (file.mimeType == "application/vnd.google-apps.folder") || (["CAT.DBF", "CIT.DBF", "GNDITEM.DBF", "ITM.DBF"].include? file.title)
+				if (file.mimeType == "application/vnd.google-apps.folder") || (["CAT.DBF", "CIT.DBF", "GNDITEM.DBF", "ITM.DBF", "GNDVOID.DBF"].include? file.title)
 				  	result << { "id" => file.id, 
 			  				"title" => file.title,
 			  				"mimeType" => file.mimeType }
@@ -169,6 +169,10 @@ class GoogleDriveSync
 			file = File.binwrite("cit.dbf", body)
 			item_cat_join_tbl = DBF::Table.new("cit.dbf")
 			num_processed = GoogleDriveSync.process_tacos_menu_item_categories(item_cat_join_tbl)
+		elsif title == "GNDVOID.DBF"
+			file = File.binwrite("gndvoid.dbf", body)
+			void_tbl = DBF::Table.new("gndvoid.dbf")
+			num_processed = GoogleDriveSync.process_voids_dbf(void_tbl)
 		end
 		
 		
@@ -299,6 +303,20 @@ class GoogleDriveSync
 		end
 		#category_record = itm_cat_join_dbf.find :first, :item_id => menu_item.id
 		#	category_id = category_record.category
+		num_processed
+	end
+
+	def self.process_voids_dbf(voids_dbf)
+		num_processed = 0
+		voids_dbf.each do |record|
+			pos_ticket_item_id = record.entryid
+			puts pos_ticket_item_id
+			ticket_item = Tacos::TicketItem.find_by_pos_ticket_item_id(pos_ticket_item_id)
+			unless ticket_item.nil?
+				ticket_item.update_attributes(:void => true)
+			end
+			num_processed += 1
+		end
 		num_processed
 	end
 

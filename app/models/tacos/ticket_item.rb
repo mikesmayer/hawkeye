@@ -21,7 +21,7 @@ class Tacos::TicketItem < ActiveRecord::Base
 			ticket_item = Tacos::TicketItem.create(:pos_ticket_item_id => pos_ticket_item_id, :pos_ticket_id => pos_ticket_id, 
 				:menu_item_id => menu_item_id, :pos_category_id => pos_category_id, :pos_revenue_class_id => pos_revenue_class_id,
 				:quantity => quantity, :net_price => net_price, :discount_total => discount_total,
-				:item_menu_price => item_menu_price, :ticket_close_time => ticket_close_time)			
+				:item_menu_price => item_menu_price, :ticket_close_time => ticket_close_time, :void => false)			
 		else
 			ticket_item.update_attributes(:pos_ticket_id => pos_ticket_id, 
 				:menu_item_id => menu_item_id, :pos_category_id => pos_category_id, :pos_revenue_class_id => pos_revenue_class_id,

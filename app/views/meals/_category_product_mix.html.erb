@@ -12,7 +12,17 @@
 		</tr>
 	</thead>
 	<tbody>
+		<% qty_total = 0 %>
+		<% net_price_total = 0 %>
+		<% discount_total = 0 %>
+		<% m4m_total = 0 %>
+		
 		<% @item_mix_by_category.each do |item| %>
+
+			<% qty_total += item.quantity %>
+			<% net_price_total += item.net_price %>
+			<% discount_total += item.discount_total %>
+			<% m4m_total += item.m4m %>
 			<tr>
 				<td><%= item.id %></td>
 				<td><%= item.name %></td>
@@ -23,5 +33,14 @@
 				<td><%= number_with_precision(item.m4m, :precision => 0, :delimiter => ",") %></td>
 			</tr>
 		<% end %>
+		<tr style="border-top:double;">
+			<% gross_sales_total = net_price_total + discount_total %>
+			<td colspan="2"><b>Totals</b></td>
+			<td><%= number_with_precision(qty_total, :precision => 0, :delimiter => ",") %></td>
+			<td>$<%= number_with_precision(gross_sales_total, :precision => 2, :delimiter => ",") %></td>
+			<td>$<%= number_with_precision(net_price_total, :precision => 2, :delimiter => ",") %></td>
+			<td>$<%= number_with_precision(discount_total, :precision => 2, :delimiter => ",") %></td>		
+			<td><%= number_with_precision(m4m_total, :precision => 0, :delimiter => ",") %></td>		
+		</tr>
 	</tbody>
 </table>

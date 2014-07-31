@@ -1,4 +1,4 @@
-<h2 class="text-center">Meal Count by Category</h2>
+<h2 class="text-center">Category Counts</h2>
 <h5 class="text-center" id="product_mix_dates"><b>From</b> <%= @start_date.strftime("%b-%e-%Y") %> <b>to</b> <%= @end_date.strftime("%b-%e-%Y") %></h5>
 <table class="table table-hover ">
 	<thead>
@@ -13,7 +13,18 @@
 		</tr>
 	</thead>
 	<tbody>
+		<% qty_total = 0 %>
+		<% net_price_total = 0 %>
+		<% discount_total = 0 %>
+		<% m4m_total = 0 %>
+
 		<% @product_mix.each do |category| %>
+
+			<% qty_total += category.quantity %>
+			<% net_price_total += category.net_price %>
+			<% discount_total += category.discount_total %>
+			<% m4m_total += category.m4m %>
+
 			<tr>
 				<td><%= category.id %></td>
 				<td><%= category.name %></td>
@@ -24,5 +35,14 @@
 				<td><%= number_with_precision(category.m4m, :precision => 0, :delimiter => ",") %></td>
 			</tr>
 		<% end %>
+		<tr style="border-top:double;">
+			<% gross_sales_total = net_price_total + discount_total %>
+			<td colspan="2"><b>Totals</b></td>
+			<td><%= number_with_precision(qty_total, :precision => 0, :delimiter => ",") %></td>
+			<td>$<%= number_with_precision(gross_sales_total, :precision => 2, :delimiter => ",") %></td>
+			<td>$<%= number_with_precision(net_price_total, :precision => 2, :delimiter => ",") %></td>
+			<td>$<%= number_with_precision(discount_total, :precision => 2, :delimiter => ",") %></td>		
+			<td><%= number_with_precision(m4m_total, :precision => 0, :delimiter => ",") %></td>		
+		</tr>
 	</tbody>
 </table>

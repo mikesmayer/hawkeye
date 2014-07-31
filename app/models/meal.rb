@@ -44,6 +44,7 @@ class Meal
 		elsif restaurant == "tacos"
 			totals = Tacos::TicketItem
 				.where("ticket_close_time between ? AND ?", start_date, end_date)
+				.where("(void IS NULL OR void != 'TRUE')")
 				.sum(:meal_for_meal)
 
 			# Geting the m4m numbers by summing everything in the following food categories:
@@ -56,18 +57,21 @@ class Meal
 			m4m_total = Tacos::TicketItem
 				.where("ticket_close_time between ? AND ?", start_date, end_date)
 				.where("pos_category_id IN (1, 2, 3, 4, 5)")
+				.where("(void IS NULL OR void != 'TRUE')")
 				.sum(:meal_for_meal)
 			
 			# Getting the double your meal donation using the item number for donation (7000)
 			dym_total = Tacos::TicketItem
 				.where("ticket_close_time between ? AND ?", start_date, end_date)
 				.where("menu_item_id = 7000")
+				.where("(void IS NULL OR void != 'TRUE')")
 				.sum(:meal_for_meal)
 			
 			# Getting apparel number using the category id for merchandise (11)
 			apparel_total = Tacos::TicketItem
 				.where("ticket_close_time between ? AND ?", start_date, end_date)
 				.where("pos_category_id = 11")
+				.where("(void IS NULL OR void != 'TRUE')")
 				.sum(:meal_for_meal)
 			
 			tip_jar_total = TipJarDonation
@@ -101,6 +105,7 @@ class Meal
 		elsif restaurant == "tacos"
 			Tacos::TicketItem.select("DATE_TRUNC('month', ticket_close_time) as month, sum(meal_for_meal) as total")
 			.where("ticket_close_time between ? AND ?", start_date, end_date)
+			.where("(void IS NULL OR void != 'TRUE')")
 			.group("DATE_TRUNC('month', ticket_close_time)")
 			.order("DATE_TRUNC('month', ticket_close_time) ASC")
 		end
@@ -120,6 +125,7 @@ class Meal
 		elsif restaurant == "tacos"
 			Tacos::TicketItem.select("DATE_TRUNC('year', ticket_close_time) as year, sum(meal_for_meal) as total")
 			.where("ticket_close_time between ? AND ?", start_date, end_date)
+			.where("(void IS NULL OR void != 'TRUE')")
 			.group("DATE_TRUNC('year', ticket_close_time)")
 			.order("DATE_TRUNC('year', ticket_close_time) ASC")
 		end
@@ -148,6 +154,7 @@ class Meal
 			  FROM tacos_ticket_items
 			  INNER JOIN tacos_menu_item_groups ON tacos_ticket_items.pos_category_id = tacos_menu_item_groups.id
 			  WHERE ticket_close_time BETWEEN '#{start_date}' AND '#{end_date}'
+			  AND (void IS NULL OR void != 'TRUE')
 			  GROUP BY tacos_menu_item_groups.id, tacos_menu_item_groups.name
 			  ORDER BY m4m DESC")
 
@@ -180,6 +187,7 @@ class Meal
 			  INNER JOIN tacos_menu_items ON tacos_ticket_items.menu_item_id = tacos_menu_items.id
 			  WHERE ticket_close_time BETWEEN '#{start_date}' AND '#{end_date}'
 				AND pos_category_id = #{cateogry_id}
+				AND (void IS NULL OR void != 'TRUE')
 			  GROUP BY tacos_menu_items.id, tacos_menu_items.name
 			  ORDER BY m4m DESC")
 		end
@@ -326,17 +334,20 @@ class Meal
 					FROM tacos_ticket_items 
 					WHERE pos_category_id IN (1, 2, 3, 4, 5)
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY CAST(ticket_close_time AS DATE)) t1
 				LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS dym
 					FROM tacos_ticket_items
 					WHERE menu_item_id = 7000
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY CAST(ticket_close_time AS DATE)) t2
 				ON t1.date = t2.date
 				LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS apparel
 					FROM tacos_ticket_items
 					WHERE pos_category_id = 11
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY CAST(ticket_close_time AS DATE)) t3
 				ON t1.date = t3.date
 				LEFT JOIN (SELECT CAST(deposit_date AS DATE) as date, SUM(meals) AS tip_jar
@@ -348,6 +359,7 @@ class Meal
 				LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS total
 					FROM tacos_ticket_items
 					WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY CAST(ticket_close_time AS DATE)) t5
 				ON t1.date = t5.date")	
 			when "month"
@@ -356,17 +368,20 @@ class Meal
 					FROM tacos_ticket_items 
 					WHERE pos_category_id IN (1, 2, 3, 4, 5)
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('month', ticket_close_time)) t1
 				LEFT JOIN (SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS dym
 					FROM tacos_ticket_items
 					WHERE menu_item_id = 7000
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('month', ticket_close_time)) t2
 				ON t1.date = t2.date
 				LEFT JOIN (SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS apparel
 					FROM tacos_ticket_items
 					WHERE pos_category_id = 11
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('month', ticket_close_time)) t3
 				ON t1.date = t3.date
 				LEFT JOIN (SELECT DATE_TRUNC('month', deposit_date) as date, SUM(meals) AS tip_jar
@@ -378,6 +393,7 @@ class Meal
 				LEFT JOIN (SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS total
 					FROM tacos_ticket_items
 					WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('month', ticket_close_time)) t5
 				ON t1.date = t5.date")
 			when "quarter"
@@ -386,17 +402,20 @@ class Meal
 					FROM tacos_ticket_items 
 					WHERE pos_category_id IN (1, 2, 3, 4, 5)
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('quarter', ticket_close_time)) t1
 				LEFT JOIN (SELECT DATE_TRUNC('quarter', ticket_close_time) as date, SUM(meal_for_meal) AS dym
 					FROM tacos_ticket_items
 					WHERE menu_item_id = 7000
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('quarter', ticket_close_time)) t2
 				ON t1.date = t2.date
 				LEFT JOIN (SELECT DATE_TRUNC('quarter', ticket_close_time) as date, SUM(meal_for_meal) AS apparel
 					FROM tacos_ticket_items
 					WHERE pos_category_id = 11
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('quarter', ticket_close_time)) t3
 				ON t1.date = t3.date
 				LEFT JOIN (SELECT DATE_TRUNC('quarter', deposit_date) as date, SUM(meals) AS tip_jar
@@ -408,6 +427,7 @@ class Meal
 				LEFT JOIN (SELECT DATE_TRUNC('quarter', ticket_close_time) as date, SUM(meal_for_meal) AS total
 					FROM tacos_ticket_items
 					WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('quarter', ticket_close_time)) t5
 				ON t1.date = t5.date")
 			when "year"
@@ -416,17 +436,20 @@ class Meal
 					FROM tacos_ticket_items 
 					WHERE pos_category_id IN (1, 2, 3, 4, 5)
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('year', ticket_close_time)) t1
 				LEFT JOIN (SELECT DATE_TRUNC('year', ticket_close_time) as date, SUM(meal_for_meal) AS dym
 					FROM tacos_ticket_items
 					WHERE menu_item_id = 7000
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('year', ticket_close_time)) t2
 				ON t1.date = t2.date
 				LEFT JOIN (SELECT DATE_TRUNC('year', ticket_close_time) as date, SUM(meal_for_meal) AS apparel
 					FROM tacos_ticket_items
 					WHERE pos_category_id = 11
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('year', ticket_close_time)) t3
 				ON t1.date = t3.date
 				LEFT JOIN (SELECT DATE_TRUNC('year', deposit_date) as date, SUM(meals) AS tip_jar
@@ -438,6 +461,7 @@ class Meal
 				LEFT JOIN (SELECT DATE_TRUNC('year', ticket_close_time) as date, SUM(meal_for_meal) AS total
 					FROM tacos_ticket_items
 					WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
+					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('year', ticket_close_time)) t5
 				ON t1.date = t5.date")	
 			end
