@@ -313,7 +313,7 @@ class GoogleDriveSync
 			puts pos_ticket_item_id
 			ticket_item = Tacos::TicketItem.find_by_pos_ticket_item_id(pos_ticket_item_id)
 			unless ticket_item.nil?
-				ticket_item.update_attributes(:void => true)
+				ticket_item.update_attributes(:void => true, :meal_for_meal => 0)
 			end
 			num_processed += 1
 		end
