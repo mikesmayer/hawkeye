@@ -11,8 +11,8 @@ function init_item_sales_index(){
 	update_aggregate_item_sales_breakdown();
 	update_item_sales_details();
 	update_sales_info_boxes();
-	$('#item_sales_csv_btn').html("<a class=\"btn btn-primary btn-xs pull-right\" href=\"/items.csv?date_range="+item_sales_index_date_range+"&restaurant="+selected_restaurant+"\">Download CSV</a>");
-
+	update_details_csv_download_url();
+	
 	item_sales_setup_click_handlers();
 }
 
@@ -21,7 +21,7 @@ function item_sales_update_date_range(){
 	update_sales_info_boxes();
 	update_item_sales_details();
 
-	$('#item_sales_csv_btn').html("<a class=\"btn btn-primary btn-xs pull-right\" href=\"/items.csv?date_range="+item_sales_index_date_range+"&restaurant="+selected_restaurant+"\">Download CSV</a>");
+	update_details_csv_download_url();
 }
 
 function update_restaurant_selection(){
@@ -29,6 +29,8 @@ function update_restaurant_selection(){
 	update_sales_info_boxes();
 	update_item_sales_details();
 	update_aggregate_item_sales_breakdown();
+	
+	update_details_csv_download_url();
 
 }
 
@@ -129,6 +131,9 @@ function update_sales_info_boxes(){
 }
 
 
+function update_details_csv_download_url(){
+	$('#item_sales_csv_btn').html("<a class=\"btn btn-primary btn-xs pull-right\" href=\"/items.csv?date_range="+item_sales_index_date_range+"&restaurant="+selected_restaurant+"\">Download CSV</a>");
+}
 
 
 function item_sales_setup_click_handlers(){

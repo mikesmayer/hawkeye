@@ -6,7 +6,9 @@ class Tacos::TicketItem < ActiveRecord::Base
 
 	# Updates the meal count for the ticket item
 	def update_meal_count
-		modifier = Tacos::MealCountRule.get_multiplier(menu_item_id, ticket_close_time)
+		#get multiplier will return the appropriate meal multiplier depending on the date
+		#as well as the net price of item - $0 items will always have a 0 multiplier (generate no meals)
+		modifier = Tacos::MealCountRule.get_multiplier(menu_item_id, ticket_close_time, net_price)
 		self.update_attributes( :meal_for_meal => (modifier * quantity) )
 	end
 

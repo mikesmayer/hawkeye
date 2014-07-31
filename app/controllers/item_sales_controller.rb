@@ -14,7 +14,7 @@ class ItemSalesController < ApplicationController
 		respond_to do |format|
 			format.json { render json: ItemSaleDatatable.new(view_context,
 				{ :restaurant => @restaurant, :start_date => @start_date, :end_date => @end_date }) }
-			format.csv { send_data ItemSale.item_sales_details_to_csv(@restaurant, @start_date, @end_date) }
+			format.csv { send_data ItemSale.item_sales_details_to_csv(@restaurant, @start_date, @end_date), :content_type => 'text/csv' }
 			
 		end
 	end

@@ -37,6 +37,7 @@ class Meal
 			
 			tip_jar_total = TipJarDonation
 				.where("deposit_date between ? AND ?", start_date, end_date)
+				.where("restaurant_id = 1")
 				.sum(:meals)
 
 			totals += tip_jar_total
@@ -69,7 +70,10 @@ class Meal
 				.where("pos_category_id = 11")
 				.sum(:meal_for_meal)
 			
-			tip_jar_total = 0
+			tip_jar_total = TipJarDonation
+				.where("deposit_date between ? AND ?", start_date, end_date)
+				.where("restaurant_id = 2")
+				.sum(:meals)
 
 			totals += tip_jar_total
 		end
