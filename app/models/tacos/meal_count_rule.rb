@@ -34,8 +34,10 @@ class Tacos::MealCountRule < ActiveRecord::Base
 		Date.new(2100,12,31)
 	end
 
-	def self.get_multiplier(menu_item_id, ticket_date, net_price)
-	    if net_price.to_i == 0
+	def self.get_multiplier(menu_item_id, ticket_date, net_price, discount_amt)
+	    # if the discount amount is greater than zero and the net price of the ticket item is zero then 
+	    # the item was discounted 100% and the modifier should be 0 
+	    if discount_amt > 0 && net_price < 0.01
 	    	mod = 0
     	else
 		    mod = Tacos::MealCountRule.select("meal_modifier").where(menu_item_id: menu_item_id).where("start_date <= ? AND end_date >= ?", ticket_date, ticket_date)

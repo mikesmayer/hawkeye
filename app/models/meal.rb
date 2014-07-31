@@ -59,13 +59,13 @@ class Meal
 				.sum(:meal_for_meal)
 			
 			# Getting the double your meal donation using the item number for donation (7000)
-			dym_total = P42::TicketItem
+			dym_total = Tacos::TicketItem
 				.where("ticket_close_time between ? AND ?", start_date, end_date)
 				.where("menu_item_id = 7000")
 				.sum(:meal_for_meal)
 			
 			# Getting apparel number using the category id for merchandise (11)
-			apparel_total = P42::TicketItem
+			apparel_total = Tacos::TicketItem
 				.where("ticket_close_time between ? AND ?", start_date, end_date)
 				.where("pos_category_id = 11")
 				.sum(:meal_for_meal)
