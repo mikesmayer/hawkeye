@@ -107,14 +107,6 @@ class GoogleDriveSync
 	end
 
 
-	def self.parse_file(file_id)
-		if @drive.nil?
-			setup_client
-		end
-
-
-
-	end
 
 
 	def self.get_file(file_id)
@@ -124,13 +116,15 @@ class GoogleDriveSync
 
 		api_result = @client.execute(
 			:api_method => @drive.files.get,
-			:parameters => { 'fileId' => file_id})
+			:parameters => { 'fileId' => file_id,
+							'fields' => 'downloadUrl,id,mimeType,title' })
 
 
 
 		#Get file
 		if api_result.status == 200
 			file = api_result.data 
+			mime_type = file.mimeType
 
 			#Download file
 			if file.download_url
@@ -173,6 +167,9 @@ class GoogleDriveSync
 			file = File.binwrite("gndvoid.dbf", body)
 			void_tbl = DBF::Table.new("gndvoid.dbf")
 			num_processed = GoogleDriveSync.process_voids_dbf(void_tbl)
+		elsif mime_type == "application/vnd.google-apps.folder"
+			#folder selected to download so return the children of that foler 
+
 		end
 		
 		
@@ -214,7 +211,7 @@ class GoogleDriveSync
 	  result.each do |file|
 
 	  	parent_title = GoogleDriveSync.get_file_title(file.parents[0].id)
-	  	cleaned_array << {:id => file.id, :title => file.title, :parent_title => parent_title }
+	  	cleaned_array << {:id => file.id, :title => file.title, :parent_title => parent_title, :mime_type => file.mimeType }
 	  end
 		YAML::dump(cleaned_array)
 

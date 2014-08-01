@@ -5,14 +5,25 @@
       <th>ID</th>
       <th>Parent Title</th>
       <th>Title</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     <% @gnditem_results.each do |item| %>
       <tr>
-        <td><a href="/google_drive_sync/get_file?file_id=<%= item[:id] %>"><%= item[:id] %></a></td>
+        <td><%= item[:id] %></td>
         <td><%= item[:parent_title] %></td>
         <td><%= item[:title] %></td>
+
+        <% if item[:mime_type] == "application/vnd.google-apps.folder" %>
+
+          <td><button data-foldername="<%= item[:title] %>" id="<%= item[:id] %>" class="view_folder btn btn-xs">View Folder</button></td>
+
+        <% else %>
+         
+          <td><a href="/google_drive_sync/get_file?file_id=<%= item[:id] %>"><button class="btn btn-xs">Process File</button></a></td>
+        
+        <% end %>
       </tr>
     <% end %>
   </tbody>

@@ -11,7 +11,7 @@ function init_google_drive(){
 		var search_term = $('#searchTerm').val();
 		search_drive(search_term);
 	});	
-*/
+	*/
 }
 
 
@@ -52,7 +52,7 @@ function get_folder_contents(folder_name, folder_id){
 
 }
 
-
+/*
 function search_drive(search_term){
 
 	$.ajax({
@@ -62,6 +62,8 @@ function search_drive(search_term){
 		},
 		success: function(data){
 			console.log(data);
+
 		}
 	});
 }
+*/
