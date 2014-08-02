@@ -11,13 +11,13 @@ class GoogleDriveSyncController < ApplicationController
 
 	def folder
 		@folder_name = params[:folder_name]
-		@file_list = GoogleDriveSync.get_file_list(params[:folder_id])
+		@file_list = GoogleDriveSync.get_file_list(params[:folder_id], params[:scope])
 		render :layout => false
 	end
 
 	def get_file
 		@file_contents = GoogleDriveSync.get_file(params[:file_id])
-		
+		render :layout => false
 	end
 
 	def search

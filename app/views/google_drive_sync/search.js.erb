@@ -1,9 +1,0 @@
-$('#drive_search_container').html("<%= j render(:partial => 'google_drive_sync/search') %>");
-
-$('.view_folder').click(function(){
-	folder_id = $(this).attr("id")
-	folder_name = $(this).data("foldername");
-	console.log(folder_id);
-
-	get_folder_contents(folder_name, folder_id);				
-});

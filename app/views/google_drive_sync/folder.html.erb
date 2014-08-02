@@ -1,8 +1,9 @@
 <h3><b><%= @folder_name %></b> contents</h3>
-<table class="table">
+<button id="process_day" class="btn btn-xs btn-success">Process Day</button>
+<table class="table" id="folder_content_tbl">
 	<thead>
 		<tr>
-			<th>ID</th>
+			<th class="hidden">ID</th>
 			<th>File Type</th>
 			<th>Name</th>
 			<th></th>
@@ -10,11 +11,12 @@
 	</thead>
 	<tbody>
 		<% @file_list.each do |file| %>
-			<tr>
-				<td><%= file['id'] %></td>
-				<td><%= file['mimeType'] %></td>
-				<td><a href="/google_drive_sync/get_file?file_id=<%= file['id'] %>"><%= file['title'] %></a></td>
-				<td></td>
+		<% file_type = file[:title].gsub('.DBF', '') %>
+			<tr id="<%= file_type %>" data-fileid="<%= file[:id] %>">
+				<td class="hidden"><%= file[:id] %></td>
+				<td><%= file[:mime_type] %></td>
+				<td><a href="/google_drive_sync/get_file?file_id=<%= file[:id] %>"><%= file[:title] %></a></td>
+				<td id="<%= file_type %>-results"></td>
 			</tr>
 		<% end %>
 	</tbody>

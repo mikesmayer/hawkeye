@@ -7,28 +7,30 @@
     	<button class="btn" id="get_folder_btn">Get folder</button>
     	<!-- Loading file list from Google Drive... -->
     	<!-- This div will be loaded via ajax - it's the list of files from Drive -->
-    </div>    
-  </div>
-  <div class="col-md-6" id="gdrive_folder_contents">
-  		<!-- This div will hold the contents of the folder selected from the file list -->
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-6">
+    </div>   
+    <hr />
     <form class="form-inline" role="form" action="/google_drive_sync/search" data-remote="true" data-model="google_drive_sync" method="get">
       <div class="form-group">
         <label class="sr-only" for="search_term">Search</label>
         <input id="search_term" type="text" name="search_term" class="form-control" placeholder="Enter search">
       </div>
-      <input class="btn btn-success" data-disable-with="Searching..." name="commit" value="submit" type="submit">
-    </form>
+      <input id="search_drive_btn" class="btn btn-success" data-disable-with="Searching..." name="commit" value="submit" type="submit">
+    </form> 
+
     <div id="drive_search_container">
       <!-- loaded from js -->
     </div>
+  </div>
+  <div class="col-md-6">
+
+    <div id="gdrive_folder_contents">
+        <!-- This div will hold the contents of the folder selected from the file list -->
+    </div>
+
     
   </div><!-- end col -->
 
-</div><!-- end row -->
+</div>
+
 <div id="google_drive_sync_index"></div>
 

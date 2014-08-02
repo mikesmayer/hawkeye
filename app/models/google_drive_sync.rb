@@ -1,5 +1,6 @@
 class GoogleDriveSync
 
+	@@tacos_file_list = ["CAT.DBF", "CIT.DBF", "GNDITEM.DBF", "ITM.DBF", "GNDVOID.DBF"]
 	##
 	#  Only using my @pitza42 account. It's the owner of the P42 Reports Folder and
 	#  the Tacos Reports folder. This method looks up the refresh token for that account and
@@ -35,36 +36,42 @@ class GoogleDriveSync
 	end
 
 
-	def self.get_file_list(folder_id)
+	def self.get_file_list(folder_id, scope)
 		GoogleDriveSync.setup_client
 		result = Array.new
 		
-		# This folder id is for P42 Reports folder in Drive
-		id_list = get_file_id_list(folder_id)
+		if scope == "all"
+			# This flow will return a list of all the files in the given folder
+			id_list = get_file_id_list(folder_id)
 
-		id_list.each do |id|
-			api_result = @client.execute(
-			  :api_method => @drive.files.get,
-			  :parameters => { 'fileId' => id,
-			  					'fields' => 'id,mimeType,title' })
-			if api_result.status == 200
-			  file = api_result.data
-			  puts file.title
-			  puts YAML::dump(file)
-			  
+			id_list.each do |id|
+				api_result = @client.execute(
+				  :api_method => @drive.files.get,
+				  :parameters => { 'fileId' => id,
+				  					'fields' => 'id,mimeType,title' })
+				if api_result.status == 200
+				  file = api_result.data
+				  puts file.title
+				  puts YAML::dump(file)
+				  
 
-				if (file.mimeType == "application/vnd.google-apps.folder") || (["CAT.DBF", "CIT.DBF", "GNDITEM.DBF", "ITM.DBF", "GNDVOID.DBF"].include? file.title)
-				  	result << { "id" => file.id, 
-			  				"title" => file.title,
-			  				"mimeType" => file.mimeType }
+					result << { :id => file.id, 
+				  				:title => file.title,
+				  				:mime_type => file.mimeType }
 
+					
+
+				  
+				else
+				  puts "An error occurred: #{result.data['error']['message']}"
 				end
-
-			  
-			else
-			  puts "An error occurred: #{result.data['error']['message']}"
 			end
+		elsif scope == "filtered"
+			#this "filtered" flow will search for each of the files in the @@tacos_file_list array
+			result = get_dbf_files_for_day(folder_id)
+
 		end
+
 		result
 	end
 
@@ -188,7 +195,7 @@ class GoogleDriveSync
 	  page_token = nil
 	  begin
 	    parameters = {'fields' => 'items(id,kind,mimeType,parents/id,title)',
-	    				'q' => "title contains '#{search_term}'"}
+	    				'q' => search_term}
 	    if page_token.to_s != ''
 	      parameters['pageToken'] = page_token
 	    end
@@ -241,6 +248,21 @@ class GoogleDriveSync
 			#status was not 200
 		end
 		title
+	end
+
+	def self.get_dbf_files_for_day(folder_id)
+
+		title_list = ""
+		@@tacos_file_list.each_with_index do |file_name, index|
+			if index == 0
+				title_list = "title = '#{file_name}'"			
+			else
+				title_list.concat(" or title = '#{file_name}'")
+			end
+		end
+		q = "'#{folder_id}' in parents and (#{title_list})"
+		
+		search_files(q)
 	end
 
 

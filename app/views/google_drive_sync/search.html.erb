@@ -1,4 +1,4 @@
-<h3>Drive search results for GNDITEM</h3>
+<h3>Drive search results</h3>
 <table class="table">
   <thead>
     <tr>
@@ -17,7 +17,8 @@
 
         <% if item[:mime_type] == "application/vnd.google-apps.folder" %>
 
-          <td><button data-foldername="<%= item[:title] %>" id="<%= item[:id] %>" class="view_folder btn btn-xs">View Folder</button></td>
+          <td><button data-foldername="<%= item[:title] %>" data-scope="all" data-folderid="<%= item[:id] %>" id="view_all_<%= item[:id] %>" class="view_folder btn btn-xs">View Contents</button> 
+            <button data-foldername="<%= item[:title] %>" data-scope="filtered" data-folderid="<%= item[:id] %>" id="view_filtered_<%= item[:id] %>"class="view_folder btn btn-xs btn-primary top-margin">View Filtered</button></td>
 
         <% else %>
          
