@@ -175,7 +175,6 @@ class GoogleDriveSync
 			void_tbl = DBF::Table.new("gndvoid.dbf")
 			num_processed = GoogleDriveSync.process_voids_dbf(void_tbl)
 		elsif mime_type == "application/vnd.google-apps.folder"
-			#folder selected to download so return the children of that foler 
 
 		end
 		

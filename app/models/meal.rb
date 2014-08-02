@@ -154,7 +154,6 @@ class Meal
 			  FROM tacos_ticket_items
 			  INNER JOIN tacos_menu_item_groups ON tacos_ticket_items.pos_category_id = tacos_menu_item_groups.id
 			  WHERE ticket_close_time BETWEEN '#{start_date}' AND '#{end_date}'
-			  AND (void IS NULL OR void != 'TRUE')
 			  GROUP BY tacos_menu_item_groups.id, tacos_menu_item_groups.name
 			  ORDER BY m4m DESC")
 
@@ -187,7 +186,6 @@ class Meal
 			  INNER JOIN tacos_menu_items ON tacos_ticket_items.menu_item_id = tacos_menu_items.id
 			  WHERE ticket_close_time BETWEEN '#{start_date}' AND '#{end_date}'
 				AND pos_category_id = #{cateogry_id}
-				AND (void IS NULL OR void != 'TRUE')
 			  GROUP BY tacos_menu_items.id, tacos_menu_items.name
 			  ORDER BY m4m DESC")
 		end
