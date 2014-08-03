@@ -279,6 +279,7 @@ class GoogleDriveSync
 		num_processed = 0
 		gnditem_dbf.each do |record|
 			pos_ticket_item_id = record.entryid
+			date_of_business = record.dob
 			pos_ticket_id = record.check
 			menu_item_id = record.item
 			pos_category_id = record.category
@@ -290,7 +291,8 @@ class GoogleDriveSync
 			ticket_close_time = DateTime.parse("#{record.dob}T#{record.hour}:#{record.minute}")
 
 
-			Tacos::TicketItem.find_or_update_by_ticket_item_id(pos_ticket_item_id, pos_ticket_id, menu_item_id, pos_category_id, 
+			Tacos::TicketItem.find_or_update_by_ticket_item_id_and_date(pos_ticket_item_id, date_of_business, 
+				pos_ticket_id, menu_item_id, pos_category_id, 
 				pos_revenue_class_id, quantity, net_price, discount_total, item_menu_price, ticket_close_time)
 			num_processed += 1
 		end
@@ -328,8 +330,12 @@ class GoogleDriveSync
 		num_processed = 0
 		voids_dbf.each do |record|
 			pos_ticket_item_id = record.entryid
+			date_of_business = record.date
+
 			puts pos_ticket_item_id
-			ticket_item = Tacos::TicketItem.find_by_pos_ticket_item_id(pos_ticket_item_id)
+			puts date_of_business
+			
+			ticket_item = Tacos::TicketItem.find_by_pos_ticket_item_id_and_dob(pos_ticket_item_id, date_of_business)
 			unless ticket_item.nil?
 				ticket_item.update_attributes(:void => true, :meal_for_meal => 0)
 			end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140731055053) do
+ActiveRecord::Schema.define(version: 20140803002455) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -212,6 +212,7 @@ ActiveRecord::Schema.define(version: 20140731055053) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "void"
+    t.date     "dob"
   end
 
   add_index "tacos_ticket_items", ["pos_ticket_item_id"], name: "index_tacos_ticket_items_on_pos_ticket_item_id", using: :btree
