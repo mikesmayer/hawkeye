@@ -4,13 +4,21 @@ class Tacos::MenuItemGroup < ActiveRecord::Base
 
 
 	def self.find_or_update_by_id(id, name)
-  	
+  		results = { :action => '', :obj => nil, :error => nil }
 		category = Tacos::MenuItemGroup.find_by_id(id)
 		if category.nil?
-			category = Tacos::MenuItemGroup.create(:id => id, :name => name)			
+			unless category = Tacos::MenuItemGroup.create!(:id => id, :name => name)
+				results[:error] = "Failed to create tacos category."
+			end
+			results[:action] = "create"		
 		else
-			category.update_attributes(:name => name)
+			#update attributes will return false if the save did not work
+			unless category.update_attributes(:name => name)
+				results[:error] = "Failed to update tacos category (id: #{category.id})."
+			end
+			results[:action] = "update"			
 		end
-		category
+		results[:obj] = category
+		results
 	end
 end

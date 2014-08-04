@@ -11,7 +11,7 @@ class GoogleDriveSync
 		if @drive.nil? || @client.nil?
 			@tyler_p42 = User.find_by email: 'tyler@pitza42.com'
 
-			puts @tyler_p42.inspect 
+			#puts @tyler_p42.inspect 
 
 			@client = Google::APIClient.new(
 				application_name: "TestApp",
@@ -27,7 +27,7 @@ class GoogleDriveSync
 			@client.authorization.fetch_access_token!
 			@client.authorization
 			
-			puts YAML::dump(@client.authorization)
+			#puts YAML::dump(@client.authorization)
 
 			@drive = @client.discovered_api('drive', 'v2')
 		end
@@ -157,31 +157,76 @@ class GoogleDriveSync
 		if title == "CAT.DBF"
 			file = File.binwrite("cat.dbf", body)
 			cat_tbl = DBF::Table.new("cat.dbf")
-			num_processed = GoogleDriveSync.process_tacos_category_dbf(cat_tbl)
+			results = GoogleDriveSync.process_tacos_category_dbf(cat_tbl)
+
+			
+			## log entry
+=begin
+			JobLog.create(:job_type => "manual", :date_run => DateTime.now, :folder_name => "",
+				:file_name => "CAT.DBF", :method_name => results[:method], 
+				:model_name => results[:model], :error_ids => results[:error_ids],
+				:num_processed => results[:num_processed], :num_errors => results[:errors],
+				:num_updated => results[:updates], :num_created => results[:creates])
+=end
 		elsif title == "GNDITEM.DBF"
 			file = File.binwrite("gnditem.dbf", body)
 			item_tbl = DBF::Table.new("gnditem.dbf")
-			num_processed = GoogleDriveSync.process_tacos_ticket_items_dbf(item_tbl)
+			results = GoogleDriveSync.process_tacos_ticket_items_dbf(item_tbl)
+
+			## log entry
+=begin
+			JobLog.create(:job_type => "manual", :date_run => DateTime.now, :folder_name => "",
+				:file_name => "GNDITEM.DBF", :method_name => results[:method], 
+				:model_name => results[:model], :error_ids => results[:error_ids],
+				:num_processed => results[:num_processed], :num_errors => results[:errors],
+				:num_updated => results[:updates], :num_created => results[:creates])
+=end
 		elsif title == "ITM.DBF"
 			file = File.binwrite("itm.dbf", body)
 			menu_time_tbl = DBF::Table.new("itm.dbf")
-			num_processed = GoogleDriveSync.process_tacos_menu_item_dbf(menu_time_tbl)
+			results = GoogleDriveSync.process_tacos_menu_item_dbf(menu_time_tbl)
+
+			## log entry
+=begin
+			JobLog.create(:job_type => "manual", :date_run => DateTime.now, :folder_name => "",
+				:file_name => "ITM.DBF", :method_name => results[:method], 
+				:model_name => results[:model], :error_ids => results[:error_ids],
+				:num_processed => results[:num_processed], :num_errors => results[:errors],
+				:num_updated => results[:updates], :num_created => results[:creates])
+=end
 		elsif title == "CIT.DBF"
 			file = File.binwrite("cit.dbf", body)
 			item_cat_join_tbl = DBF::Table.new("cit.dbf")
-			num_processed = GoogleDriveSync.process_tacos_menu_item_categories(item_cat_join_tbl)
+			results = GoogleDriveSync.process_tacos_menu_item_categories(item_cat_join_tbl)
+		
+			## log entry
+=begin
+			JobLog.create(:job_type => "manual", :date_run => DateTime.now, :folder_name => "",
+				:file_name => "CIT.DBF", :method_name => results[:method], 
+				:model_name => results[:model], :error_ids => results[:error_ids],
+				:num_processed => results[:num_processed], :num_errors => results[:errors],
+				:num_updated => results[:updates], :num_created => 0)
+=end
+
 		elsif title == "GNDVOID.DBF"
 			file = File.binwrite("gndvoid.dbf", body)
 			void_tbl = DBF::Table.new("gndvoid.dbf")
-			num_processed = GoogleDriveSync.process_voids_dbf(void_tbl)
+			results = GoogleDriveSync.process_voids_dbf(void_tbl)
+
+			## log entry
+=begin
+			JobLog.create(:job_type => "manual", :date_run => DateTime.now, :folder_name => "",
+				:file_name => "GNDVOID.DBF", :method_name => results[:method], 
+				:model_name => results[:model], :error_ids => results[:error_ids],
+				:num_processed => results[:num_processed], :num_errors => results[:errors],
+				:num_updated => results[:updates], :num_created => 0)
+=end
+			
+
 		elsif mime_type == "application/vnd.google-apps.folder"
 
 		end
-		
-		
-		#body is a string containing the contents of the downloaded file
-		body
-		num_processed
+		results
 	end
 
 	def self.search_files(search_term)
@@ -266,17 +311,36 @@ class GoogleDriveSync
 
 
 	def self.process_tacos_category_dbf(category_dbf)
-		num_processed = 0
+		results = { :num_processed => 0, :errors => 0, :creates => 0, :updates => 0, 
+			:method => "process_tacos_category_dbf", :model => "Tacos::MenuItemGroup", :error_ids => nil }
+		error_ids = Array.new
+
 		category_dbf.each do |record|
-			Tacos::MenuItemGroup.find_or_update_by_id(record.id, record.name)
-			num_processed += 1
+			cat_results = Tacos::MenuItemGroup.find_or_update_by_id(record.id, record.name)
+			if cat_results[:error].nil?
+				#processed correctly 
+				if cat_results[:action] == "create"
+					results[:creates] += 1	
+				elsif cat_results[:action] == "update"
+					results[:updates] += 1
+				end
+			else
+				#some error occured
+				results[:errors] += 1
+				error_ids << results[:obj].id
+			end
+			results[:num_processed] += 1
 		end
-		num_processed
+		results[:error_ids] = error_ids.join(",")
+		results
 	end
 
 
 	def self.process_tacos_ticket_items_dbf(gnditem_dbf)
-		num_processed = 0
+		results = { :num_processed => 0, :errors => 0, :creates => 0, :updates => 0, 
+			:method => "process_tacos_ticket_items", :model => "Tacos::TicketItem", :error_ids => nil }
+		error_ids = Array.new
+		
 		gnditem_dbf.each do |record|
 			pos_ticket_item_id = record.entryid
 			date_of_business = record.dob
@@ -291,57 +355,111 @@ class GoogleDriveSync
 			ticket_close_time = DateTime.parse("#{record.dob}T#{record.hour}:#{record.minute}")
 
 
-			Tacos::TicketItem.find_or_update_by_ticket_item_id_and_date(pos_ticket_item_id, date_of_business, 
+			ticket_item_result = Tacos::TicketItem.find_or_update_by_ticket_item_id_and_date(pos_ticket_item_id, date_of_business, 
 				pos_ticket_id, menu_item_id, pos_category_id, 
 				pos_revenue_class_id, quantity, net_price, discount_total, item_menu_price, ticket_close_time)
-			num_processed += 1
+			
+			#record the results in the results hash
+			if ticket_item_result[:error].nil?
+				if ticket_item_result[:action] == "create"
+					results[:creates] += 1	
+				elsif ticket_item_result[:action] == "update"
+					results[:updates] += 1
+				end
+			else
+				results[:errors] += 1
+				error_ids << ticket_item_result[:obj].id
+			end
+			results[:num_processed] += 1
 		end
-		num_processed
+		results[:error_ids] = error_ids.join(",")
+		results
 	end
 
 
 	def self.process_tacos_menu_item_dbf(itm_dbf)
-		num_processed = 0
+		results = { :num_processed => 0, :errors => 0, :creates => 0, :updates => 0, 
+			:method => "process_tacos_menu_items_dbf", :model => "Tacos::MenuItem", :error_ids => nil }
+		error_ids = Array.new
+
+
 		itm_dbf.each do |menu_item|
 			unless menu_item.longname.empty? || menu_item.longname.include?('***')
-				Tacos::MenuItem.find_or_update_by_id(menu_item.id, menu_item.longname)
-				num_processed += 1
+				menu_item_results = Tacos::MenuItem.find_or_update_by_id(menu_item.id, menu_item.longname)
+				
+				if menu_item_results[:error].nil?
+					#processed correctly 
+					if menu_item_results[:action] == "create"
+						results[:creates] += 1	
+					elsif menu_item_results[:action] == "update"
+						results[:updates] += 1
+					end
+				else
+					#some error occured
+					results[:errors] += 1
+					error_ids << menu_item_results[:obj].id
+				end
+				results[:num_processed] += 1
 			end			
 		end
-		num_processed
+		results[:error_ids] = error_ids.join(",")
+		results
 	end
 
 	def self.process_tacos_menu_item_categories(item_cat_join_dbf)
-		num_processed = 0
+		results = { :num_processed => 0, :errors => 0, :updates => 0, 
+			:method => "process_tacos_menu_item_categories", :model => "Tacos::MenuItem", :error_ids => nil }
+		error_ids = Array.new
+
 		item_cat_join_dbf.each do |record|
-			menu_item = Tacos::MenuItem.find_by_id(record.itemid)
-			unless menu_item.nil?
-				menu_item.update_attributes(:menu_item_group_id => record.category)
-			end
-			num_processed += 1			
-			
+			#category 12 is All but Mdse (not a real category)
+			#category 13 is All tacos (not a real category)
+			#category 20 is All items (not a real category)
+			if record.category != 12 && record.category != 13 && record.category != 20
+
+				menu_item = Tacos::MenuItem.find_by_id(record.itemid)
+				unless menu_item.nil?
+					if menu_item.update_attributes(:menu_item_group_id => record.category)
+						results[:updates] += 1
+					else
+						results[:errors] += 1
+						error_ids << menu_item.id
+					end
+					results[:num_processed] += 1	
+				end		
+
+			end	
 		end
-		#category_record = itm_cat_join_dbf.find :first, :item_id => menu_item.id
-		#	category_id = category_record.category
-		num_processed
+		results[:error_ids] = error_ids.join(",")
+		results
 	end
 
 	def self.process_voids_dbf(voids_dbf)
-		num_processed = 0
+		results = { :num_processed => 0, :errors => 0, :updates => 0, 
+			:method => "process_voids_dbf", :model => "Tacos::TicketItem", :error_ids => nil }
+		error_ids = Array.new
+
 		voids_dbf.each do |record|
 			pos_ticket_item_id = record.entryid
 			date_of_business = record.date
 
-			puts pos_ticket_item_id
-			puts date_of_business
+			#puts pos_ticket_item_id
+			#puts date_of_business
 			
 			ticket_item = Tacos::TicketItem.find_by_pos_ticket_item_id_and_dob(pos_ticket_item_id, date_of_business)
 			unless ticket_item.nil?
-				ticket_item.update_attributes(:void => true, :meal_for_meal => 0)
+				if ticket_item.update_attributes(:void => true, :meal_for_meal => 0)
+					results[:updates] += 1
+				else
+					results[:errors] += 1
+					error_ids << ticket_item.id
+				end
+				results[:num_processed] += 1
 			end
-			num_processed += 1
+			
 		end
-		num_processed
+		results[:error_ids] = error_ids.join(",")
+		results
 	end
 
 end

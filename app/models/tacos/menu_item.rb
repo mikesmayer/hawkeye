@@ -15,14 +15,23 @@ class Tacos::MenuItem < ActiveRecord::Base
 
 	private
 	def self.find_or_update_by_id(id, name)
+		results = { :action => '', :obj => nil, :error => nil }
 		menu_item = Tacos::MenuItem.find_by_id(id)
 		if menu_item.nil?
-			menu_item = Tacos::MenuItem.create(:id => id, :name => name, :menu_item_group_id => -1)
-		#MenuItemMailer.menu_item_added(menu_item).deliver
+			unless menu_item = Tacos::MenuItem.create(:id => id, :name => name, :menu_item_group_id => -1)
+				results[:error] = "Failed to create tacos menu item."
+			end
+			results[:action] = "create"
+
+			MenuItemMailer.menu_item_added(menu_item).deliver
 		else
-			menu_item.update_attributes(:name => name)
+			unless menu_item.update_attributes(:name => name)
+				results[:error] = "Failed to update tacos menu item (id: #{menu_item.id})."
+			end
+			results[:action] = "update"
 		end
-		menu_item
+		results[:obj] = menu_item
+		results
 	end
 
 end

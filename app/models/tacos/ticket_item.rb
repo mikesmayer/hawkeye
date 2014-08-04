@@ -17,21 +17,34 @@ class Tacos::TicketItem < ActiveRecord::Base
 	def self.find_or_update_by_ticket_item_id_and_date(pos_ticket_item_id, date_of_business, pos_ticket_id, menu_item_id, pos_category_id, 
 		pos_revenue_class_id, quantity, net_price, discount_total, item_menu_price, ticket_close_time)
   	
+  		results = { :action => '', :obj => nil, :error => nil }
+
 		ticket_item = Tacos::TicketItem.find_by_pos_ticket_item_id_and_dob(pos_ticket_item_id, date_of_business)
 		if ticket_item.nil?
-			ticket_item = Tacos::TicketItem.create(:pos_ticket_item_id => pos_ticket_item_id, :dob => date_of_business, 
+			
+			unless ticket_item = Tacos::TicketItem.create(:pos_ticket_item_id => pos_ticket_item_id, :dob => date_of_business, 
 				:pos_ticket_id => pos_ticket_id, :menu_item_id => menu_item_id, :pos_category_id => pos_category_id, 
 				:pos_revenue_class_id => pos_revenue_class_id, :quantity => quantity, :net_price => net_price, 
 				:discount_total => discount_total, :item_menu_price => item_menu_price, 
-				:ticket_close_time => ticket_close_time, :void => false)			
+				:ticket_close_time => ticket_close_time, :void => false)	
+				
+				results[:error] = "Failed to create tacos ticket item."
+			end
+			results[:action] = "create"
 		else
-			ticket_item.update_attributes(:pos_ticket_id => pos_ticket_id, 
+			
+			unless ticket_item.update_attributes(:pos_ticket_id => pos_ticket_id, 
 				:menu_item_id => menu_item_id, :pos_category_id => pos_category_id, :pos_revenue_class_id => pos_revenue_class_id,
 				:quantity => quantity, :net_price => net_price, :discount_total => discount_total,
 				:item_menu_price => item_menu_price, :ticket_close_time => ticket_close_time)
+
+				results[:error] = "Failed to update tacos ticket item (id: #{ticket_item.id})"
+			end
+			results[:action] = "update"
 		end
 		ticket_item.update_meal_count
-		ticket_item
+		results[:obj] = ticket_item
+		results
 	end
 
 end

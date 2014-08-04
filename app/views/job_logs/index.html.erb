@@ -1,0 +1,40 @@
+<h1>Logs</h1>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Job Type</th>
+      <th>Date Run</th>
+      <th>Folder Name</th>
+      <th>File Name</th>
+      <th>Method</th>
+      <th>Model Updated</th>
+      <th>Num Processed</th>
+      <th>Created</th>
+      <th>Updated</th>
+      <th>Errors</th>
+      <th>Error model ids</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @job_logs.each do |entry| %>
+      <tr>
+        <td><%= entry.job_type %></td>
+        <td><%= entry.date_run %></td>
+        <td><%= entry.folder_name %></td>
+        <td><%= entry.file_name %></td>
+        <td><%= entry.method_name %></td>
+        <td><%= entry.model_name %></td>
+        <td><%= entry.num_processed %></td>
+        <td><%= entry.num_created %></td>
+        <td><%= entry.num_updated %></td>
+        <td><%= entry.num_errors %></td>       
+        <td><%= entry.error_ids %></td>
+        <td><%= link_to 'Destroy', entry, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+

@@ -11,25 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140803002455) do
+ActiveRecord::Schema.define(version: 20140803222311) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "active_admin_comments", force: true do |t|
-    t.string   "namespace"
-    t.text     "body"
-    t.string   "resource_id",   null: false
-    t.string   "resource_type", null: false
-    t.integer  "author_id"
-    t.string   "author_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
-  add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
-  add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "approved_users", force: true do |t|
     t.string   "name"
@@ -60,6 +45,20 @@ ActiveRecord::Schema.define(version: 20140803002455) do
     t.string   "password"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "job_logs", force: true do |t|
+    t.string   "job_type"
+    t.datetime "date_run"
+    t.string   "folder_name"
+    t.string   "file_name"
+    t.string   "method_name"
+    t.string   "model_name"
+    t.string   "error_ids"
+    t.integer  "num_processed"
+    t.integer  "num_errors"
+    t.integer  "num_updated"
+    t.integer  "num_created"
   end
 
   create_table "p42_discount_items", force: true do |t|

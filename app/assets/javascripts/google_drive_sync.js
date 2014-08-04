@@ -74,7 +74,25 @@ function process_dbf(file_type, file_id){
 			$('#'+file_type+'-results').html("<span class=\"label label-default\">Processing...</span>");
 		},
 		success: function(data){
-			$('#'+file_type+'-results').html("<span class=\"label label-success\">"+data+"</span>");
+			console.log(data);
+
+			var span_class = "label label-success";
+			var label_contents = "<b>Processed:</b> " + data.num_processed;
+
+			if(data.creates > 0){
+				label_contents += " | <b>Created:</b> " + data.creates;
+			}
+			
+			if(data.updates > 0){
+				label_contents += " | <b>Updated:</b> " + data.updates;
+			}			
+
+			if(data.errors > 0){
+				span_class = "label label-danger";
+				label_contents += "| <b>Errors:</b> " + data.errors;
+			}
+			
+			$('#'+file_type+'-results').html("<span class=\""+span_class+"\">"+label_contents+"</span>");
 			
 			if(file_type == "CAT"){
 				var itm_dbf_file_id = $("#ITM").data("fileid");
@@ -89,6 +107,7 @@ function process_dbf(file_type, file_id){
 				var gndvoid_dbf_file_id = $('#GNDVOID').data("fileid");
 				process_dbf("GNDVOID", gndvoid_dbf_file_id);
 			}
+			
 		}
 	});
 
@@ -96,7 +115,7 @@ function process_dbf(file_type, file_id){
 
 
 function search_drive(search_term){
-	console.log("Searching for: " + search_term);
+	console.log("Searching for - " + search_term);
 	$.ajax({
 		url: "google_drive_sync/search",
 		type: "GET",
@@ -106,6 +125,7 @@ function search_drive(search_term){
 		beforeSend: function() {
 			$('#search_drive_btn').prop('disabled', true);
 			$('#search_drive_btn').prop('value', 'Searching...');
+			$('#drive_search_container').empty();
 		},
 		success: function(data){
 			//console.log(data);

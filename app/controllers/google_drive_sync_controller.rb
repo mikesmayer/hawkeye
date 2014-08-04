@@ -16,8 +16,14 @@ class GoogleDriveSyncController < ApplicationController
 	end
 
 	def get_file
-		@file_contents = GoogleDriveSync.get_file(params[:file_id])
-		render :layout => false
+		@file_results = GoogleDriveSync.get_file(params[:file_id])
+		
+		response.header['Content-Type'] = 'application/json'
+		respond_to do |format|
+			format.html { render json: @file_results }
+			format.js 	{ render json: @file_results }
+			format.json { render json: @file_results }
+		end
 	end
 
 	def search

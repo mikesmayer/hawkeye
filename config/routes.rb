@@ -1,23 +1,18 @@
 RailsBootstrap::Application.routes.draw do
 
-  namespace :tacos do
-    resources :meal_count_rules
-  end
 
-  namespace :tacos do
-    resources :menu_items
-  end
-
-  namespace :tacos do
-    resources :ticket_items
-  end
 
   namespace :tacos do
     resources :menu_item_groups
+    resources :ticket_items
+    resources :menu_items
+    resources :meal_count_rules
   end
 
-  resources :tip_jar_donations
 
+
+  resources :job_logs
+  
 #post 'p42/ticket_items/files/save_to_local', :controller => 'p42/ticket_items', :action => 'save_file_to_local'
   post 'p42/ticket_items/parse_csv', :controller => 'p42/ticket_items', :action => 'parse_csv'
   get 'p42/ticket_items/calculate_meals', :controller => 'p42/ticket_items', :action => 'calculate_meals'
@@ -42,6 +37,8 @@ RailsBootstrap::Application.routes.draw do
   get 'google_drive_sync/folder', :controller => 'google_drive_sync', :action => 'folder'
   get 'google_drive_sync/get_file', :controller => 'google_drive_sync', :action => 'get_file'
   get 'google_drive_sync/search', :controller => 'google_drive_sync', :action => 'search'
+ 
+  resources :tip_jar_donations
   resources :item_sales
     
   resources :meals, :only => [] do

@@ -14,7 +14,7 @@ class Tacos::MealCountRule < ActiveRecord::Base
 
 	def update_meal_counts
 		items = Tacos::TicketItem.where("menu_item_id = ?", self.menu_item_id)
-		puts items
+		#puts items
 		items.each do |item|
 			item.update_meal_count
 		end
@@ -41,7 +41,7 @@ class Tacos::MealCountRule < ActiveRecord::Base
 	    	mod = 0
     	else
 		    mod = Tacos::MealCountRule.select("meal_modifier").where(menu_item_id: menu_item_id).where("start_date <= ? AND end_date >= ?", ticket_date, ticket_date)
-		    puts mod.inspect
+		    #puts mod.inspect
 		   	if mod.empty?
 		      mod = 0
 		    else
