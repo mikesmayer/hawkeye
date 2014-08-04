@@ -5,6 +5,9 @@ function init_google_drive(){
 		get_contents_tacos_daily_sales();
 	});
 	
+	$('#get_p42_folder_btn').click(function(){
+		get_contents_p42_daily_sales();
+	});
 	
 	$('#search_drive_btn').click(function( event ){
 		event.preventDefault();
@@ -18,9 +21,10 @@ function init_google_drive(){
 function get_contents_tacos_daily_sales(){
 	console.log("Getting files from Tacos Daily Sales folder in Drive");
 	$.ajax({
-		url: "google_drive_sync/file_list",
+		url: "google_drive_sync/folder",
 		data: { 
-			folder_id: '0B3s566IfxmitZC1RckFyc3ZrZlk'
+			folder_id: '0B3s566IfxmitZC1RckFyc3ZrZlk',
+			scope: 'all'
 		}, 
 		success: function(data){
 
@@ -31,6 +35,22 @@ function get_contents_tacos_daily_sales(){
 	});	
 }
 
+function get_contents_p42_daily_sales(){
+	console.log("Getting files from P42 Reports folder in Drive");
+	$.ajax({
+		url: "google_drive_sync/folder",
+		data: { 
+			folder_id: '0B3s566IfxmitNVcwTE9rY0JkYmM',
+			scope: 'all'
+		}, 
+		success: function(data){
+
+			$('#gdrive_p42_file_list').html(data);
+
+			view_folder_click_handler();
+		}
+	});	
+}
 
 function get_folder_contents(folder_name, folder_id, scope, button_id){
 

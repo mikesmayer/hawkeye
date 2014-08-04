@@ -8,7 +8,7 @@ namespace :hawkeye do
 
 		today = (DateTime.now - 1.days).strftime("%Y%m%d")
 		puts "Searching for:"
-		#today = "20140614"
+		#today = "20140621"
 		puts today
 
 		sync_date(today)

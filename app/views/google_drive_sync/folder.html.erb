@@ -1,5 +1,8 @@
 <h3><b><%= @folder_name %></b> contents</h3>
-<button id="process_day" class="btn btn-xs btn-success">Process Day</button>
+<% if @scope == "filtered" %>
+	<button id="process_day" class="btn btn-xs btn-success">Process Day</button>
+<% end %>
+
 <table class="table" id="folder_content_tbl">
 	<thead>
 		<tr>

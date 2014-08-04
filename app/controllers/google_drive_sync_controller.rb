@@ -4,14 +4,14 @@ class GoogleDriveSyncController < ApplicationController
 	end
 
 	def file_list
-		# The id is the id for P42 Reports folder in Drive
-	    @file_list = GoogleDriveSync.get_file_list(params[:folder_id])
+	    @file_list = GoogleDriveSync.get_file_list(params[:folder_id], "all")
 	    render :layout => false
 	end
 
 	def folder
 		@folder_name = params[:folder_name]
-		@file_list = GoogleDriveSync.get_file_list(params[:folder_id], params[:scope])
+		@scope = params[:scope]
+		@file_list = GoogleDriveSync.get_file_list(params[:folder_id], @scope)
 		render :layout => false
 	end
 
