@@ -1,5 +1,5 @@
 namespace :hawkeye do 
-	
+
 	desc "Syncronizes Taco's menu and sales for the day"
 	task :sync_tacos_day => :environment do
 		GoogleDriveSync.setup_client

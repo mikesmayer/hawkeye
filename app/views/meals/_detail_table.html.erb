@@ -14,11 +14,11 @@
 		<% @detail_totals.each do |row| %>
 			<tr>
 				<td><%= row.date %></td>
-				<td><%= sprintf('%.0f', row.m4m) %></td>
-				<td><%= sprintf('%.0f', row.dym) %></td>
-				<td><%= sprintf('%.0f', row.apparel) %></td>
+				<td><%= number_with_precision(row.m4m, :precision => 0, :delimiter => ",") %></td>
+				<td><%= number_with_precision(row.dym, :precision => 0, :delimiter => ",") %></td>
+				<td><%= number_with_precision(row.apparel, :precision => 0, :delimiter => ",") %></td>
 				<td><%= number_with_precision(row.tip_jar, :precision => 0, :delimiter => ",") %></td>
-				<td><%= sprintf('%.0f', row.total) %></td>
+				<td><%= number_with_precision(row.total, :precision => 0, :delimiter => ",") %></td>
 			</tr>
 		<% end %>
 	</tbody>

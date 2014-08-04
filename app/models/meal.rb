@@ -98,16 +98,35 @@ class Meal
 		end_date = end_date.to_s+"T23:59:59"
 
 		if restaurant == "p42"
-			P42::TicketItem.select("DATE_TRUNC('month', ticket_close_time) as month, sum(meal_for_meal) as total")
-			.where("ticket_close_time between ? AND ?", start_date, end_date)
-			.group("DATE_TRUNC('month', ticket_close_time)")
-			.order("DATE_TRUNC('month', ticket_close_time) ASC")
+			P42::TicketItem.find_by_sql("SELECT t1.month as month, SUM(COALESCE(t1.total,0) + COALESCE(t2.total,0)) as total
+				FROM
+				(SELECT DATE_TRUNC('month', ticket_close_time) AS month, SUM(meal_for_meal) as total
+				  FROM p42_ticket_items
+				  WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
+				  GROUP BY DATE_TRUNC('month', ticket_close_time)) t1
+				LEFT JOIN (
+				SELECT SUM(meals) as total, DATE_TRUNC('month', deposit_date) as month
+				  FROM tip_jar_donations
+				  WHERE restaurant_id = 1 AND deposit_date between '#{start_date}' AND '#{end_date}'
+				  GROUP BY DATE_TRUNC('month', deposit_date)) t2
+				  ON t1.month = t2.month
+				  GROUP BY t1.month
+				  ORDER BY t1.month ASC")
 		elsif restaurant == "tacos"
-			Tacos::TicketItem.select("DATE_TRUNC('month', ticket_close_time) as month, sum(meal_for_meal) as total")
-			.where("ticket_close_time between ? AND ?", start_date, end_date)
-			.where("(void IS NULL OR void != 'TRUE')")
-			.group("DATE_TRUNC('month', ticket_close_time)")
-			.order("DATE_TRUNC('month', ticket_close_time) ASC")
+			Tacos::TicketItem.find_by_sql("SELECT t1.month as month, SUM(COALESCE(t1.total,0) + COALESCE(t2.total,0)) as total
+				FROM
+				(SELECT DATE_TRUNC('month', ticket_close_time) AS month, SUM(meal_for_meal) as total
+				  FROM tacos_ticket_items
+				  WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
+				  GROUP BY DATE_TRUNC('month', ticket_close_time)) t1
+				LEFT JOIN (
+				SELECT SUM(meals) as total, DATE_TRUNC('month', deposit_date) as month
+				  FROM tip_jar_donations
+				  WHERE restaurant_id = 2 AND deposit_date between '#{start_date}' AND '#{end_date}'
+				  GROUP BY DATE_TRUNC('month', deposit_date)) t2
+				  ON t1.month = t2.month
+				  GROUP BY t1.month
+				  ORDER BY t1.month ASC")
 		end
 
 
@@ -118,16 +137,37 @@ class Meal
 		end_date = end_date.to_s+"T23:59:59"
 
 		if restaurant == "p42"
-			P42::TicketItem.select("DATE_TRUNC('year', ticket_close_time) as year, sum(meal_for_meal) as total")
-			.where("ticket_close_time between ? AND ?", start_date, end_date)
-			.group("DATE_TRUNC('year', ticket_close_time)")
-			.order("DATE_TRUNC('year', ticket_close_time) ASC")
+			
+			P42::TicketItem.find_by_sql("SELECT t1.year as year, SUM(COALESCE(t1.total,0) + COALESCE(t2.total,0)) as total
+				FROM
+				(SELECT DATE_TRUNC('year', ticket_close_time) AS year, SUM(meal_for_meal) as total
+				  FROM p42_ticket_items
+				  WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
+				  GROUP BY DATE_TRUNC('year', ticket_close_time)) t1
+				LEFT JOIN (
+				SELECT SUM(meals) as total, DATE_TRUNC('year', deposit_date) as year
+				  FROM tip_jar_donations
+				  WHERE restaurant_id = 1 AND deposit_date between '#{start_date}' AND '#{end_date}'
+				  GROUP BY DATE_TRUNC('year', deposit_date)) t2
+				  ON t1.year = t2.year
+				  GROUP BY t1.year
+				  ORDER BY t1.year ASC")
+
 		elsif restaurant == "tacos"
-			Tacos::TicketItem.select("DATE_TRUNC('year', ticket_close_time) as year, sum(meal_for_meal) as total")
-			.where("ticket_close_time between ? AND ?", start_date, end_date)
-			.where("(void IS NULL OR void != 'TRUE')")
-			.group("DATE_TRUNC('year', ticket_close_time)")
-			.order("DATE_TRUNC('year', ticket_close_time) ASC")
+			Tacos::TicketItem.find_by_sql("SELECT t1.year as year, SUM(COALESCE(t1.total,0) + COALESCE(t2.total,0)) as total
+				FROM
+				(SELECT DATE_TRUNC('year', ticket_close_time) AS year, SUM(meal_for_meal) as total
+				  FROM tacos_ticket_items
+				  WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
+				  GROUP BY DATE_TRUNC('year', ticket_close_time)) t1
+				LEFT JOIN (
+				SELECT SUM(meals) as total, DATE_TRUNC('year', deposit_date) as year
+				  FROM tip_jar_donations
+				  WHERE restaurant_id = 2 AND deposit_date between '#{start_date}' AND '#{end_date}'
+				  GROUP BY DATE_TRUNC('year', deposit_date)) t2
+				  ON t1.year = t2.year
+				  GROUP BY t1.year
+				  ORDER BY t1.year ASC")
 		end
 				
 
