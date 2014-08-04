@@ -17,7 +17,7 @@ class MealsController < ApplicationController
 	#GET /meals/detail_counts
 	def counts
 		@granularity = params[:granularity]
-
+		
 		@detail_totals = Meal.get_meal_breakdown(@restaurant, @granularity, @start_date, @end_date)
 		
 		

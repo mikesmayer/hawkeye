@@ -1,4 +1,4 @@
-<%= link_to "Download CSV", { :controller => 'meals', :granularity => @granularity, :date_range => "#{@start_date}T#{@end_date}", :action => 'counts', :format => :csv }, class: 'btn btn-primary btn-xs pull-right' %>
+<%= link_to "Download CSV", { :controller => 'meals', :granularity => @granularity, :date_range => "#{@start_date}T#{@end_date}", :restaurant => @restaurant, :action => 'counts', :format => :csv }, class: 'btn btn-primary btn-xs pull-right' %>
 <table class="table table-striped table-hover datatable" id="m4m_stats_tbl">
 	<thead>
 		<tr>

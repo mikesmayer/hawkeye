@@ -4,14 +4,18 @@ task :sync_tacos_day => :environment do
 
 	@job_type = "rake"
 
-	#today = (DateTime.now - 1.days).strftime("%Y%m%d")
+	today = (DateTime.now - 1.days).strftime("%Y%m%d")
 	puts "Searching for:"
-	today = "20140614"
+	#today = "20140614"
 	puts today
 
+	sync_date(today)
+end
 
+
+def sync_date(date)
 	# find the folder that is named with todays date in the format above
-	daily_folder = GoogleDriveSync.search_files("title = '#{today}'").first
+	daily_folder = GoogleDriveSync.search_files("title = '#{date}'").first
 	puts "Search results:"
 	puts daily_folder
 
@@ -49,6 +53,7 @@ task :sync_tacos_day => :environment do
 	process_cat_menu_item_join(cat_itm_join_file[:id])
 	process_daily_sales(ticket_item_file[:id])
 	process_voids(void_file[:id])
+
 end
 
 
