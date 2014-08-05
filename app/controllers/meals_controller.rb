@@ -1,6 +1,6 @@
 class MealsController < ApplicationController
 	authorize_resource
-	skip_authorization_check :only => [:counts]
+	skip_authorization_check :only => [:count_totals]
   	#skip_authorize_resource :only => [:show, :index]
 
 	before_action :set_restaurant, only: [:index, :counts, :month_counts, :year_counts, :count_totals, :product_mix, :category_product_mix]
@@ -48,9 +48,10 @@ class MealsController < ApplicationController
 	def count_totals
 		@count_totals = Meal.get_meal_totals(@restaurant, @start_date, @end_date)
 		
-		response.header['Content-Type'] = 'application/json'
+		
 		respond_to do |format|
-	        format.js { render json: @count_totals }
+	        format.js { response.header['Content-Type'] = 'application/json'
+	        	render json: @count_totals }
 	        format.json { render :json => @count_totals, :callback => params['callback'] }	      
 	    end
 	end
