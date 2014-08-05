@@ -1,4 +1,6 @@
 class P42::MenuItemGroupsController < ApplicationController
+  authorize_resource
+  
   before_action :set_p42_menu_item_group, only: [:show, :edit, :update, :destroy]
 
   # GET /p42/menu_item_groups

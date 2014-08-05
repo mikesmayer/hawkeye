@@ -1,4 +1,6 @@
 class RestaurantsController < ApplicationController
+  authorize_resource
+  
   before_action :set_restaurant, only: [:show, :edit, :update, :destroy]
 
   # GET /restaurants

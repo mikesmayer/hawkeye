@@ -1,4 +1,5 @@
 class ItemSalesController < ApplicationController
+	authorize_resource
 	before_action :convert_daterange, only: [:index, :aggregate_items, :items, :sales_totals]
 
 	def index

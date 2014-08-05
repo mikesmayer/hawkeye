@@ -1,4 +1,6 @@
 class P42::DiscountItemsController < ApplicationController
+  authorize_resource
+  
   before_action :set_p42_discount_item, only: [:show, :edit, :update, :destroy]
 
   # GET /p42/discount_items

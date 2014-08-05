@@ -98,7 +98,7 @@ RailsBootstrap::Application.routes.draw do
   end
 
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
-  root :to => 'item_sales#index'
+  root :to => 'home#index'
 
   resources :approved_users
   resources :users  

@@ -1,4 +1,5 @@
 class FtpConnectsController < ApplicationController
+  authorize_resource
   before_action :set_ftp_connect, only: [:show, :edit, :update, :destroy]
 
   # GET /ftp_connects

@@ -1,4 +1,6 @@
 class P42::MenuItemsController < ApplicationController
+  authorize_resource
+  
   before_action :set_p42_menu_item, only: [:show, :edit, :update, :destroy]
 
   # GET /p42/menu_items

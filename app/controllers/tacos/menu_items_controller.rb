@@ -1,4 +1,6 @@
 class Tacos::MenuItemsController < ApplicationController
+  authorize_resource
+  
   before_action :set_tacos_menu_item, only: [:show, :edit, :update, :destroy]
 
   # GET /tacos/menu_items

@@ -1,4 +1,6 @@
 class TipJarDonationsController < ApplicationController
+  authorize_resource
+  
   before_action :set_tip_jar_donation, only: [:show, :edit, :update, :destroy]
 
   # GET /tip_jar_donations

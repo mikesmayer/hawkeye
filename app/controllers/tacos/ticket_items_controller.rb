@@ -1,4 +1,6 @@
 class Tacos::TicketItemsController < ApplicationController
+  authorize_resource
+  
   before_action :set_tacos_ticket_item, only: [:show, :edit, :update, :destroy]
 
   # GET /tacos/ticket_items

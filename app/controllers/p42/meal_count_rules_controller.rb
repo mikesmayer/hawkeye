@@ -1,4 +1,6 @@
 class P42::MealCountRulesController < ApplicationController
+  authorize_resource
+  
   before_action :set_p42_meal_count_rule, only: [:show, :edit, :update, :destroy]
 
   # GET /p42/meal_count_rules

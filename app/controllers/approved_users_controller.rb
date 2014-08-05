@@ -1,4 +1,6 @@
 class ApprovedUsersController < ApplicationController
+  authorize_resource
+  
   before_action :set_approved_user, only: [:show, :edit, :update, :destroy]
 
   # GET /approved_users

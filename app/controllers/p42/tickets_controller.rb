@@ -1,4 +1,6 @@
 class P42::TicketsController < ApplicationController
+  authorize_resource
+  
   before_action :set_p42_ticket, only: [:show, :edit, :update, :destroy]
 
   # GET /p42/tickets

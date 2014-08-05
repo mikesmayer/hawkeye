@@ -1,8 +1,0 @@
-<h3>Google Drive: P42 Reports</h3>
-<% @file_list.each do |item| %>
-<p><%= link_to "Parse CSV", {controller: "ticket_items", action: "parse_csv", :file_id => item['id']}, :method => :post  %>
-
-  <%= item['id'] %>
-<b><%= item['title'] %></b>
-</p>
-<% end %> 

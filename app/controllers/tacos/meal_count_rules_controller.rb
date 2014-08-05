@@ -1,4 +1,6 @@
 class Tacos::MealCountRulesController < ApplicationController
+  authorize_resource
+  
   before_action :set_tacos_meal_count_rule, only: [:show, :edit, :update, :destroy]
 
   # GET /tacos/meal_count_rules

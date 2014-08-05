@@ -32,7 +32,7 @@ class GoogleDriveSync
 			@drive = @client.discovered_api('drive', 'v2')
 		end
 
-		{:drive => @drive, :client => @client }
+		{ :drive => @drive, :client => @client }
 	end
 
 
@@ -154,6 +154,9 @@ class GoogleDriveSync
 			#status was not 200
 		end
 
+		puts "title"
+		puts title
+
 		if title == "CAT.DBF"
 			file = File.binwrite("cat.dbf", body)
 			cat_tbl = DBF::Table.new("cat.dbf")
@@ -225,7 +228,28 @@ class GoogleDriveSync
 
 		elsif mime_type == "application/vnd.google-apps.folder"
 
+	
+		elsif title.include? "item_sales"
+			csv_rows = Array.new
+			body = body.strip
+
+			csv = CSV.new(body, :headers => true, :header_converters => :symbol, :converters => :all, :col_sep => ";", :quote_char => "|")
+			csv = csv.to_a.map {|row| row.to_hash }
+
+			results = GoogleDriveSync.process_p42_item_sales_csv(csv)
+			
+			## log entry
+
+			JobLog.create(:job_type => "manual", :date_run => DateTime.now, :folder_name => "P42 Reports",
+				:file_name => title, :method_name => results[:method], 
+				:model_name => results[:model], :error_ids => results[:error_ids],
+				:num_processed => results[:num_processed], :num_errors => results[:errors],
+				:num_updated => results[:updates], :num_created => results[:creates])
+			
+
+
 		end
+
 		results
 	end
 
@@ -460,6 +484,59 @@ class GoogleDriveSync
 		end
 		results[:error_ids] = error_ids.join(",")
 		results
+	end
+
+	def self.process_p42_item_sales_csv(item_sales_csv)
+		results = { :num_processed => 0, :errors => 0, :updates => 0, :creates => 0,
+			:method => "process_p42_item_sales_csv", :model => "P42::TicketItem", :error_ids => nil }
+		error_ids = Array.new
+
+		item_sales_csv.each do |row|
+			if (row[:ticket_item_id].is_a? Numeric)
+				
+				#Discount total null check
+				if row[:discount_total] == "NULL"
+					row[:discount_total] = 0
+				end
+
+				#customer id check
+				if row[:customer_original_id] == "NULL"
+					row[:customer_original_id] = 0
+				end
+
+				ticket_item_results = P42::TicketItem.find_or_update_by_ticket_item_id(
+					row[:ticket_item_id],
+					row[:ticket_id],
+					row[:menu_item_id],
+					row[:i_price_category_id],
+					row[:i_revenue_class],
+					row[:customer_original_id],
+					row[:quantity],
+					row[:net_price],
+					row[:discount_total],
+					row[:item_menu_price],					
+					row[:choice_additions_total],				
+					row[:ticket_close_time],					
+					-1)
+
+				#record the results in the results hash
+				if ticket_item_results[:error].nil?
+					if ticket_item_results[:action] == "create"
+						results[:creates] += 1	
+					elsif ticket_item_results[:action] == "update"
+						results[:updates] += 1
+					end
+				else
+					results[:errors] += 1
+					error_ids << ticket_item_results[:obj].id
+				end
+				results[:num_processed] += 1
+			end
+			
+		end
+		results[:error_ids] = error_ids.join(",")
+		results
+		
 	end
 
 end

@@ -10,6 +10,7 @@
 			<th>File Type</th>
 			<th>Name</th>
 			<th></th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -19,6 +20,10 @@
 				<td class="hidden"><%= file[:id] %></td>
 				<td><%= file[:mime_type] %></td>
 				<td><a href="/google_drive_sync/get_file?file_id=<%= file[:id] %>"><%= file[:title] %></a></td>
+				<td><% if file[:mime_type] == "text/csv" %>
+					<button class="process_file btn btn-xs btn-success" id="csv-<%= file[:id] %>" data-fileid="<%= file[:id] %>">Process</button>
+					<% end %>
+				</td>
 				<td id="<%= file_type %>-results"></td>
 			</tr>
 		<% end %>

@@ -1,4 +1,6 @@
 class P42::RevenueGroupsController < ApplicationController
+  authorize_resource
+  
   before_action :set_p42_revenue_group, only: [:show, :edit, :update, :destroy]
 
   # GET /p42/revenue_groups

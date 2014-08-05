@@ -1,4 +1,8 @@
 class MealsController < ApplicationController
+	authorize_resource
+	skip_authorization_check :only => [:counts]
+  	#skip_authorize_resource :only => [:show, :index]
+
 	before_action :set_restaurant, only: [:index, :counts, :month_counts, :year_counts, :count_totals, :product_mix, :category_product_mix]
 	before_action :convert_daterange, only: [:index, :counts, :month_counts, :year_counts, :count_totals, :product_mix, :category_product_mix]
 

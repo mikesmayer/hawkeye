@@ -1,5 +1,6 @@
 
 function init_google_drive(){
+	$('#error_container').hide();
 
 	$('#get_folder_btn').click(function(){
 		get_contents_tacos_daily_sales();
@@ -15,6 +16,7 @@ function init_google_drive(){
 		search_drive(search_term);
 	});	
 	
+
 }
 
 
@@ -26,8 +28,14 @@ function get_contents_tacos_daily_sales(){
 			folder_id: '0B3s566IfxmitZC1RckFyc3ZrZlk',
 			scope: 'all'
 		}, 
+		beforeSend: function() {
+			$('#get_folder_btn').prop('disabled', true);
+			$('#get_folder_btn').html('Searching...');
+			$('#gdrive_tacos_file_list').empty();
+		},
 		success: function(data){
-
+			$('#get_folder_btn').prop('disabled', false);
+			$('#get_folder_btn').html('Get Folder');
 			$('#gdrive_tacos_file_list').html(data);
 
 			view_folder_click_handler();
@@ -39,15 +47,36 @@ function get_contents_p42_daily_sales(){
 	console.log("Getting files from P42 Reports folder in Drive");
 	$.ajax({
 		url: "google_drive_sync/folder",
+		type: 'GET',
 		data: { 
 			folder_id: '0B3s566IfxmitNVcwTE9rY0JkYmM',
 			scope: 'all'
-		}, 
+		},
+		beforeSend: function() {
+			$('#error_container').hide();
+
+			$('#get_p42_folder_btn').prop('disabled', true);
+			$('#get_p42_folder_btn').html('Searching...');
+			$('#gdrive_p42_file_list').empty();
+		},
+		error: function(data){
+			console.log(data);
+			$('#error_container').html(data.statusText + ". Try again or use search.");
+			$('#error_container').show();
+			$('#get_p42_folder_btn').prop('disabled', false);
+			$('#get_p42_folder_btn').html('Get folder');
+		},
 		success: function(data){
 
+
+			$('#get_p42_folder_btn').prop('disabled', false);
+			$('#get_p42_folder_btn').html('Get folder');
 			$('#gdrive_p42_file_list').html(data);
 
-			view_folder_click_handler();
+			$('.process_file').click(function(){
+				file_id = $(this).data("fileid");
+				process_p42_csv(file_id);
+			});
 		}
 	});	
 }
@@ -133,6 +162,52 @@ function process_dbf(file_type, file_id){
 
 }
 
+
+function process_p42_csv(file_id){
+	console.log("Process P42 Item Sales CSV");
+
+	$.ajax({
+		url: "google_drive_sync/get_file",
+		type: "GET",
+		cache: false,
+		data: {
+			file_id: file_id
+		},
+		beforeSend: function(){
+			$('#error_container').hide();
+			$('#csv-'+file_id).prop('disabled', true);
+			$('#csv-'+file_id).html('Processing...');
+		},
+		error: function(data){
+			$('#error_container').html(data.statusText + ". Try again or use search.");
+			$('#error_container').show();
+			$('#csv-'+file_id).prop('disabled', false);
+			$('#csv-'+file_id).html('Process');
+		},
+		success: function(data){
+			console.log("P42 CSV success");
+			var result_html = "<h4>Results</h4>";
+			result_html += "<b>Number Processed:</b> " + data.num_processed;
+
+			if(data.creates > 0){
+				result_html += "<br /><b>Created:</b> " + data.creates;
+			}
+			
+			if(data.updates > 0){
+				result_html += "<br /><b>Updated:</b> " + data.updates;
+			}			
+
+			if(data.errors > 0){
+				result_html += "<br /><b>Errors:</b> " + data.errors;
+			}
+
+			$('#file_parse_results').html(result_html);
+			$('#csv-'+file_id).html('Processed');
+		}
+	});
+
+
+}
 
 function search_drive(search_term){
 	console.log("Searching for - " + search_term);

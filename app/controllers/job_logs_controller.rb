@@ -1,5 +1,6 @@
 class JobLogsController < ApplicationController
-
+	authorize_resource
+	
 	def index
 		@job_logs = JobLog.all
 	end

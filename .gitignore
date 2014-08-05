@@ -17,3 +17,5 @@ config/database.yml
 config/s3.yml
 config/gmail.yml
 config/local_env.yml
+
+*.dbf
