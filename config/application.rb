@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require 'rack/cors'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -19,6 +20,14 @@ module RailsBootstrap
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
+    config.middleware.use Rack::Cors do
+      allow do
+        origins 'http://www.pitza42.com'
+        resource '/meals/*', :headers => :any, :methods => [:post, :get]
+      end
+    end
+
 
     config.before_configuration do
       env_file = File.join(Rails.root, 'config', 'local_env.yml')

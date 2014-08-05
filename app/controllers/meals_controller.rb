@@ -51,9 +51,7 @@ class MealsController < ApplicationController
 		response.header['Content-Type'] = 'application/json'
 		respond_to do |format|
 	        format.js { render json: @count_totals }
-	        format.json { 
-	        	response.header['Content-Type'] = 'application/javascript'
-	        	render :json => @count_totals, :callback => params['callback']}	      
+	        format.json { render :json => @count_totals, :callback => params['callback'] }	      
 	    end
 	end
 

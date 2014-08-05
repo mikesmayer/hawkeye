@@ -45,5 +45,5 @@ gem 'bootswatch-rails'
 gem 'jquery-datatables-rails'
 gem 'ajax-datatables-rails'
 gem 'will_paginate', '~> 3.0'
-
+gem 'rack-cors', :require => 'rack/cors'
 gem 'dbf'

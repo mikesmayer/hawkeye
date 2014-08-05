@@ -195,6 +195,7 @@ GEM
     quiet_assets (1.0.3)
       railties (>= 3.1, < 5.0)
     rack (1.5.2)
+    rack-cors (0.2.9)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.2)
@@ -316,6 +317,7 @@ DEPENDENCIES
   paperclip (~> 3.0)
   pg
   quiet_assets
+  rack-cors
   rails (= 4.0.2)
   rails_layout (>= 0.5.11)
   rest_in_place
