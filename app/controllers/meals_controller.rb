@@ -48,10 +48,9 @@ class MealsController < ApplicationController
 	def count_totals
 		@count_totals = Meal.get_meal_totals(@restaurant, @start_date, @end_date)
 		
-		
+		response.header['Content-Type'] = 'application/json'
 		respond_to do |format|
-	        format.js { response.header['Content-Type'] = 'application/json'
-	        	render json: @count_totals }
+	        format.js { render json: @count_totals }
 	        format.json { render :json => @count_totals, :callback => params['callback'] }	      
 	    end
 	end
