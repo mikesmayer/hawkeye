@@ -82,15 +82,23 @@ class ItemSale
 			net_sales = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:net_price)
 			discount_totals = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:discount_total)
 			m4m_totals = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:meal_for_meal)
+			tip_jar_totals = TipJarDonation.where("deposit_date BETWEEN ? AND ?", start_date, end_date)
+				.where("restaurant_id = 1").sum(:meals)
 		elsif restaurant == "tacos"
 			net_sales = Tacos::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:net_price)
 			discount_totals = Tacos::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:discount_total)
 			m4m_totals = Tacos::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:meal_for_meal)
+			tip_jar_totals = TipJarDonation.where("deposit_date BETWEEN ? AND ?", start_date, end_date)
+				.where("restaurant_id = 2").sum(:meals)
 		end
 
 		net_sales = net_sales.nil? ? 0 : net_sales
 		discount_totals = discount_totals.nil? ? 0 : discount_totals
 		m4m_totals = m4m_totals.nil? ? 0 : m4m_totals
+		tip_jar_totals = tip_jar_totals.nil? ? 0 : tip_jar_totals
+
+		#have to include everything genearted in the restaurant and tip jar donations
+		m4m_totals = m4m_totals + tip_jar_totals
 
 		totals = {:net_sales => net_sales, :discount_totals => discount_totals, :m4m_totals => m4m_totals}
 		totals.to_json
@@ -104,17 +112,17 @@ class ItemSale
 
 		case granularity
 		when "day"
-			outer_query_date = "to_char(date, 'Mon DD, YYYY')"
+			outer_query_date = "to_char(t1.date, 'Mon DD, YYYY')"
 		when "month"
-			outer_query_date = "to_char(date, 'Mon, YYYY')"
+			outer_query_date = "to_char(t1.date, 'Mon, YYYY')"
 		when "quarter"
-			outer_query_date = "'Q' || to_char(date, 'Q YYYY')"
+			outer_query_date = "'Q' || to_char(t1.date, 'Q YYYY')"
 		when "year"
-	    	outer_query_date = "to_char(date, 'YYYY')"
+	    	outer_query_date = "to_char(t1.date, 'YYYY')"
 	    end
 	    
 	    if restaurant == "p42"
-	    	
+=begin	    	
 	    	P42::TicketItem.find_by_sql("SELECT #{outer_query_date} AS date, total_net_sales, total_discounts, meal_for_meal 
 			FROM 
 			(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
@@ -125,7 +133,31 @@ class ItemSale
 				WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
 				GROUP BY date
 				ORDER BY date ) t1")
+=end
+
+			P42::TicketItem.find_by_sql("SELECT #{outer_query_date} AS date, SUM(total_net_sales) AS total_net_sales, 
+				SUM(total_discounts) AS total_discounts, 
+				SUM(COALESCE(t1.meal_for_meal,0)+COALESCE(t2.meals,0)) AS meal_for_meal
+			FROM 
+			(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
+				SUM(net_price) AS total_net_sales,
+				SUM(discount_total) AS total_discounts,
+				SUM(meal_for_meal) AS meal_for_meal
+				FROM p42_ticket_items
+				WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+				GROUP BY date
+				ORDER BY date ) t1
+			LEFT JOIN 
+			(SELECT date_trunc('#{granularity}', deposit_date) as date,
+					SUM(meals) as meals
+				FROM tip_jar_donations
+				WHERE restaurant_id = 1 AND deposit_date BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+				GROUP BY date) t2
+			ON t1.date = t2.date
+			GROUP BY t1.date
+			ORDER BY t1.date ASC")
 	    elsif restaurant == "tacos"
+=begin
 	    	Tacos::TicketItem.find_by_sql("SELECT #{outer_query_date} AS date, total_net_sales, total_discounts, meal_for_meal 
 			FROM 
 			(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
@@ -136,6 +168,30 @@ class ItemSale
 				WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
 				GROUP BY date
 				ORDER BY date ) t1")
+
+=end
+			Tacos::TicketItem.find_by_sql("SELECT #{outer_query_date} AS date, SUM(total_net_sales) AS total_net_sales, 
+				SUM(total_discounts) AS total_discounts, 
+				SUM(COALESCE(t1.meal_for_meal,0)+COALESCE(t2.meals,0)) AS meal_for_meal
+			FROM 
+			(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
+				SUM(net_price) AS total_net_sales,
+				SUM(discount_total) AS total_discounts,
+				SUM(meal_for_meal) AS meal_for_meal
+				FROM tacos_ticket_items
+				WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+				GROUP BY date
+				ORDER BY date ) t1
+			LEFT JOIN 
+			(SELECT date_trunc('#{granularity}', deposit_date) as date,
+					SUM(meals) as meals
+				FROM tip_jar_donations
+				WHERE restaurant_id = 2 AND deposit_date BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+				GROUP BY date) t2
+			ON t1.date = t2.date
+			GROUP BY t1.date
+			ORDER BY t1.date ASC")
+
 	    end
 
 
