@@ -1,6 +1,6 @@
 class MealsController < ApplicationController
 	authorize_resource
-	skip_authorization_check :only => [:count_totals]
+	skip_authorize_resource :only => [:count_totals]
   	#skip_authorize_resource :only => [:show, :index]
 
 	before_action :set_restaurant, only: [:index, :counts, :month_counts, :year_counts, :count_totals, :product_mix, :category_product_mix]
