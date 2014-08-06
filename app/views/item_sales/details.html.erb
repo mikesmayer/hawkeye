@@ -1,0 +1,75 @@
+<div class="row">
+	<div class="page-header">
+		<h1 class="pull-left">Item Sales Details</h1>
+		
+		<div class="pull-right">
+			<div class="btn-toolbar" role="toolbar">
+				<div class="btn-group" data-toggle="buttons">
+					<label id="p42_selector" class="btn btn-success btn-xs active">
+					    <input type="radio"  value="p42">Pitza 42
+					</label>
+					<label id="tacos_selector" class="btn btn-success btn-xs">
+						<input type="radio" value="tacos">Tacos
+					</label>
+				</div>
+				
+				<div class="btn-group" data-toggle="buttons">
+					<label id="date_filter_all_time" class="btn btn-primary btn-xs">
+					    <input type="radio"  value="all">All
+					</label>
+					<label id="date_filter_current_year" class="btn btn-primary btn-xs active">
+						<input type="radio" value="current_year">Current year
+					</label>
+					<label id="date_filter_current_month" class="btn btn-primary btn-xs">
+						<input type="radio" value="current_month">Current month
+					</label>
+					<label id="date_filter_current_week" class="btn btn-primary btn-xs">
+						<input type="radio" value="current_week">Current week
+					</label>
+					<label id="date_filter_daterange" class="btn btn-primary btn-xs">
+						<input type="radio" value="custom">Custom range
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="clearfix"></div>
+		<div class="pull-right col-md-5" id="custom_range_input" style="display:none; margin-top:0px; width:inherit;">  
+			<form class="form-inline" role="form">
+				<div class="form-group">
+				    <div class="input-daterange input-group datepicker">      
+				    	<input type="text" size="15" id="date_range_start" name="date_range_start" value="" class="input-sm form-control" />
+				        <span class="input-group-addon">to</span>
+				        <input type="text" size="15" id="date_range_end" name="date_range_end" value="" class="input-sm form-control" />
+				    </div>						    
+				    <span class="help-block"></span>
+			 	</div>
+			 	<div class="form-group">
+			 		<button id="date_range_filter_btn" type="button" class="btn btn-success btn-xs">Filter</button> 
+			 	</div>
+			 </form>
+		</div>
+		
+	</div>
+</div> <!-- end header row -->
+
+<div class="row">
+
+	<div class="col-md-12">
+		<div class="panel panel-default">
+		  <div class="panel-heading">Item Sales Details
+		  </div>
+		  <div class="panel-body">
+		    <div class="table-responsive" id="item_sales_detail_tbl_container">
+		    	
+				<%= render "item_sales/detail_table" %>
+
+			</div>
+		  </div>
+		</div>
+
+
+	</div> <!-- end 12 column cont for item sales table -->
+</div>
+
+<div id="item_sales_details_page"></div>

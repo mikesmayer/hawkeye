@@ -25,12 +25,10 @@ RailsBootstrap::Application.routes.draw do
   get 'meals/category_product_mix', :controller => 'meals', :action => 'category_product_mix'
   
 
-  get 'item_sales/items', :controller => 'item_sales', :action => 'items'
-  get 'items', :controller => 'item_sales', :action => 'items'
+  get 'item_sales/details', :controller => 'item_sales', :action => 'details'
+  get 'item_sales/sales_details', :controller => 'item_sales', :action => 'sales_details'
   get 'item_sales/aggregate_items', :controller => 'item_sales', :action => 'aggregate_items'
-  get 'aggregate_items', :controller => 'item_sales', :action => 'aggregate_items'
   get 'item_sales/sales_totals', :controller => 'item_sales', :action => 'sales_totals'
-  get 'sales_totals', :controller => 'item_sales', :action => 'sales_totals'
 
   get 'google_drive_sync', :controller => 'google_drive_sync', :action => 'index'
   get 'google_drive_sync/file_list', :controller => 'google_drive_sync', :action => 'file_list'

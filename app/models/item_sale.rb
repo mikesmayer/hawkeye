@@ -4,10 +4,11 @@ class ItemSale
 	#	aggregate sales info by day, month, quarter, year)
 	def self.details_to_csv(details_tbl)
 		CSV.generate do |csv|
-			csv << ["Date", "Total Net Sales", "Total Discounts", "Total M4m"]
+			csv << ["Date", "Net Sales", "Food", "Merchandise", "Donation", "Discounts", "M4m"]
 
 			details_tbl.each do |row|
-				csv << [row.date, row.total_net_sales, row.total_discounts, row.meal_for_meal]
+				csv << [row.date, row.total_net_sales, row.total_food_sales, row.total_merch_sales,
+					row.total_donation, row.total_discounts, row.meal_for_meal]
 			end
 		end
 	end
@@ -135,25 +136,52 @@ class ItemSale
 				ORDER BY date ) t1")
 =end
 
-			P42::TicketItem.find_by_sql("SELECT #{outer_query_date} AS date, SUM(total_net_sales) AS total_net_sales, 
-				SUM(total_discounts) AS total_discounts, 
-				SUM(COALESCE(t1.meal_for_meal,0)+COALESCE(t2.meals,0)) AS meal_for_meal
-			FROM 
-			(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
-				SUM(net_price) AS total_net_sales,
-				SUM(discount_total) AS total_discounts,
-				SUM(meal_for_meal) AS meal_for_meal
-				FROM p42_ticket_items
-				WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
-				GROUP BY date
-				ORDER BY date ) t1
-			LEFT JOIN 
-			(SELECT date_trunc('#{granularity}', deposit_date) as date,
+			P42::TicketItem.find_by_sql("SELECT #{outer_query_date} AS date, SUM(COALESCE(total_net_sales,0)) AS total_net_sales, 
+				SUM( COALESCE(total_discounts, 0) ) AS total_discounts, 
+				SUM( COALESCE(t1.meal_for_meal,0)+COALESCE(t2.meals,0) ) AS meal_for_meal, 
+				SUM( COALESCE(total_food_sales,0) ) AS total_food_sales,
+				SUM( COALESCE(total_merch_sales,0) ) AS total_merch_sales, 
+				SUM( COALESCE(total_donation,0) ) AS total_donation
+					FROM 
+					(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
+						SUM(net_price) AS total_net_sales,
+						SUM(discount_total) AS total_discounts,
+						SUM(meal_for_meal) AS meal_for_meal
+						FROM p42_ticket_items
+						WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+						GROUP BY date
+						ORDER BY date ) t1
+				LEFT JOIN 
+					(SELECT date_trunc('#{granularity}', deposit_date) as date,
 					SUM(meals) as meals
-				FROM tip_jar_donations
-				WHERE restaurant_id = 1 AND deposit_date BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
-				GROUP BY date) t2
-			ON t1.date = t2.date
+					FROM tip_jar_donations
+					WHERE restaurant_id = 1 AND deposit_date BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+					GROUP BY  date) t2
+				ON t1.date = t2.date			
+				LEFT JOIN
+					(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
+						SUM(net_price) AS total_food_sales
+					FROM p42_ticket_items
+					WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+					AND pos_revenue_class_id = 11
+					GROUP BY date) t3
+				ON t1.date = t3.date
+				LEFT JOIN 
+					(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
+						SUM(net_price) AS total_merch_sales
+					FROM p42_ticket_items
+					WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+					AND pos_revenue_class_id = 18
+					GROUP BY date) t4
+				ON t1.date = t4.date
+				LEFT JOIN 
+					(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
+						SUM(net_price) AS total_donation
+					FROM p42_ticket_items
+					WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+					AND pos_revenue_class_id = 15
+					GROUP BY date) t5
+				ON t1.date = t5.date
 			GROUP BY t1.date
 			ORDER BY t1.date ASC")
 	    elsif restaurant == "tacos"
@@ -170,25 +198,52 @@ class ItemSale
 				ORDER BY date ) t1")
 
 =end
-			Tacos::TicketItem.find_by_sql("SELECT #{outer_query_date} AS date, SUM(total_net_sales) AS total_net_sales, 
-				SUM(total_discounts) AS total_discounts, 
-				SUM(COALESCE(t1.meal_for_meal,0)+COALESCE(t2.meals,0)) AS meal_for_meal
-			FROM 
-			(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
-				SUM(net_price) AS total_net_sales,
-				SUM(discount_total) AS total_discounts,
-				SUM(meal_for_meal) AS meal_for_meal
-				FROM tacos_ticket_items
-				WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
-				GROUP BY date
-				ORDER BY date ) t1
-			LEFT JOIN 
-			(SELECT date_trunc('#{granularity}', deposit_date) as date,
+			Tacos::TicketItem.find_by_sql("SELECT #{outer_query_date} AS date, SUM(COALESCE(total_net_sales,0)) AS total_net_sales, 
+				SUM( COALESCE(total_discounts, 0) ) AS total_discounts, 
+				SUM( COALESCE(t1.meal_for_meal,0)+COALESCE(t2.meals,0) ) AS meal_for_meal, 
+				SUM( COALESCE(total_food_sales,0) ) AS total_food_sales,
+				SUM( COALESCE(total_merch_sales,0) ) AS total_merch_sales, 
+				SUM( COALESCE(total_donation,0) ) AS total_donation
+					FROM 
+					(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
+						SUM(net_price) AS total_net_sales,
+						SUM(discount_total) AS total_discounts,
+						SUM(meal_for_meal) AS meal_for_meal
+						FROM tacos_ticket_items
+						WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+						GROUP BY date
+						ORDER BY date ) t1
+				LEFT JOIN 
+					(SELECT date_trunc('#{granularity}', deposit_date) as date,
 					SUM(meals) as meals
-				FROM tip_jar_donations
-				WHERE restaurant_id = 2 AND deposit_date BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
-				GROUP BY date) t2
-			ON t1.date = t2.date
+					FROM tip_jar_donations
+					WHERE restaurant_id = 2 AND deposit_date BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+					GROUP BY  date) t2
+				ON t1.date = t2.date			
+				LEFT JOIN
+					(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
+						SUM(net_price) AS total_food_sales
+					FROM tacos_ticket_items
+					WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+					AND pos_category_id IN(1,2,3,4,5,6,7,8,9)
+					GROUP BY date) t3
+				ON t1.date = t3.date
+				LEFT JOIN 
+					(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
+						SUM(net_price) AS total_merch_sales
+					FROM tacos_ticket_items
+					WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+					AND pos_category_id = 11
+					GROUP BY date) t4
+				ON t1.date = t4.date
+				LEFT JOIN 
+					(SELECT date_trunc('#{granularity}', ticket_close_time) as date,
+						SUM(net_price) AS total_donation
+					FROM tacos_ticket_items
+					WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59'
+					AND pos_category_id = 10
+					GROUP BY date) t5
+				ON t1.date = t5.date
 			GROUP BY t1.date
 			ORDER BY t1.date ASC")
 

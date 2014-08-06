@@ -9,14 +9,16 @@ function init_item_sales_index(){
 	selected_restaurant = "p42";
 
 	update_aggregate_item_sales_breakdown();
-	update_item_sales_details();
+
 	update_sales_info_boxes();
-	update_details_csv_download_url();
+
 	
 	item_sales_setup_click_handlers();
 }
 
 function item_sales_update_date_range(){
+	console.log("item_sales_update_date_range");
+	
 	update_aggregate_item_sales_breakdown();
 	update_sales_info_boxes();
 	update_item_sales_details();
@@ -34,24 +36,7 @@ function update_restaurant_selection(){
 
 }
 
-function update_item_sales_details(){
 
-	//$('#item-sales-table').dataTable().fnClearTable();
-
-	$('#item-sales-table').dataTable({
-		"bDestroy": true,
-	  	"sPaginationType": "bootstrap",
-	    "processing": true,
-	    "serverSide": true,
-	    //"ajax": $('#item-sales-table').data('source'),
-	    "ajax": "item_sales/items.json?date_range="+item_sales_index_date_range+"&restaurant="+selected_restaurant,
-	    "pagingType": "simple_numbers",
-	    "stateSave": true,
-	    "bFilter": false
-	});
-
-	//?granularity="+item_sales_breakdown_granulatrity
-}
 
 /*
 function update_aggregate_item_sales_breakdown(){
@@ -75,7 +60,7 @@ function update_aggregate_item_sales_breakdown(){
 function update_aggregate_item_sales_breakdown(){
 
 	$.ajax({
-	  url: "aggregate_items",
+	  url: "item_sales/aggregate_items",
 	  type: "GET", 
 	  data: { 
 	  	granularity: item_sales_breakdown_granulatrity,
@@ -106,7 +91,7 @@ function update_aggregate_item_sales_breakdown(){
 
 function update_sales_info_boxes(){
 	$.ajax({
-		url: "sales_totals",
+		url: "item_sales/sales_totals",
 		cache: false,
 		data: {
 			date_range: item_sales_index_date_range,
@@ -131,9 +116,7 @@ function update_sales_info_boxes(){
 }
 
 
-function update_details_csv_download_url(){
-	$('#item_sales_csv_btn').html("<a class=\"btn btn-primary btn-xs pull-right\" href=\"/items.csv?date_range="+item_sales_index_date_range+"&restaurant="+selected_restaurant+"\">Download CSV</a>");
-}
+
 
 
 function item_sales_setup_click_handlers(){

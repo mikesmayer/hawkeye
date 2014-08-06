@@ -57,6 +57,11 @@ $(document).ready(function(){
 		init_item_sales_index();
 	}
 
+	/* JS for item sales details page */
+	if( $('#item_sales_details_page').length > 0 ){
+		init_item_sales_detail_page();
+	}
+
 	if( $('#gdrive_file_list').length > 0 ){
 		console.log("Getting files from google drive");
 		$.ajax({

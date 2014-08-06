@@ -1,6 +1,6 @@
 class ItemSalesController < ApplicationController
 	authorize_resource
-	before_action :convert_daterange, only: [:index, :aggregate_items, :items, :sales_totals]
+	before_action :convert_daterange, only: [:index, :aggregate_items, :details, :sales_totals, :sales_details]
 
 	def index
 
@@ -10,7 +10,13 @@ class ItemSalesController < ApplicationController
 		end
 	end
 
-	def items
+	def details
+		respond_to do |format|
+			format.html
+		end
+	end
+
+	def sales_details
 		@restaurant = params[:restaurant]
 		respond_to do |format|
 			format.json { render json: ItemSaleDatatable.new(view_context,
