@@ -23,7 +23,7 @@ module RailsBootstrap
 
     config.middleware.use Rack::Cors do
       allow do
-        origins '*'
+        origins 'http://www.pitza42.com'
         resource '*', :headers => :any, :methods => [:get, :post, :options]
       end
     end
