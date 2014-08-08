@@ -17,7 +17,7 @@ class Tacos::TicketItem < ActiveRecord::Base
 	def self.find_or_update_by_ticket_item_id_and_date(pos_ticket_item_id, date_of_business, pos_ticket_id, menu_item_id, pos_category_id, 
 		pos_revenue_class_id, quantity, net_price, discount_total, item_menu_price, ticket_close_time)
   	
-  		results = { :action => '', :obj => nil, :error => nil }
+  		results = { :action => '', :obj_id => nil, :error => nil }
 
 		ticket_item = Tacos::TicketItem.find_by_pos_ticket_item_id_and_dob(pos_ticket_item_id, date_of_business)
 		if ticket_item.nil?
@@ -43,7 +43,7 @@ class Tacos::TicketItem < ActiveRecord::Base
 			results[:action] = "update"
 		end
 		ticket_item.update_meal_count
-		results[:obj] = ticket_item
+		results[:obj_id] = ticket_item.id
 		results
 	end
 

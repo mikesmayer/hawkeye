@@ -392,7 +392,7 @@ class GoogleDriveSync
 				end
 			else
 				results[:errors] += 1
-				error_ids << ticket_item_result[:obj].id
+				error_ids << ticket_item_result[:obj_id]
 			end
 			results[:num_processed] += 1
 		end
@@ -528,7 +528,7 @@ class GoogleDriveSync
 					end
 				else
 					results[:errors] += 1
-					error_ids << ticket_item_results[:obj].id
+					error_ids << ticket_item_results[:obj_id]
 				end
 				results[:num_processed] += 1
 			end
