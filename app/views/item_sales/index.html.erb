@@ -22,13 +22,13 @@
 					<label id="date_filter_all_time" class="btn btn-primary btn-xs">
 					    <input type="radio"  value="all">All
 					</label>
-					<label id="date_filter_current_year" class="btn btn-primary btn-xs active">
+					<label id="date_filter_current_year" class="btn btn-primary btn-xs">
 						<input type="radio" value="current_year">Current year
 					</label>
 					<label id="date_filter_current_month" class="btn btn-primary btn-xs">
 						<input type="radio" value="current_month">Current month
 					</label>
-					<label id="date_filter_current_week" class="btn btn-primary btn-xs">
+					<label id="date_filter_current_week" class="btn btn-primary btn-xs active">
 						<input type="radio" value="current_week">Current week
 					</label>
 					<label id="date_filter_daterange" class="btn btn-primary btn-xs">
@@ -59,10 +59,7 @@
 </div> <!-- end header row -->
 
 <div class="row">
-	<div class="col-md-1">
-
-	</div>
-	<div class="col-md-3">
+	<div class="col-md-2">
 		<div class="panel panel-primary">
 		  <div class="panel-heading">
 		    <h3 class="panel-title text-centered">Total Net Sales</h3>
@@ -88,6 +85,9 @@
 		  </div>
 		</div>
 	</div>
+	<div class="col-md-2">
+
+	</div>	
 	<div class="col-md-8">
 		<div class="panel panel-default">
 			<div class="panel-heading">Aggregate Item Sales
@@ -96,10 +96,10 @@
 			  		<% %>
 			  		<div class="form-group">
 					    <div class="btn-group" data-toggle="buttons">
-					        <label id="breakdown_by_day_selector" class="btn btn-default btn-xs">
+					        <label id="breakdown_by_day_selector" class="btn btn-default btn-xs active">
 					            <input type="radio" name="granulatiry" value="day">day
 					        </label>
-					        <label id="breakdown_by_month_selector" class="btn btn-default btn-xs active">
+					        <label id="breakdown_by_month_selector" class="btn btn-default btn-xs">
 					            <input type="radio" name="granulatiry" value="month">month
 					        </label>
 					        <label id="breakdown_by_quarter_selector" class="btn btn-default btn-xs">

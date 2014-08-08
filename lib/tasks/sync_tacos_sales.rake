@@ -1,4 +1,13 @@
 namespace :hawkeye do 
+	desc "Test task"
+	task :test_cron_jobs => :environment do 
+		JobLog.create(:job_type => "Test", :date_run => DateTime.now, :folder_name => '',
+			:file_name => "", :method_name => 'test_cron_jobs', 
+			:model_name => 'Test', :error_ids => '',
+			:num_processed => 0, :num_errors => 0,
+			:num_updated => 0, :num_created => 0)
+
+	end
 
 	desc "Syncronizes Taco's menu and sales for the day"
 	task :sync_tacos_day => :environment do

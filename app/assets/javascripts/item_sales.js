@@ -4,8 +4,8 @@ var selected_restaurant;
 
 
 function init_item_sales_index(){
-	item_sales_breakdown_granulatrity = "month";
-	item_sales_index_date_range = "current_year";
+	item_sales_breakdown_granulatrity = "day";
+	item_sales_index_date_range = "current_week";
 	selected_restaurant = "p42";
 
 	update_aggregate_item_sales_breakdown();

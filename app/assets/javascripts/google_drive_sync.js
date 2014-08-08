@@ -218,9 +218,18 @@ function search_drive(search_term){
 			search_term: "title contains '" + search_term + "'"
 		},
 		beforeSend: function() {
+			$('#error_container').hide();
+			
 			$('#search_drive_btn').prop('disabled', true);
 			$('#search_drive_btn').prop('value', 'Searching...');
 			$('#drive_search_container').empty();
+		},
+		error: function(data){
+			console.log(data);
+			$('#error_container').html(data.statusText + ". Try again or use search.");
+			$('#error_container').show();
+			$('#search_drive_btn').prop('disabled', false);
+			$('#search_drive_btn').html('Search');
 		},
 		success: function(data){
 			//console.log(data);

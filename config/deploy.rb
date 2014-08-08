@@ -31,6 +31,7 @@ default_run_options[:pty] = true
 
 require "rvm/capistrano"
 require "bundler/capistrano"
+require "whenever/capistrano"
 
 set :rvm_ruby_string, :local              # use the same ruby as used locally for deployment
 set :rvm_autolibs_flag, "read-only"       # more info: rvm help autolibs
@@ -48,7 +49,15 @@ before "deploy:assets:precompile" do
 end
 
 namespace :deploy do
-	desc "Restart nginx"
+	 desc "Update the crontab file"
+  task :update_crontab, :roles => :app, :except => { :no_release => true } do
+    run "cd #{release_path} && RAILS_ENV=#{rails_env} 
+      GEM_HOME=/home/tylersam/webapps/hawkeye/gems PATH=/home/tylersam/webapps/hawkeye/bin:/usr/local/bin:$PATH 
+      bundle exec whenever --update-crontab #{application} -s >> $HOME/logs/user/cron.log 2>&1"
+    #run "cd #{release_path} && bundle exec whenever --update-crontab #{application}"
+  end
+
+  desc "Restart nginx"
 	task :restart do
 		run "#{deploy_to}/bin/restart"
 	end
