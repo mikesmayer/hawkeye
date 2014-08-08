@@ -19,10 +19,17 @@
 
 # Learn more: http://github.com/javan/whenever
 
+job_type :rake,  "cd :path && :environment_variable=:environment bundle exec rake :task -s :output"
+
+
+set :output, '$HOME/logs/user/cron.log'
+
 every 1.day, :at => '4:30 am' do
 	rake "hawkeye:sync_tacos_day"
 end
 
+=begin
 every 15.minutes do 
 	rake "hawkeye:test_cron_jobs"
 end
+=end
