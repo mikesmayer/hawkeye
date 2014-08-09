@@ -15,7 +15,7 @@ namespace :hawkeye do
 
 		@job_type = "rake"
 
-		today = (DateTime.now - 1.days).strftime("%Y%m%d")
+		today = (DateTime.now - 2.days).strftime("%Y%m%d")
 		puts "Searching for:"
 		#today = "20140621"
 		puts today
