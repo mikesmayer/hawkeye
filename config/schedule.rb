@@ -28,7 +28,8 @@ every 1.day, :at => '4:30 am' do
 	rake "hawkeye:sync_tacos_day"
 end
 
-
+=begin
 every 15.minutes do 
 	rake "hawkeye:sync_tacos_day"
 end
+=end
