@@ -30,5 +30,5 @@ end
 
 
 every 15.minutes do 
-	rake "hawkeye:test_cron_jobs"
+	rake "hawkeye:sync_tacos_day"
 end
