@@ -2,11 +2,13 @@ var item_sales_breakdown_granulatrity;
 var item_sales_index_date_range;
 var selected_restaurant;
 var item_sales_category_id;
+var sum_type;
 
 function init_item_sales_index(){
 	item_sales_breakdown_granulatrity = "day";
 	item_sales_index_date_range = "current_week";
 	selected_restaurant = "p42";
+	sum_type = "net_price"
 
 	update_aggregate_item_sales_breakdown();
 	update_sales_info_boxes();
@@ -182,7 +184,8 @@ function item_sales_get_category_breakdown(){
 			data: {
 				date_range: item_sales_index_date_range,
 				restaurant: selected_restaurant,
-				category_id: item_sales_category_id
+				category_id: item_sales_category_id,
+				sum_type: sum_type
 			},
 			beforeSend: function(){
 				$('#category_product_mix_spinner').show();
@@ -195,12 +198,25 @@ function item_sales_get_category_breakdown(){
 				//console.log("item sales breakdown:" + data);
 				var columns = data.columns;
 				var series_data = data.totals;
-				var total = data.all_item_total;
-				var series = [{
-					data: series_data
-				}];
-				//console.log(columns);
-				//console.log(series);
+				var quantity_series_data = data.quantities;
+				
+				if(sum_type == "quantity"){
+					var series = [{
+						data: quantity_series_data
+					}];
+					var total = data.all_item_quantity_total;
+
+				}else {
+					var series = [{
+						data: series_data
+					}];
+					var total = data.all_item_total;
+
+				}
+				
+				
+
+	
 				
 				console.log("Cat id: " + item_sales_category_id);
 
@@ -219,6 +235,7 @@ function item_sales_get_category_breakdown(){
 }
 
 function setupCategoryChart(columns, series, total){
+
 	$('#category_chart').highcharts({
         chart: {
             type: 'bar'
@@ -284,6 +301,13 @@ function setupCategoryChart(columns, series, total){
 }
 
 function setup_item_chart(columns, series, total){
+	var x_axis_label;
+	if(sum_type == "quantity"){
+		x_axis_label = "Quantity Sold";
+	}else if(sum_type == "net_price"){
+		x_axis_label = "Net Sales"
+	}
+
 	$('#item_chart').highcharts({
         chart: {
             type: 'bar'
@@ -292,10 +316,7 @@ function setup_item_chart(columns, series, total){
 
         title: {
             text: null
-        },/*
-        subtitle: {
-            text: 'Source: Wikipedia.org'
-        },*/
+        },
         xAxis: {
             categories: columns,
             title: {
@@ -305,7 +326,7 @@ function setup_item_chart(columns, series, total){
         yAxis: {
             min: 0,
             title: {
-                text: 'Net Sales'
+                text: x_axis_label
             },
             labels: {
                 overflow: 'justify'
@@ -313,9 +334,16 @@ function setup_item_chart(columns, series, total){
         },
         tooltip: {
             formatter: function() {
-                return '<b>'+ this.x +'</b><br/>'+
-                '$'+ addCommas(this.y) + '<br/>' +
-                'Percent of total: ' + ((this.y/total)*100).toFixed(2) + '%';
+            	if(sum_type == "net_price"){
+	                return '<b>'+ this.x +'</b><br/>'+
+	                '$'+ addCommas(this.y) + '<br/>' +
+	                'Percent of total: ' + ((this.y/total)*100).toFixed(2) + '%';
+            	}else if(sum_type == "quantity"){
+            		return '<b>'+ this.x +'</b><br/>'+
+	                'Total sold: ' + addCommas(total.toFixed(0)) + '<br/>' +
+	                'Percent of total: ' + ((this.y/total)*100).toFixed(2) + '%';
+            	}
+
             }
         },
         plotOptions: {
@@ -323,30 +351,24 @@ function setup_item_chart(columns, series, total){
                 dataLabels: {
                     enabled: true,
                     formatter: function() {
-                    	return '$' + addCommas(this.y);
+                    	if(sum_type == "net_price"){
+                    		return '$' + addCommas(this.y);
+                    	}else if(sum_type == "quantity"){
+                    		return addCommas(this.y);
+                    	}
                     }
                 }
             }
         },
         legend: {
         	enabled: false
-            /*
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'top',
-            x: -40,
-            y: 100,
-            floating: true,
-            borderWidth: 1,
-            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
-            shadow: true
-            */
         },
         credits: {
             enabled: false
         },
         series: series
     });
+
 }
 
 function update_category_selector_item_sales_page(){
@@ -442,7 +464,7 @@ function item_sales_setup_click_handlers(){
 
 	/* end click handlers for restaurant selection */
 
-		/* click event handler for the category select dropdown list */
+	/* click event handler for the category select dropdown list */
 	$('#p42_cat_select').change(function(){
 		item_sales_category_id = $(this).children(":selected").val();
 		item_sales_get_category_breakdown();
@@ -454,4 +476,26 @@ function item_sales_setup_click_handlers(){
 	});
 	/* end click handler for category */
 
+	/* click handlers for the quantity or net price selector for the item sales breakdown chart */
+	$('#tacos_net_sales_selector').click(function(){
+		sum_type = "net_price";
+		item_sales_get_category_breakdown();
+	});
+
+	$('#tacos_quantity_selector').click(function(){
+		sum_type = "quantity";
+		item_sales_get_category_breakdown();
+	});
+
+	$('#p42_net_sales_selector').click(function(){
+		sum_type = "net_price";
+		item_sales_get_category_breakdown();
+	});
+
+	$('#p42_quantity_selector').click(function(){
+		sum_type = "quantity";
+		item_sales_get_category_breakdown();
+	});
+
+	/* end click handler for quantity/net price */
 }

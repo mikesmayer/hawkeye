@@ -58,7 +58,8 @@ class ItemSalesController < ApplicationController
 	end
 
 	def item_totals
-		@category_id = ItemSale.get_item_totals(@restaurant, @start_date, @end_date, params[:category_id])
+		@category_id = ItemSale.get_item_totals(@restaurant, @start_date, @end_date, 
+			params[:category_id], params[:sum_type])
 
 		response.header['Content-Type'] = 'application/json'
 		respond_to do |format|
