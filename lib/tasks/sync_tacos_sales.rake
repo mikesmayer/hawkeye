@@ -15,9 +15,9 @@ namespace :hawkeye do
 
 		@job_type = "rake"
 
-		today = (DateTime.now - 2.days).strftime("%Y%m%d")
+		#today = (DateTime.now - 2.days).strftime("%Y%m%d")
 		puts "Searching for:"
-		#today = "20140621"
+		today = "20140820"
 		puts today
 
 		sync_date(today)
@@ -29,41 +29,51 @@ namespace :hawkeye do
 		daily_folder = GoogleDriveSync.search_files("title = '#{date}'").first
 		puts "Search results:"
 		puts daily_folder
+		if daily_folder.nil?
+			JobLog.create(:job_type => @job_type, :date_run => DateTime.now, :folder_name => @folder_title,
+			:file_name => "", :method_name => "sync_date", 
+			:model_name => "No results found for search: title = #{date}", :error_ids => "",
+			:num_processed => 0, :num_errors => 1,
+			:num_updated => 0, :num_created => 0)
+		else 
+			#found folder for the given date
+			@folder_title = daily_folder[:title]
 
-		@folder_title = daily_folder[:title]
+			#get folder contents the second param is the scope - filtered will only return the DBF files we want to parse
+			file_list = GoogleDriveSync.get_file_list(daily_folder[:id], "filtered")
+			puts file_list
 
-		#get folder contents the second param is the scope - filtered will only return the DBF files we want to parse
-		file_list = GoogleDriveSync.get_file_list(daily_folder[:id], "filtered")
-		puts file_list
+			cat_file = file_list.detect { |f| f[:title] == "CAT.DBF" }
+			puts "cat file:"
+			puts cat_file
 
-		cat_file = file_list.detect { |f| f[:title] == "CAT.DBF" }
-		puts "cat file:"
-		puts cat_file
+			menu_itm_file = file_list.detect { |f| f[:title] == "ITM.DBF" }
+			puts "menu items file:"
+			puts menu_itm_file
 
-		menu_itm_file = file_list.detect { |f| f[:title] == "ITM.DBF" }
-		puts "menu items file:"
-		puts menu_itm_file
+			cat_itm_join_file = file_list.detect { |f| f[:title] == "CIT.DBF" }
+			puts "category item join file:"
+			puts cat_itm_join_file
 
-		cat_itm_join_file = file_list.detect { |f| f[:title] == "CIT.DBF" }
-		puts "category item join file:"
-		puts cat_itm_join_file
+			ticket_item_file = file_list.detect { |f| f[:title] == "GNDITEM.DBF" }
+			puts "daily sales ticket items file:"
+			puts ticket_item_file
 
-		ticket_item_file = file_list.detect { |f| f[:title] == "GNDITEM.DBF" }
-		puts "daily sales ticket items file:"
-		puts ticket_item_file
+			void_file = file_list.detect { |f| f[:title] == "GNDVOID.DBF" }
+			puts "void file:"
+			puts void_file
 
-		void_file = file_list.detect { |f| f[:title] == "GNDVOID.DBF" }
-		puts "void file:"
-		puts void_file
+			puts
+			puts
 
-		puts
-		puts
+			process_tacos_category(cat_file[:id])
+			process_tacos_menu_items(menu_itm_file[:id])
+			process_cat_menu_item_join(cat_itm_join_file[:id])
+			process_daily_sales(ticket_item_file[:id])
+			process_voids(void_file[:id])
+		end
 
-		process_tacos_category(cat_file[:id])
-		process_tacos_menu_items(menu_itm_file[:id])
-		process_cat_menu_item_join(cat_itm_join_file[:id])
-		process_daily_sales(ticket_item_file[:id])
-		process_voids(void_file[:id])
+		
 
 	end
 
