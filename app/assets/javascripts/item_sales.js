@@ -1,7 +1,7 @@
 var item_sales_breakdown_granulatrity;
 var item_sales_index_date_range;
 var selected_restaurant;
-
+var item_sales_category_id;
 
 function init_item_sales_index(){
 	item_sales_breakdown_granulatrity = "day";
@@ -16,6 +16,7 @@ function init_item_sales_index(){
 	update_category_sales_chart();
 }
 
+
 function item_sales_update_date_range(){
 	console.log("item_sales_update_date_range");
 	
@@ -25,6 +26,7 @@ function item_sales_update_date_range(){
 
 	update_details_csv_download_url();
 	update_category_sales_chart();
+	item_sales_get_category_breakdown();
 }
 
 function update_restaurant_selection(){
@@ -36,28 +38,17 @@ function update_restaurant_selection(){
 	update_details_csv_download_url();
 	update_category_sales_chart();
 
+	update_category_selector_item_sales_page();
+
+	item_sales_get_category_breakdown();
+
+	if(selected_restaurant == "p42"){
+		$('#p42_cat_select').val("-1");
+	}else if(selected_restaurant == "tacos"){
+		$('#tacos_cat_select').val("-1");
+	}
 }
 
-
-
-/*
-function update_aggregate_item_sales_breakdown(){
-
-
-	$('#aggregate-item-sales-table').dataTable({
-		"bDestroy": true,
-	  	"sPaginationType": "bootstrap",
-	    "processing": true,
-	    "serverSide": true,
-	    "ajax": "http://localhost:3000/item_sales/aggregate_items.json?granularity="+item_sales_breakdown_granulatrity,
-	    "pagingType": "simple",
-	    "stateSave": true,
-	    "bFilter": false
-	});
-
-	
-}
-*/
 
 function update_aggregate_item_sales_breakdown(){
 
@@ -132,11 +123,12 @@ function update_category_sales_chart(){
 			restaurant: selected_restaurant
 		},
 		beforeSend: function(){
-			$('#chart1_cont').hide();
+			$('#cat_net_sales_cont').empty();
+			//$('#category_chart').empty();
 		},
 		success: function(data){
-			console.log("Updating category sales chart");
-			console.log(data);
+			//console.log("Updating category sales chart");
+			//console.log(data);
 			
 			var columns = data.columns;
 			var series_data = data.totals;
@@ -144,16 +136,27 @@ function update_category_sales_chart(){
 			var series = [{
 				data: series_data
 			}];
-			console.log(columns);
-			console.log(series);
-			
-
-			if( total > 0.01){
-				$('#chart1_cont').show();
-				setupCategoryChart(columns, series, total);
+			//console.log(columns);
+			//console.log(series);
+			var date_text = item_sales_index_date_range;
+			if(item_sales_index_date_range == "all"){
+				date_text = "<b>All time</b>";
+			}else if(item_sales_index_date_range == "current_year"){
+				date_text = "<b>Current year</b>";
+			}else if(item_sales_index_date_range == "current_month"){
+				date_text = "<b>Current month</b>";
+			}else if(item_sales_index_date_range == "current_week"){
+				date_text = "<b>Current week</b>";
 			}
-			
-			
+
+			if ( total > 0.01 ){
+				//$('#chart1_cont').show();
+				$('#selected_dates').html(date_text);
+				$('#cat_net_sales_cont').html("<div id=\"category_chart\" style=\"width:100%; height:500px;\"></div>");
+				setupCategoryChart(columns, series, total);
+			} else {
+				$('#selected_dates').html("No sales data available for " + date_text);
+			}
 			
 		}
 	});
@@ -168,11 +171,59 @@ function update_category_sales_chart(){
 	
 }
 
+
+function item_sales_get_category_breakdown(){
+
+	if(item_sales_category_id){
+		$.ajax({
+			url: "item_sales/item_totals",
+			cache: false,
+			type: "GET",
+			data: {
+				date_range: item_sales_index_date_range,
+				restaurant: selected_restaurant,
+				category_id: item_sales_category_id
+			},
+			beforeSend: function(){
+				$('#category_product_mix_spinner').show();
+				//$('#item_sales_items_container').hide();
+				$('#item_sales_items_container').empty();
+			},
+			success: function(data){
+				$('#category_product_mix_spinner').hide();
+				$('#item_sales_items_container').show();
+				//console.log("item sales breakdown:" + data);
+				var columns = data.columns;
+				var series_data = data.totals;
+				var total = data.all_item_total;
+				var series = [{
+					data: series_data
+				}];
+				//console.log(columns);
+				//console.log(series);
+				
+				console.log("Cat id: " + item_sales_category_id);
+
+				if( total > 0.01){
+					//$('#chart1_cont').show();
+					$('#item_sales_items_container').html("<div id=\"item_chart\" style=\"width:100%; height:400px;\"></div>");
+					setup_item_chart(columns, series, total);
+				} else {
+					$('#item_sales_items_container').html("<h5 class=\"text-centered\">No data available.</h5>");
+				}
+			}
+		});
+	}else {
+		$('#item_sales_items_container').empty();
+	}
+}
+
 function setupCategoryChart(columns, series, total){
 	$('#category_chart').highcharts({
         chart: {
             type: 'bar'
         },
+        colors: ['#008cba', '#990000'],
         title: {
             text: null
         },/*
@@ -230,6 +281,83 @@ function setupCategoryChart(columns, series, total){
         },
         series: series
     });
+}
+
+function setup_item_chart(columns, series, total){
+	$('#item_chart').highcharts({
+        chart: {
+            type: 'bar'
+        },
+        colors: ['#990000', '#008cba'],
+
+        title: {
+            text: null
+        },/*
+        subtitle: {
+            text: 'Source: Wikipedia.org'
+        },*/
+        xAxis: {
+            categories: columns,
+            title: {
+                text: null
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Net Sales'
+            },
+            labels: {
+                overflow: 'justify'
+            }
+        },
+        tooltip: {
+            formatter: function() {
+                return '<b>'+ this.x +'</b><br/>'+
+                '$'+ addCommas(this.y) + '<br/>' +
+                'Percent of total: ' + ((this.y/total)*100).toFixed(2) + '%';
+            }
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: true,
+                    formatter: function() {
+                    	return '$' + addCommas(this.y);
+                    }
+                }
+            }
+        },
+        legend: {
+        	enabled: false
+            /*
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'top',
+            x: -40,
+            y: 100,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+            shadow: true
+            */
+        },
+        credits: {
+            enabled: false
+        },
+        series: series
+    });
+}
+
+function update_category_selector_item_sales_page(){
+	item_sales_category_id = null;
+	if(selected_restaurant == "p42"){
+		$('#p42_category_select_cont').removeClass("hidden");
+		$('#tacos_category_select_cont').addClass("hidden");		
+	}else {
+		$('#p42_category_select_cont').addClass("hidden");
+		$('#tacos_category_select_cont').removeClass("hidden");				
+	}
 }
 
 function item_sales_setup_click_handlers(){
@@ -313,5 +441,17 @@ function item_sales_setup_click_handlers(){
 	});
 
 	/* end click handlers for restaurant selection */
+
+		/* click event handler for the category select dropdown list */
+	$('#p42_cat_select').change(function(){
+		item_sales_category_id = $(this).children(":selected").val();
+		item_sales_get_category_breakdown();
+	});
+
+	$('#tacos_cat_select').change(function(){
+		item_sales_category_id = $(this).children(":selected").val()
+		item_sales_get_category_breakdown();
+	});
+	/* end click handler for category */
 
 }

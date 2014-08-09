@@ -1,9 +1,12 @@
 class ItemSalesController < ApplicationController
 	authorize_resource
-	before_action :convert_daterange, only: [:index, :aggregate_items, :details, :sales_totals, :sales_details, :category_totals]
-
+	before_action :convert_daterange, only: [:index, :aggregate_items, :details, 
+		:sales_totals, :sales_details, :category_totals, :item_totals]
+	before_action :set_restaurant, only: [:sales_details, :aggregate_items, :sales_totals,
+		:category_totals, :item_totals]
 	def index
-
+		@p42_categories = P42::MenuItemGroup.all
+		@tacos_categories = Tacos::MenuItemGroup.all
 
 		respond_to do |format|
 			format.html
@@ -17,7 +20,6 @@ class ItemSalesController < ApplicationController
 	end
 
 	def sales_details
-		@restaurant = params[:restaurant]
 		respond_to do |format|
 			format.json { render json: ItemSaleDatatable.new(view_context,
 				{ :restaurant => @restaurant, :start_date => @start_date, :end_date => @end_date }) }
@@ -27,7 +29,6 @@ class ItemSalesController < ApplicationController
 	end
 
 	def aggregate_items
-		@restaurant = params[:restaurant]
 		@granularity = params[:granularity]
 		@aggregate_table_rows = ItemSale.getAggregateSales(@restaurant, @granularity, @start_date, @end_date)
 
@@ -38,7 +39,6 @@ class ItemSalesController < ApplicationController
 	end
 
 	def sales_totals
-		@restaurant = params[:restaurant]
 		@totals = ItemSale.get_sales_totals(@restaurant, @start_date, @end_date)
 
 		response.header['Content-Type'] = 'application/json'
@@ -49,15 +49,28 @@ class ItemSalesController < ApplicationController
 	end
 
 	def category_totals
-		@restaurant = params[:restaurant]
 		@category_totals = ItemSale.get_category_totals(@restaurant, @start_date, @end_date)
+
 		response.header['Content-Type'] = 'application/json'
 		respond_to do |format|
 			format.js { render json: @category_totals }
 		end
 	end
 
+	def item_totals
+		@category_id = ItemSale.get_item_totals(@restaurant, @start_date, @end_date, params[:category_id])
+
+		response.header['Content-Type'] = 'application/json'
+		respond_to do |format|
+			format.js { render json: @category_id }
+		end
+	end
+
 	private
+	  def set_restaurant
+	  	@restaurant = params[:restaurant]
+	  end
+
 	  def convert_daterange
 	  	date_range = params[:date_range]
 

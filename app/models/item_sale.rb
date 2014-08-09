@@ -140,9 +140,6 @@ class ItemSale
 				end
 			end
 
-
-			
-
 		elsif restaurant == "tacos"
 			category_totals = Tacos::TicketItem.find_by_sql("SELECT name, SUM(net_price) as net_price
 				  FROM tacos_ticket_items
@@ -162,6 +159,57 @@ class ItemSale
 		end
 
 		totals = { :columns => category_names, :totals => totals_array, :all_cat_total => all_cat_total}
+	end
+
+
+	def self.get_item_totals(restaurant, start_date, end_date, category_id)
+		totals_array = Array.new
+		item_names = Array.new
+		all_item_total = 0
+
+
+		if restaurant == "p42"
+
+			item_totals = P42::TicketItem.find_by_sql("SELECT name, SUM(net_price) as net_price
+				  FROM p42_ticket_items
+				  INNER JOIN p42_menu_items ON p42_menu_items.id = p42_ticket_items.menu_item_id
+				  WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59' 
+				  	AND pos_category_id = #{category_id}
+				  GROUP BY name
+				  ORDER BY net_price DESC")
+
+			item_totals.each do |item|
+
+				total = item.net_price.round(2)
+				unless total < 0.01
+					item_names << item.name
+					totals_array << total
+					all_item_total += total
+				end
+			end
+
+
+		elsif restaurant == "tacos"
+			item_totals = Tacos::TicketItem.find_by_sql("SELECT name, SUM(net_price) as net_price
+				  FROM tacos_ticket_items
+				  INNER JOIN tacos_menu_items ON tacos_menu_items.id = tacos_ticket_items.menu_item_id
+				  WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59' 
+				  	AND pos_category_id = #{category_id}
+				  GROUP BY name
+				  ORDER BY net_price DESC")
+
+			item_totals.each do |item|
+
+				total = item.net_price.round(2)
+				unless total < 0.01
+					item_names << item.name
+					totals_array << total
+					all_item_total += total
+				end
+			end
+		end
+
+		totals = { :columns => item_names, :totals => totals_array, :all_item_total => all_item_total}
 	end
 
 	def self.getAggregateSales(restaurant, granularity, start_date, end_date)
