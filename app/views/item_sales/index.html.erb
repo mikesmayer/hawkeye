@@ -9,7 +9,7 @@
 
 		<div class="pull-right">
 			<div class="btn-toolbar" role="toolbar">
-				<div class="btn-group" data-toggle="buttons">
+				<div class="btn-group top-margin" data-toggle="buttons">
 					<label id="p42_selector" class="btn btn-success btn-xs active">
 					    <input type="radio"  value="p42">Pitza 42
 					</label>
@@ -18,7 +18,7 @@
 					</label>
 				</div>
 				
-				<div class="btn-group" data-toggle="buttons">
+				<div class="btn-group top-margin" data-toggle="buttons">
 					<label id="date_filter_all_time" class="btn btn-primary btn-xs">
 					    <input type="radio"  value="all">All
 					</label>
@@ -65,7 +65,7 @@
 		    <h3 class="panel-title text-centered">Total Net Sales</h3>
 		  </div>
 		  <div class="panel-body">
-		    <h2 class="meal-info-box" id="net_sales_info_box">$<%= number_with_precision(@net_sales, :precision => 0, :delimiter => ",") %></h2>
+		    <h3 class="meal-info-box" id="net_sales_info_box">$<%= number_with_precision(@net_sales, :precision => 0, :delimiter => ",") %></h3>
 		  </div>
 		</div>
 		<div class="panel panel-default">
@@ -86,7 +86,32 @@
 		</div>
 	</div>
 	<div class="col-md-2">
-
+		<div class="panel panel-primary">
+		  <div class="panel-heading">
+		    <h3 class="panel-title text-centered">Total Food Sales</h3>
+		  </div>
+		  <div class="panel-body">
+		    <h3 class="meal-info-box" id="food_sales_info_box">$<%= number_with_precision(@food_sales, :precision => 0, :delimiter => ",") %></h3>
+		  </div>
+		</div>
+		<div class="panel panel-default">
+		  <div class="panel-heading">
+		    <h3 class="panel-title text-centered">Total Apparel</h3>
+		  </div>
+		  <div class="panel-body">
+		    <h2 class="meal-info-box" id="merch_sales_info_box">$<%= number_with_precision(@merch_sales, :precision => 0, :delimiter => ",") %></h2>
+		  </div>
+		</div>
+		<!--
+		<div class="panel panel-default">
+		  <div class="panel-body">
+		    <ul class="list-unstyled">
+		    	<li><button class="btn btn-xs btn-success">Category Breakdown</button></li>
+		    	<li><button class="btn btn-xs btn-success top-margin">Item level CSV</button></li>
+		    </ul>
+		  </div>
+		</div>
+	-->
 	</div>	
 	<div class="col-md-8">
 		<div class="panel panel-default">
@@ -126,6 +151,18 @@
 	</div><!-- end 5 column cont -->
 
 </div>
+
+<div class="row">
+	<div class="col-md-6">
+		<div id="chart1_cont">
+			<h2 class="text-centered">Net Sales by Category</h2>
+			<div id="category_chart" style="width:100%; height:500px;"></div>
+		</div>
+	</div>
+	
+</div>
+
+
 
 <!-- div used just to ID the page from JS -->
 <div id="item_sales_index_page"></div>

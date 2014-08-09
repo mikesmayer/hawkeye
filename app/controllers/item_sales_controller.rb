@@ -1,6 +1,6 @@
 class ItemSalesController < ApplicationController
 	authorize_resource
-	before_action :convert_daterange, only: [:index, :aggregate_items, :details, :sales_totals, :sales_details]
+	before_action :convert_daterange, only: [:index, :aggregate_items, :details, :sales_totals, :sales_details, :category_totals]
 
 	def index
 
@@ -45,6 +45,15 @@ class ItemSalesController < ApplicationController
 		respond_to do |format|
 			format.js { render json: @totals }
 			format.json { render json: @totals }
+		end
+	end
+
+	def category_totals
+		@restaurant = params[:restaurant]
+		@category_totals = ItemSale.get_category_totals(@restaurant, @start_date, @end_date)
+		response.header['Content-Type'] = 'application/json'
+		respond_to do |format|
+			format.js { render json: @category_totals }
 		end
 	end
 

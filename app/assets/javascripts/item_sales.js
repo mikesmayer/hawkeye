@@ -9,11 +9,11 @@ function init_item_sales_index(){
 	selected_restaurant = "p42";
 
 	update_aggregate_item_sales_breakdown();
-
 	update_sales_info_boxes();
-
 	
 	item_sales_setup_click_handlers();
+
+	update_category_sales_chart();
 }
 
 function item_sales_update_date_range(){
@@ -24,6 +24,7 @@ function item_sales_update_date_range(){
 	update_item_sales_details();
 
 	update_details_csv_download_url();
+	update_category_sales_chart();
 }
 
 function update_restaurant_selection(){
@@ -33,6 +34,7 @@ function update_restaurant_selection(){
 	update_aggregate_item_sales_breakdown();
 	
 	update_details_csv_download_url();
+	update_category_sales_chart();
 
 }
 
@@ -107,17 +109,128 @@ function update_sales_info_boxes(){
 			net_sales = addCommas( data.net_sales.toFixed(0) );
 			discount_totals = addCommas( data.discount_totals.toFixed(0) );
 			m4m_totals = addCommas( data.m4m_totals.toFixed(0) );
+			food_totals = addCommas( data.food_sales.toFixed(0) );
+			merch_totals = addCommas( data.merch_sales.toFixed(0) );
 
 			$('#net_sales_info_box').html("$" + net_sales);
 			$('#discounts_info_box').html("$" + discount_totals);
 			$('#m4m_info_box').html(m4m_totals);
+			$('#food_sales_info_box').html("$" + food_totals);
+			$('#merch_sales_info_box').html("$" + merch_totals);
 		}
 	});	
 }
 
 
+function update_category_sales_chart(){
+	$.ajax({
+		url: "item_sales/category_totals",
+		type: "GET",
+		cache: false,
+		data: {
+			date_range: item_sales_index_date_range,
+			restaurant: selected_restaurant
+		},
+		beforeSend: function(){
+			$('#chart1_cont').hide();
+		},
+		success: function(data){
+			console.log("Updating category sales chart");
+			console.log(data);
+			
+			var columns = data.columns;
+			var series_data = data.totals;
+			var total = data.all_cat_total;
+			var series = [{
+				data: series_data
+			}];
+			console.log(columns);
+			console.log(series);
+			
+
+			if( total > 0.01){
+				$('#chart1_cont').show();
+				setupCategoryChart(columns, series, total);
+			}
+			
+			
+			
+		}
+	});
 
 
+	//var columns = ['Africa', 'America', 'Asia', 'Europe', 'Oceania'];
+	/*var series = [{
+            data: [107, 31, 635, 203, 2]
+        }];
+        */
+
+	
+}
+
+function setupCategoryChart(columns, series, total){
+	$('#category_chart').highcharts({
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: null
+        },/*
+        subtitle: {
+            text: 'Source: Wikipedia.org'
+        },*/
+        xAxis: {
+            categories: columns,
+            title: {
+                text: null
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Net Sales'
+            },
+            labels: {
+                overflow: 'justify'
+            }
+        },
+        tooltip: {
+            formatter: function() {
+                return '<b>'+ this.x +'</b><br/>'+
+                '$'+ addCommas(this.y) + '<br/>' +
+                'Percent of total: ' + ((this.y/total)*100).toFixed(2) + '%';
+            }
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: true,
+                    formatter: function() {
+                    	return '$' + addCommas(this.y);
+                    }
+                }
+            }
+        },
+        legend: {
+        	enabled: false
+            /*
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'top',
+            x: -40,
+            y: 100,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+            shadow: true
+            */
+        },
+        credits: {
+            enabled: false
+        },
+        series: series
+    });
+}
 
 function item_sales_setup_click_handlers(){
 

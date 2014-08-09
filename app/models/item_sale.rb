@@ -85,12 +85,20 @@ class ItemSale
 			m4m_totals = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:meal_for_meal)
 			tip_jar_totals = TipJarDonation.where("deposit_date BETWEEN ? AND ?", start_date, end_date)
 				.where("restaurant_id = 1").sum(:meals)
+			food_sales = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date)
+						.where("pos_revenue_class_id = 11").sum(:net_price)
+			merch_sales = P42::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date)
+						.where("pos_revenue_class_id = 18").sum(:net_price)
 		elsif restaurant == "tacos"
 			net_sales = Tacos::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:net_price)
 			discount_totals = Tacos::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:discount_total)
 			m4m_totals = Tacos::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date).sum(:meal_for_meal)
 			tip_jar_totals = TipJarDonation.where("deposit_date BETWEEN ? AND ?", start_date, end_date)
 				.where("restaurant_id = 2").sum(:meals)
+			food_sales = Tacos::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date)
+						.where("pos_category_id IN(1,2,3,4,5,6,7,8,9)").sum(:net_price)
+			merch_sales = Tacos::TicketItem.where("ticket_close_time BETWEEN ? AND ?", start_date, end_date)
+						.where("pos_category_id = 11").sum(:net_price)
 		end
 
 		net_sales = net_sales.nil? ? 0 : net_sales
@@ -98,13 +106,63 @@ class ItemSale
 		m4m_totals = m4m_totals.nil? ? 0 : m4m_totals
 		tip_jar_totals = tip_jar_totals.nil? ? 0 : tip_jar_totals
 
+		food_sales = food_sales.nil? ? 0 : food_sales
+		merch_sales = merch_sales.nil? ? 0 : merch_sales
 		#have to include everything genearted in the restaurant and tip jar donations
 		m4m_totals = m4m_totals + tip_jar_totals
 
-		totals = {:net_sales => net_sales, :discount_totals => discount_totals, :m4m_totals => m4m_totals}
+		totals = {:net_sales => net_sales, :discount_totals => discount_totals, 
+			:m4m_totals => m4m_totals, :food_sales => food_sales, :merch_sales => merch_sales}
 		totals.to_json
 	end
 
+	def self.get_category_totals(restaurant, start_date, end_date)
+		totals_array = Array.new
+		category_names = Array.new
+		all_cat_total = 0
+		
+		if restaurant == "p42"
+			#categories = P42::MenuItemGroup.all
+			category_totals = P42::TicketItem.find_by_sql("SELECT name, SUM(net_price) as net_price
+				  FROM p42_ticket_items
+				  INNER JOIN p42_menu_item_groups ON p42_menu_item_groups.id = p42_ticket_items.pos_category_id
+				  WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59' 
+				  GROUP BY name
+				  ORDER BY net_price DESC")
+
+			category_totals.each do |cat|
+
+				total = cat.net_price.round(2)
+				unless total < 0.01
+					category_names << cat.name
+					totals_array << total
+					all_cat_total += total
+				end
+			end
+
+
+			
+
+		elsif restaurant == "tacos"
+			category_totals = Tacos::TicketItem.find_by_sql("SELECT name, SUM(net_price) as net_price
+				  FROM tacos_ticket_items
+				  INNER JOIN tacos_menu_item_groups ON tacos_menu_item_groups.id = tacos_ticket_items.pos_category_id
+				  WHERE ticket_close_time BETWEEN '#{start_date}T00:00:00' AND '#{end_date}T23:59:59' 
+				  GROUP BY name
+				  ORDER BY net_price DESC")
+			
+			category_totals.each do |cat|
+				total = cat.net_price.round(2)
+				unless total < 0.01
+					category_names << cat.name
+					totals_array << total
+					all_cat_total += total
+				end
+			end
+		end
+
+		totals = { :columns => category_names, :totals => totals_array, :all_cat_total => all_cat_total}
+	end
 
 	def self.getAggregateSales(restaurant, granularity, start_date, end_date)
 		

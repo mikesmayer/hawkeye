@@ -29,6 +29,7 @@ RailsBootstrap::Application.routes.draw do
   get 'item_sales/sales_details', :controller => 'item_sales', :action => 'sales_details'
   get 'item_sales/aggregate_items', :controller => 'item_sales', :action => 'aggregate_items'
   get 'item_sales/sales_totals', :controller => 'item_sales', :action => 'sales_totals'
+  get 'item_sales/category_totals', :controller => 'item_sales', :action => 'category_totals'
 
   get 'google_drive_sync', :controller => 'google_drive_sync', :action => 'index'
   get 'google_drive_sync/file_list', :controller => 'google_drive_sync', :action => 'file_list'
