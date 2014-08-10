@@ -1,7 +1,15 @@
+<% if @restaurant == "p42" 
+	url = "http://hawkeye.pitza42.com/p42/menu_items/#{@menu_item.id}/edit"
+	restaurant = "Pitza 42"
+elsif @restaurant == "tacos"
+	url = "http://hawkeye.pitza42.com/tacos/menu_items/#{@menu_item.id}/edit"
+	restaurant = "Tacos"
+ end %>
 <html>
+<h2><%= restaurant %></h3>
 <h3><%= @menu_item.name %></h3>
 <p>Item Added</p>
 <p><%= @menu_item.updated_at.strftime("%a - %m/%d/%Y %I:%M%p") %></p>
-<p><b><%= @menu_item.name %></b> was added to the system. If this is an item that generates meals for FMSC, you must set that up by going to this link: <a href=<%= "http://hawkeye.pitza42.com/p42/menu_items/#{@menu_item.id}/edit" %>>Edit Item</a></p>
+<p><b><%= @menu_item.name %></b> was added to the system. If this is an item that generates meals for FMSC, you must set that up by going to this link: <a href=<%= url %>>Edit Item</a></p>
 <p>If this item does not count towards meals, you can disregard this e-mail.<p>
 </html>

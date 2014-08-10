@@ -111,15 +111,29 @@ class P42::MenuItem < ActiveRecord::Base
   end
   
   def self.find_or_update_by_id(id, name, menu_item_group_id, revenue_class_id, gross_price)
+    results = { :action => '', :obj_id => nil, :error => nil }
+
   	menu_item = P42::MenuItem.find_by_id(id)
   	if menu_item.nil?
-  		menu_item = P42::MenuItem.create(:id => id, :name => name, :menu_item_group_id => menu_item_group_id, 
+  		
+      unless menu_item = P42::MenuItem.create(:id => id, :name => name, :menu_item_group_id => menu_item_group_id, 
   			:revenue_group_id => revenue_class_id, :gross_price => gross_price)
-      #MenuItemMailer.menu_item_added(menu_item).deliver
+        
+        results[:error] = "Failed to create p42 menu item."
+        
+      end
+      MenuItemMailer.menu_item_added(menu_item, "p42").deliver
+      results[:action] = "create"
   	else
-  		menu_item.update_attributes(:name => name, :menu_item_group_id => menu_item_group_id, 
+  		
+      unless menu_item.update_attributes(:name => name, :menu_item_group_id => menu_item_group_id, 
   			:revenue_group_id => revenue_class_id, :gross_price => gross_price)
+
+        results[:error] = "Failed to update p42 menu item #{menu_item.id}"
+      end
+      results[:action] = "update"
   	end
-  	menu_item
+  	results[:obj_id] = menu_item.id
+    results
   end
 end

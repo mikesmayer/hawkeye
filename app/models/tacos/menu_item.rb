@@ -23,7 +23,7 @@ class Tacos::MenuItem < ActiveRecord::Base
 			end
 			results[:action] = "create"
 
-			MenuItemMailer.menu_item_added(menu_item).deliver
+			MenuItemMailer.menu_item_added(menu_item, "tacos").deliver
 		else
 			unless menu_item.update_attributes(:name => name)
 				results[:error] = "Failed to update tacos menu item (id: #{menu_item.id})."

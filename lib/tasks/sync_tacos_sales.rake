@@ -23,6 +23,81 @@ namespace :hawkeye do
 		sync_date(today)
 	end
 
+	desc "Checks P42 Reports folder in Drive for new item sales files and processes the CSV"
+	task :sync_p42_item_sales => :environment do 
+		@job_type = "rake"
+
+		#P42 Reports folder id is 0B3s566IfxmitNVcwTE9rY0JkYmM
+		query = "'0B3s566IfxmitNVcwTE9rY0JkYmM' in parents and mimeType = 'text/csv'"
+
+		# search for all csv's in the P42 Folder
+		files_array = GoogleDriveSync.search_files(query)
+
+		# process each CSV found
+		files_array.each do |file|
+			puts file.inspect
+			#process_p42_item_sales_csv(file[:id], file[:title])
+			#move CSV to trash once processed
+			#GoogleDriveSync.trash_file(file[:id])
+		end
+
+
+	end
+
+	desc "Synchronizes all menu items from P42's POS."
+	task :sync_p42_menu_items => :environment do
+		@job_type = "rake"
+
+		initialize_soap    
+	   	menu_item_response = get_menu_items
+	   	
+	   	results = process_p42_menu_items(menu_item_response)
+		
+		JobLog.create(:job_type => @job_type, :date_run => DateTime.now, :folder_name => "DW Soap",
+				:file_name => "", :method_name => results[:method], 
+				:model_name => results[:model], :error_ids => results[:error_ids],
+				:num_processed => results[:num_processed], :num_errors => results[:errors],
+				:num_updated => results[:updates], :num_created => results[:creates])
+	end
+
+
+	desc "Synchronizes all item groups from P42's POS."
+	task :sync_menu_item_groups => :environment do
+		@job_type = "rake"
+
+	    initialize_soap
+	    
+	   	groups_response = get_menu_item_groups
+	   	
+	   	groups_response.each do |menu_item_group|
+			id = menu_item_group[:id]
+			name = menu_item_group[:description]		
+			
+			P42::MenuItemGroup.find_or_update_by_id(id, name)
+	   	end
+	   	puts "Sync completed successfully"
+	   	JobLog.create(:job_name => 'sync_menu_item_groups', :result => "Successful sync.")
+	end
+
+
+	desc "Synchronizes all revenue groups with P42's POS."
+	task :sync_revenue_groups => :environment do
+		@job_type = "rake"
+		
+		initialize_soap
+
+		rev_class_response = get_revenue_groups
+
+		rev_class_response.each do |revenue_class|
+		id = revenue_class[:id]
+		name = revenue_class[:description]		
+
+		P42::RevenueGroup.find_or_update_by_id(id, name)
+		end
+		puts "Sync completed successfully"
+		JobLog.create(:job_name => 'sync_revenue_groups', :result => "Successful sync.")
+	end
+
 
 	def sync_date(date)
 		# find the folder that is named with todays date in the format above
@@ -144,6 +219,79 @@ namespace :hawkeye do
 
 
 
+
+	### P42 SECTION for soap calls - used for menu items, categories and revenue classes ### 
+	def process_p42_item_sales_csv(file_id, file_title)
+		results = GoogleDriveSync.get_file(file_id)
+		puts "P42 CSV Results"
+		puts results
+
+		JobLog.create(:job_type => @job_type, :date_run => DateTime.now, :folder_name => "P42 Reports",
+				:file_name => file_title, :method_name => results[:method], 
+				:model_name => results[:model], :error_ids => results[:error_ids],
+				:num_processed => results[:num_processed], :num_errors => results[:errors],
+				:num_updated => results[:updates], :num_created => results[:creates])
+	end
+
+
+	def initialize_soap
+		@client = Savon.client(wsdl: Restaurant.find(1).soap_url, endpoint: Restaurant.find(1).soap_endpoint)
+	end
+
+	def get_menu_items
+		response = @client.call(:get_all_menu_items)
+		response.body[:get_all_menu_items_response][:get_all_menu_items_result][:menu_item]
+	end
+
+
+	def get_menu_item_groups
+		response = @client.call(:get_all_item_groups)
+		response.body[:get_all_item_groups_response][:get_all_item_groups_result][:item_group]
+	end
+
+
+	def get_revenue_groups
+		response = @client.call(:get_all_revenue_classes)
+		response.body[:get_all_revenue_classes_response][:get_all_revenue_classes_result][:revenue_class]
+	end
+
+	def process_p42_menu_items(menu_items)
+		results = { :num_processed => 0, :errors => 0, :creates => 0, :updates => 0, 
+			:method => "process_p42_menu_items", :model => "P42::MenuItem", :error_ids => nil }
+		error_ids = Array.new
+
+		menu_items.each do |menu_item|
+			id = menu_item[:id]
+			name = menu_item[:item_name]
+			item_group_id = menu_item[:price_cat_id]
+			if item_group_id.nil?  || item_group_id.to_i < 0 
+				item_group_id = 0
+			end
+			revenue_class_id = menu_item[:revenue_class_id]
+			gross_price = menu_item[:price].to_f
+			
+			menu_item_results = P42::MenuItem.find_or_update_by_id(id, name, item_group_id, revenue_class_id, gross_price)
+	   		
+	   		if menu_item_results[:error].nil?
+				#processed correctly 
+				if menu_item_results[:action] == "create"
+					results[:creates] += 1	
+				elsif menu_item_results[:action] == "update"
+					results[:updates] += 1
+				end
+			else
+				#some error occured
+				results[:errors] += 1
+				error_ids << menu_item_results[:obj].id
+			end
+			results[:num_processed] += 1
+
+	   	end
+	   	puts "Sync completed successfully"
+
+		results[:error_ids] = error_ids.join(",")
+		results
+	end
 end
 
 

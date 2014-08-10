@@ -1,6 +1,7 @@
 class GoogleDriveSync
 
 	@@tacos_file_list = ["CAT.DBF", "CIT.DBF", "GNDITEM.DBF", "ITM.DBF", "GNDVOID.DBF"]
+	@@client = nil
 	##
 	#  Only using my @pitza42 account. It's the owner of the P42 Reports Folder and
 	#  the Tacos Reports folder. This method looks up the refresh token for that account and
@@ -30,6 +31,7 @@ class GoogleDriveSync
 			#puts YAML::dump(@client.authorization)
 
 			@drive = @client.discovered_api('drive', 'v2')
+			@@client = @client
 		end
 
 		{ :drive => @drive, :client => @client }
@@ -114,7 +116,26 @@ class GoogleDriveSync
 	end
 
 
-
+	##
+	# Move a file to the trash
+	#
+	# @param [Google::APIClient] client
+	#   Authorized client instance
+	# @param [String] file_id
+	#   ID of the file to trash
+	# @return [Google::APIClient::Schema::Drive::V2::File]
+	#   The updated file if successful, nil otherwise
+	def self.trash_file(file_id)
+	  drive = @@client.discovered_api('drive', 'v2')
+	  result = @@client.execute(
+	    :api_method => drive.files.trash,
+	    :parameters => { 'fileId' => file_id })
+	  if result.status == 200
+	    return result.data
+	  else
+	    puts "An error occurred: #{result.data['error']['message']}"
+	  end
+	end
 
 	def self.get_file(file_id)
 		if @drive.nil?
@@ -239,13 +260,13 @@ class GoogleDriveSync
 			results = GoogleDriveSync.process_p42_item_sales_csv(csv)
 			
 			## log entry
-
+=begin
 			JobLog.create(:job_type => "manual", :date_run => DateTime.now, :folder_name => "P42 Reports",
 				:file_name => title, :method_name => results[:method], 
 				:model_name => results[:model], :error_ids => results[:error_ids],
 				:num_processed => results[:num_processed], :num_errors => results[:errors],
 				:num_updated => results[:updates], :num_created => results[:creates])
-			
+=end	
 
 
 		end

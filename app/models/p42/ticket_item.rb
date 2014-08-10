@@ -13,11 +13,6 @@ class P42::TicketItem < ActiveRecord::Base
 	end
 
 
-
-
-
-
-
 =begin
 	def self.save_file_to_local(file_id)
 		ret_val = Hash.new
@@ -53,8 +48,6 @@ class P42::TicketItem < ActiveRecord::Base
 		ret_val = {"body" => body, "title" => title}	    
 	end
 =end
-
-
 
 
 
