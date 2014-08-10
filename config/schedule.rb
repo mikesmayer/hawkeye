@@ -33,6 +33,11 @@ every 1.day, :at => '10:45 am' do
 	rake "hawkeye:sync_p42_item_sales"
 end
 
+every 1.day, :at => '9:00 am' do
+	rake "hawkeye:sync_p42_revenue_groups"
+	rake "hawkeye:sync_p42_menu_item_groups"
+	rake "hawkeye:sync_p42_menu_items"
+end
 =begin
 every 15.minutes do 
 	rake "hawkeye:sync_tacos_day"

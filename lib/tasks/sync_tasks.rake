@@ -80,21 +80,20 @@ namespace :hawkeye do
 
 
 	desc "Synchronizes all revenue groups with P42's POS."
-	task :sync_revenue_groups => :environment do
+	task :sync_p42_revenue_groups => :environment do
 		@job_type = "rake"
 
 		initialize_soap
 
 		rev_class_response = get_revenue_groups
 
-		rev_class_response.each do |revenue_class|
-		id = revenue_class[:id]
-		name = revenue_class[:description]		
+		results = process_p42_revenue_classes(rev_class_response)
 
-		P42::RevenueGroup.find_or_update_by_id(id, name)
-		end
-		puts "Sync completed successfully"
-		JobLog.create(:job_name => 'sync_revenue_groups', :result => "Successful sync.")
+		JobLog.create(:job_type => @job_type, :date_run => DateTime.now, :folder_name => "DW Soap",
+				:file_name => "", :method_name => results[:method], 
+				:model_name => results[:model], :error_ids => results[:error_ids],
+				:num_processed => results[:num_processed], :num_errors => results[:errors],
+				:num_updated => results[:updates], :num_created => results[:creates])
 	end
 
 
@@ -322,6 +321,37 @@ namespace :hawkeye do
 	   	
 	   	puts "Sync completed successfully"
 	   	results[:error_ids] = error_ids.join(",")
+		results
+	end
+
+	def process_p42_revenue_classes(revenue_classes)
+		results = { :num_processed => 0, :errors => 0, :creates => 0, :updates => 0, 
+			:method => "process_p42_revenue_classes", :model => "P42::RevenueGroup", :error_ids => nil }
+		error_ids = Array.new
+
+		revenue_classes.each do |revenue_class|
+			id = revenue_class[:id]
+			name = revenue_class[:description]		
+
+			rev_classes_results = P42::RevenueGroup.find_or_update_by_id(id, name)
+
+			if rev_classes_results[:error].nil?
+				#processed correctly 
+				if rev_classes_results[:action] == "create"
+					results[:creates] += 1	
+				elsif rev_classes_results[:action] == "update"
+					results[:updates] += 1
+				end
+			else
+				#some error occured
+				results[:errors] += 1
+				error_ids << rev_classes_results[:obj_id]
+			end
+			results[:num_processed] += 1
+
+		end
+		puts "Sync completed successfully"
+		results[:error_ids] = error_ids.join(",")
 		results
 	end
 end
