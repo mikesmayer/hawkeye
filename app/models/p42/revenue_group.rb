@@ -27,12 +27,24 @@ class P42::RevenueGroup < ActiveRecord::Base
 	end
 
 	def self.find_or_update_by_id(id, name)
+		results = { :action => '', :obj_id => nil, :error => nil }
+
 		revenue_group = P42::RevenueGroup.find_by_id(id)
 		if revenue_group.nil?
 			revenue_group = P42::RevenueGroup.create(:id => id, :name => name)
+			
+			if revenue_group.errors.count > 0 
+				results[:error] = "Failed to create p42 revenue group."
+			else  
+				results[:action] = "create"
+			end
 		else
-			revenue_group.update_attributes(:name => name)
+			unless revenue_group.update_attributes(:name => name)
+				results[:error] = "Failed to update p42 revenue class #{revenue_group.id}"
+			end
+			results[:action] = "update"
 		end
-		revenue_group
+		results[:obj_id] = revenue_group.id
+		results
 	end
 end

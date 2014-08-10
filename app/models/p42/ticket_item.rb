@@ -76,15 +76,18 @@ class P42::TicketItem < ActiveRecord::Base
 		ticket_item = P42::TicketItem.find_by_pos_ticket_item_id(pos_ticket_item_id)
 		if ticket_item.nil?
 			
-			unless ticket_item = P42::TicketItem.create(:pos_ticket_item_id => pos_ticket_item_id, :pos_ticket_id => pos_ticket_id, 
+			ticket_item = P42::TicketItem.create(:pos_ticket_item_id => pos_ticket_item_id, :pos_ticket_id => pos_ticket_id, 
 				:menu_item_id => menu_item_id, :pos_category_id => pos_category_id, :pos_revenue_class_id => pos_revenue_class_id,
 				:customer_original_id => customer_original_id, :quantity => quantity, :net_price => net_price, :discount_total => discount_total,
 				:item_menu_price => item_menu_price, :choice_additions_total => choice_additions_total, :ticket_close_time => ticket_close_time,
 				:meal_for_meal => meal_for_meal)	
 
+			if ticket_item.errors.count > 0 
 				results[:error] = "Failed to create p42 ticket item."
+			else
+				results[:action] = "create"
 			end
-			results[:action] = "create"
+			
 		else
 			
 			unless ticket_item.update_attributes(:pos_ticket_id => pos_ticket_id, 

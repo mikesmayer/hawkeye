@@ -22,15 +22,17 @@ class Tacos::TicketItem < ActiveRecord::Base
 		ticket_item = Tacos::TicketItem.find_by_pos_ticket_item_id_and_dob(pos_ticket_item_id, date_of_business)
 		if ticket_item.nil?
 			
-			unless ticket_item = Tacos::TicketItem.create(:pos_ticket_item_id => pos_ticket_item_id, :dob => date_of_business, 
+			ticket_item = Tacos::TicketItem.create(:pos_ticket_item_id => pos_ticket_item_id, :dob => date_of_business, 
 				:pos_ticket_id => pos_ticket_id, :menu_item_id => menu_item_id, :pos_category_id => pos_category_id, 
 				:pos_revenue_class_id => pos_revenue_class_id, :quantity => quantity, :net_price => net_price, 
 				:discount_total => discount_total, :item_menu_price => item_menu_price, 
 				:ticket_close_time => ticket_close_time, :void => false)	
-				
+			
+			if ticket_item.errors.count > 0	
 				results[:error] = "Failed to create tacos ticket item."
-			end
-			results[:action] = "create"
+			else
+				results[:action] = "create"
+			end			
 		else
 			
 			unless ticket_item.update_attributes(:pos_ticket_id => pos_ticket_id, 

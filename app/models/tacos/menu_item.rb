@@ -18,12 +18,15 @@ class Tacos::MenuItem < ActiveRecord::Base
 		results = { :action => '', :obj => nil, :error => nil }
 		menu_item = Tacos::MenuItem.find_by_id(id)
 		if menu_item.nil?
-			unless menu_item = Tacos::MenuItem.create(:id => id, :name => name, :menu_item_group_id => -1)
+			menu_item = Tacos::MenuItem.create(:id => id, :name => name, :menu_item_group_id => -1)
+			
+			if menu_item.errors.count > 0
 				results[:error] = "Failed to create tacos menu item."
+			else
+				results[:action] = "create"
+				MenuItemMailer.menu_item_added(menu_item, "tacos").deliver
 			end
-			results[:action] = "create"
 
-			MenuItemMailer.menu_item_added(menu_item, "tacos").deliver
 		else
 			unless menu_item.update_attributes(:name => name)
 				results[:error] = "Failed to update tacos menu item (id: #{menu_item.id})."

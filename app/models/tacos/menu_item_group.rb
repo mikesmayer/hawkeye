@@ -7,10 +7,13 @@ class Tacos::MenuItemGroup < ActiveRecord::Base
   		results = { :action => '', :obj => nil, :error => nil }
 		category = Tacos::MenuItemGroup.find_by_id(id)
 		if category.nil?
-			unless category = Tacos::MenuItemGroup.create!(:id => id, :name => name)
+			category = Tacos::MenuItemGroup.create!(:id => id, :name => name)
+			
+			if category.errors.count > 0
 				results[:error] = "Failed to create tacos category."
+			else
+				results[:action] = "create"		
 			end
-			results[:action] = "create"		
 		else
 			#update attributes will return false if the save did not work
 			unless category.update_attributes(:name => name)
