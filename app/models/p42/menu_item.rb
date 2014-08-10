@@ -115,15 +115,16 @@ class P42::MenuItem < ActiveRecord::Base
 
   	menu_item = P42::MenuItem.find_by_id(id)
   	if menu_item.nil?
-  		
-      unless menu_item = P42::MenuItem.create(:id => id, :name => name, :menu_item_group_id => menu_item_group_id, 
-  			:revenue_group_id => revenue_class_id, :gross_price => gross_price)
-        
-        results[:error] = "Failed to create p42 menu item."
-        
+  		menu_item = P42::MenuItem.create(:id => id, :name => name, :menu_item_group_id => menu_item_group_id, 
+        :revenue_group_id => revenue_class_id, :gross_price => gross_price)
+      
+      if menu_item.errors.count > 0 
+          results[:error] = "Failed to create p42 menu item."
+      else  
+        MenuItemMailer.menu_item_added(menu_item, "p42").deliver
+        results[:action] = "create"
       end
-      MenuItemMailer.menu_item_added(menu_item, "p42").deliver
-      results[:action] = "create"
+
   	else
   		
       unless menu_item.update_attributes(:name => name, :menu_item_group_id => menu_item_group_id, 

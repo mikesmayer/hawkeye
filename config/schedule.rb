@@ -24,8 +24,13 @@ job_type :rake,  "cd :path && :environment_variable=:environment bundle exec rak
 
 set :output, '$HOME/logs/user/cron.log'
 
-every 1.day, :at => '4:30 am' do
+#10:30 am server time is 4:30 am central time, I think
+every 1.day, :at => '10:30 am' do
 	rake "hawkeye:sync_tacos_day"
+end
+
+every 1.day, :at => '10:45 am' do
+	rake "hawkeye:sync_p42_item_sales"
 end
 
 =begin

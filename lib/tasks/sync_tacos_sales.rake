@@ -28,7 +28,7 @@ namespace :hawkeye do
 		@job_type = "rake"
 
 		#P42 Reports folder id is 0B3s566IfxmitNVcwTE9rY0JkYmM
-		query = "'0B3s566IfxmitNVcwTE9rY0JkYmM' in parents and mimeType = 'text/csv'"
+		query = "'0B3s566IfxmitNVcwTE9rY0JkYmM' in parents and mimeType = 'text/csv' and trashed=false"
 
 		# search for all csv's in the P42 Folder
 		files_array = GoogleDriveSync.search_files(query)
@@ -36,9 +36,9 @@ namespace :hawkeye do
 		# process each CSV found
 		files_array.each do |file|
 			puts file.inspect
-			#process_p42_item_sales_csv(file[:id], file[:title])
+			process_p42_item_sales_csv(file[:id], file[:title])
 			#move CSV to trash once processed
-			#GoogleDriveSync.trash_file(file[:id])
+			GoogleDriveSync.trash_file(file[:id])
 		end
 
 
@@ -62,28 +62,27 @@ namespace :hawkeye do
 
 
 	desc "Synchronizes all item groups from P42's POS."
-	task :sync_menu_item_groups => :environment do
+	task :sync_p42_menu_item_groups => :environment do
 		@job_type = "rake"
 
 	    initialize_soap
 	    
 	   	groups_response = get_menu_item_groups
 	   	
-	   	groups_response.each do |menu_item_group|
-			id = menu_item_group[:id]
-			name = menu_item_group[:description]		
-			
-			P42::MenuItemGroup.find_or_update_by_id(id, name)
-	   	end
-	   	puts "Sync completed successfully"
-	   	JobLog.create(:job_name => 'sync_menu_item_groups', :result => "Successful sync.")
+	   	results = process_p42_menu_item_groups(groups_response)
+
+		JobLog.create(:job_type => @job_type, :date_run => DateTime.now, :folder_name => "DW Soap",
+				:file_name => "", :method_name => results[:method], 
+				:model_name => results[:model], :error_ids => results[:error_ids],
+				:num_processed => results[:num_processed], :num_errors => results[:errors],
+				:num_updated => results[:updates], :num_created => results[:creates])
 	end
 
 
 	desc "Synchronizes all revenue groups with P42's POS."
 	task :sync_revenue_groups => :environment do
 		@job_type = "rake"
-		
+
 		initialize_soap
 
 		rev_class_response = get_revenue_groups
@@ -101,7 +100,7 @@ namespace :hawkeye do
 
 	def sync_date(date)
 		# find the folder that is named with todays date in the format above
-		daily_folder = GoogleDriveSync.search_files("title = '#{date}'").first
+		daily_folder = GoogleDriveSync.search_files("title = '#{date}' and trashed=false").first
 		puts "Search results:"
 		puts daily_folder
 		if daily_folder.nil?
@@ -282,7 +281,7 @@ namespace :hawkeye do
 			else
 				#some error occured
 				results[:errors] += 1
-				error_ids << menu_item_results[:obj].id
+				error_ids << menu_item_results[:obj_id]
 			end
 			results[:num_processed] += 1
 
@@ -292,6 +291,37 @@ namespace :hawkeye do
 		results[:error_ids] = error_ids.join(",")
 		results
 	end
+
+	def process_p42_menu_item_groups(item_groups)
+		results = { :num_processed => 0, :errors => 0, :creates => 0, :updates => 0, 
+			:method => "process_p42_menu_item_groups", :model => "P42::MenuItemGroup", :error_ids => nil }
+		error_ids = Array.new
+
+		item_groups.each do |menu_item_group|
+			id = menu_item_group[:id]
+			name = menu_item_group[:description]		
+			
+			menu_item_group_results = P42::MenuItemGroup.find_or_update_by_id(id, name)
+
+
+			if menu_item_group_results[:error].nil?
+				#processed correctly 
+				if menu_item_group_results[:action] == "create"
+					results[:creates] += 1	
+				elsif menu_item_group_results[:action] == "update"
+					results[:updates] += 1
+				end
+			else
+				#some error occured
+				results[:errors] += 1
+				error_ids << menu_item_group_results[:obj_id]
+			end
+			results[:num_processed] += 1
+
+	   	end
+	   	
+	   	puts "Sync completed successfully"
+	   	results[:error_ids] = error_ids.join(",")
+		results
+	end
 end
-
-

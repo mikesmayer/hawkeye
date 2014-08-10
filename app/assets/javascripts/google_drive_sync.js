@@ -215,7 +215,7 @@ function search_drive(search_term){
 		url: "google_drive_sync/search",
 		type: "GET",
 		data: {
-			search_term: "title contains '" + search_term + "'"
+			search_term: "title contains '" + search_term + "' and trashed=false"
 		},
 		beforeSend: function() {
 			$('#error_container').hide();

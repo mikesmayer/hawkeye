@@ -29,12 +29,23 @@ class P42::MenuItemGroup < ActiveRecord::Base
   end
   
   def self.find_or_update_by_id(id, name)
+    results = { :action => '', :obj_id => nil, :error => nil }
+
   	menu_item_group = P42::MenuItemGroup.find_by_id(id)
   	if menu_item_group.nil?
-  		menu_item_group = P42::MenuItemGroup.create(:id => id, :name => name)
+    	menu_item_group = P42::MenuItemGroup.create(:id => id, :name => name, :default_meal_modifier => 0)
+      if menu_item_group.errors.count > 0
+        results[:error] = "Failed to create p42 menu item group."
+      else
+        results[:action] = "create"
+      end
   	else
-  		menu_item_group.update_attributes(:name => name)
+  		unless menu_item_group.update_attributes(:name => name)
+        results[:error] = "Failed to update p42 menu item group #{menu_item_group.id}"
+      end
+      results[:action] = "update"
   	end
-  	menu_item_group
+  	  results[:obj_id] = menu_item_group.id
+      results
   end
 end
