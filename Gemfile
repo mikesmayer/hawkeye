@@ -48,5 +48,6 @@ gem 'ajax-datatables-rails'
 gem 'will_paginate', '~> 3.0'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'dbf'
+gem 'newrelic_rpm'
 
 gem 'whenever', :require => false

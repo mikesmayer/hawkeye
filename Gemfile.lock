@@ -162,6 +162,7 @@ GEM
     net-ssh (2.9.1)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
+    newrelic_rpm (3.9.1.236)
     nokogiri (1.6.2.1)
       mini_portile (= 0.6.0)
     nokogiri (1.6.2.1-x86-mingw32)
@@ -317,6 +318,7 @@ DEPENDENCIES
   jbuilder (~> 1.2)
   jquery-datatables-rails
   jquery-rails
+  newrelic_rpm
   omniauth-google-oauth2
   paperclip (~> 3.0)
   pg
