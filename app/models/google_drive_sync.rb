@@ -2,6 +2,7 @@ class GoogleDriveSync
 
 	@@tacos_file_list = ["CAT.DBF", "CIT.DBF", "GNDITEM.DBF", "ITM.DBF", "GNDVOID.DBF"]
 	@@client = nil
+	@@drive = nil
 	##
 	#  Only using my @pitza42 account. It's the owner of the P42 Reports Folder and
 	#  the Tacos Reports folder. This method looks up the refresh token for that account and
@@ -9,32 +10,33 @@ class GoogleDriveSync
 	#
 	def self.setup_client
 		
-		if @drive.nil? || @client.nil?
-			@tyler_p42 = User.find_by email: 'tyler@pitza42.com'
+		if @@drive.nil? || @@client.nil?
+			tyler_p42 = User.find_by email: 'tyler@pitza42.com'
 
 			#puts @tyler_p42.inspect 
 
-			@client = Google::APIClient.new(
+			@@client = Google::APIClient.new(
 				application_name: "TestApp",
 				application_version: "1.0.0"
 			)
-			@client.authorization.client_id = ENV['GOOGLE_AUTH_CLIENT_ID']
-			@client.authorization.client_secret = ENV['GOOGLE_AUTH_CLIENT_SECRET']
-			@client.authorization.grant_type = 'refresh_token'
-			@client.authorization.refresh_token = @tyler_p42.refresh_token
+			@@client.authorization.client_id = ENV['GOOGLE_AUTH_CLIENT_ID']
+			@@client.authorization.client_secret = ENV['GOOGLE_AUTH_CLIENT_SECRET']
+			@@client.authorization.grant_type = 'refresh_token'
+			@@client.authorization.refresh_token = tyler_p42.refresh_token
 
 			#puts YAML::dump(@client.authorization)
 
-			@client.authorization.fetch_access_token!
-			@client.authorization
+			@@client.authorization.fetch_access_token!
+			@@client.authorization
 			
 			#puts YAML::dump(@client.authorization)
 
-			@drive = @client.discovered_api('drive', 'v2')
-			@@client = @client
+			@@drive = @@client.discovered_api('drive', 'v2')
+			
+		
 		end
 
-		{ :drive => @drive, :client => @client }
+		#{ :drive => @@drive, :client => @@client }
 	end
 
 
@@ -47,8 +49,8 @@ class GoogleDriveSync
 			id_list = get_file_id_list(folder_id)
 
 			id_list.each do |id|
-				api_result = @client.execute(
-				  :api_method => @drive.files.get,
+				api_result = @@client.execute(
+				  :api_method => @@drive.files.get,
 				  :parameters => { 'fileId' => id,
 				  					'fields' => 'id,mimeType,title' })
 				if api_result.status == 200
@@ -89,8 +91,8 @@ class GoogleDriveSync
 			if page_token.to_s != ''
 			  parameters['pageToken'] = page_token
 			end
-			api_result = @client.execute(
-			  :api_method => @drive.children.list,
+			api_result = @@client.execute(
+			  :api_method => @@drive.children.list,
 			  :parameters => parameters)
 			if api_result.status == 200
 			  children = api_result.data
@@ -126,9 +128,8 @@ class GoogleDriveSync
 	# @return [Google::APIClient::Schema::Drive::V2::File]
 	#   The updated file if successful, nil otherwise
 	def self.trash_file(file_id)
-	  drive = @@client.discovered_api('drive', 'v2')
 	  result = @@client.execute(
-	    :api_method => drive.files.trash,
+	    :api_method => @@drive.files.trash,
 	    :parameters => { 'fileId' => file_id })
 	  if result.status == 200
 	    return result.data
@@ -138,12 +139,12 @@ class GoogleDriveSync
 	end
 
 	def self.get_file(file_id)
-		if @drive.nil?
+		if @@drive.nil?
 			setup_client
 		end
 
-		api_result = @client.execute(
-			:api_method => @drive.files.get,
+		api_result = @@client.execute(
+			:api_method => @@drive.files.get,
 			:parameters => { 'fileId' => file_id,
 							'fields' => 'downloadUrl,id,mimeType,title' })
 
@@ -158,7 +159,7 @@ class GoogleDriveSync
 			if file.download_url
 
 				puts YAML::dump(file)
-				file_contents = @client.execute(:uri => file.download_url)
+				file_contents = @@client.execute(:uri => file.download_url)
 
 				#puts YAML::dump(file_contents)
 
@@ -246,10 +247,6 @@ class GoogleDriveSync
 				:num_updated => results[:updates], :num_created => 0)
 =end
 			
-
-		elsif mime_type == "application/vnd.google-apps.folder"
-
-	
 		elsif title.include? "item_sales"
 			csv_rows = Array.new
 			body = body.strip
@@ -275,7 +272,7 @@ class GoogleDriveSync
 	end
 
 	def self.search_files(search_term)
-		if @drive.nil?
+		if @@drive.nil?
 			setup_client
 		end
 
@@ -288,8 +285,8 @@ class GoogleDriveSync
 	    if page_token.to_s != ''
 	      parameters['pageToken'] = page_token
 	    end
-	    api_result = @client.execute(
-	      :api_method => @drive.files.list,
+	    api_result = @@client.execute(
+	      :api_method => @@drive.files.list,
 	      :parameters => parameters)
 	    if api_result.status == 200
 	      files = api_result.data
@@ -316,12 +313,12 @@ class GoogleDriveSync
 	end
 
 	def self.get_file_title(file_id)
-		if @drive.nil?
+		if @@drive.nil?
 			setup_client
 		end
 
-		api_result = @client.execute(
-			:api_method => @drive.files.get,
+		api_result = @@client.execute(
+			:api_method => @@drive.files.get,
 			:parameters => { 'fileId' => file_id, 
 							'fields' => 'title'} )
 
