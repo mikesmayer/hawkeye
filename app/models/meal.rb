@@ -274,7 +274,7 @@ class Meal
 					GROUP BY CAST(ticket_close_time AS DATE)) t5
 				ON t1.date = t5.date")	
 			when "month"
-				details_tbl = P42::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
+				details_tbl = P42::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon, YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
 					(SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
 					FROM p42_ticket_items 
 					WHERE pos_revenue_class_id != 15 AND pos_revenue_class_id != 18
@@ -401,7 +401,7 @@ class Meal
 					GROUP BY CAST(ticket_close_time AS DATE)) t5
 				ON t1.date = t5.date")	
 			when "month"
-				details_tbl = Tacos::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
+				details_tbl = Tacos::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon, YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
 					(SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
 					FROM tacos_ticket_items 
 					WHERE pos_category_id IN (1, 2, 3, 4, 5)
