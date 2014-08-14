@@ -1,9 +1,12 @@
 
-<div class="row">
-	<div class="page-header page-header-with-buttons">
+<div class="row" style="border-bottom:1px solid #dddddd; margin-bottom:15px;">
+	<div class="col-md-6">
 		<h1 class="pull-left">
 		  <span class="glyphicon glyphicon-retweet"></span> <span>Meal 4 Meal Stats</span>
 		</h1>
+	</div>
+	<div class="col-md-6">
+		
 		<div class="pull-right">
 			<div class="btn-toolbar" role="toolbar">
 			  <div class="" id="loading_spinner_date_picker"></div>
@@ -37,9 +40,9 @@
 		</div>
 		
 		<div class="clearfix"></div>
-		<div class="pull-right col-md-5" id="custom_range_input" style="display:none; margin-top:0px; width:inherit;">  
+		<div class="pull-right" id="custom_range_input" style="display:none;">  
 			<form class="form-inline" role="form">
-				<div class="form-group">
+				<div class="form-group top-margin" style="margin-bottom: 0px;">
 				    <div class="input-daterange input-group datepicker">      
 				    	<input type="text" size="15" id="date_range_start" name="date_range_start" value="" class="input-sm form-control" />
 				        <span class="input-group-addon">to</span>
@@ -47,13 +50,15 @@
 				    </div>						    
 				    <span class="help-block"></span>
 			 	</div>
-			 	<div class="form-group">
+			 	<div class="form-group top-margin" style="margin-bottom: 0px;">
 			 		<button id="date_range_filter_btn" type="button" class="btn btn-success btn-xs">Filter</button> 
 			 	</div>
 			 </form>
 		</div>
+			
 		
 	</div>
+
 </div> <!-- end header row -->
 
 
@@ -61,7 +66,7 @@
 	<div class="">
 
 	</div>
-	<div class="col-md-2">
+	<div class="col-xs-6 col-md-2">
 		<div class="panel panel-primary">
 		  <div class="panel-heading">
 		    <h3 class="panel-title text-centered">Total Meals</h3>
@@ -71,7 +76,7 @@
 		  </div>
 		</div>
 	</div><!-- end 2 col cont -->
-	<div class="col-md-2">
+	<div class="col-xs-6 col-md-2">
 		<div class="panel panel-default">
 		  <div class="panel-heading">
 		    <h3 class="panel-title text-centered"><span class="glyphicon glyphicon-cutlery"></span> M4M</h3>
@@ -81,7 +86,7 @@
 		  </div>
 		</div>
 	</div><!-- end 2 col cont -->
-	<div class="col-md-2">
+	<div class="col-xs-6 col-md-2">
 		<div class="panel panel-default">
 		  <div class="panel-heading">
 		    <h3 class="panel-title text-centered"><span class="glyphicon glyphicon-gift"></span> Double</h3>
@@ -91,7 +96,7 @@
 		  </div>
 		</div>
 	</div><!-- end 2 col cont -->
-	<div class="col-md-2">
+	<div class="col-xs-6 col-md-2">
 		<div class="panel panel-default">
 		  <div class="panel-heading">
 		    <h3 class="panel-title text-centered"><span class="glyphicon glyphicon-shopping-cart"></span> Apparel</h3>
@@ -101,7 +106,7 @@
 		  </div>
 		</div>
 	</div><!-- end 2 col cont -->
-	<div class="col-md-2">
+	<div class="col-xs-6 col-md-2">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title text-centered"><span class="glyphicon glyphicon-usd"></span> Tip Jar</h3>
@@ -111,7 +116,7 @@
 			</div>
 		</div>
 	</div><!-- end 2 col cont -->
-	<div class="col-md-2">
+	<div class="col-xs-6 col-md-2">
 		<%= link_to 'Edit Tip jar donation', tip_jar_donations_path, :class => 'btn btn-sm btn-warning' %>
 	</div>
 </div><!-- End row of meal info boxes -->
@@ -146,7 +151,7 @@
 		  </div>
 		  <div class="panel-body">
 		  	<div class="ajax_loading" id="count_detail_body_container"></div>
-		    <div class="table-responsive" id="detail_tbl_container">
+		    <div class="" id="detail_tbl_container">
 		    	<!-- load from js as ajax request -->
 			</div>
 		  </div>
@@ -161,7 +166,7 @@
 			</div>
 			<div class="panel-body">
 				<div class="ajax_loading" id="count_month_body_container"></div>
-				<div class="table-responsive" id="m4m_month_container">
+				<div class="" id="m4m_month_container">
 					<!-- load from js as ajax request -->
 				</div>
 			</div>
@@ -175,7 +180,7 @@
 			</div>
 			<div class="panel-body">
 				<div class="ajax_loading" id="count_year_body_container"></div>
-				<div class="table-responsive" id="m4m_year_container">
+				<div class="" id="m4m_year_container">
 					<table class="table table-hover" id="m4m_year_tbl">
 						<thead>
 							<tr>
