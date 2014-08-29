@@ -6,7 +6,7 @@
 			<th>ID</th>
 			<th>Name</th>
 			<th class="hidden-xs">Qty</th>
-			<th>Gross sales</th>
+			<th class="hidden-xs">Gross sales</th>
 			<th>Net sales</th>
 			<th class="hidden-xs">Discount amt</th>
 			<th>M4m</th>
@@ -29,7 +29,7 @@
 				<td><%= category.id %></td>
 				<td><%= category.name %></td>
 				<td class="hidden-xs"><%= number_with_precision(category.quantity, :precision => 0, :delimiter => ",") %></td>
-				<td>$<%= number_with_precision((category.net_price + category.discount_total), :precision => 2, :delimiter => ",") %></td>
+				<td class="hidden-xs">$<%= number_with_precision((category.net_price + category.discount_total), :precision => 2, :delimiter => ",") %></td>
 				<td>$<%= number_with_precision(category.net_price, :precision => 2, :delimiter => ",") %></td>
 				<td class="hidden-xs">$<%= number_with_precision(category.discount_total, :precision => 2, :delimiter => ",") %></td>
 				<td><%= number_with_precision(category.m4m, :precision => 0, :delimiter => ",") %></td>
@@ -39,7 +39,7 @@
 			<% gross_sales_total = net_price_total + discount_total %>
 			<td colspan="2"><b>Totals</b></td>
 			<td class="hidden-xs"><%= number_with_precision(qty_total, :precision => 0, :delimiter => ",") %></td>
-			<td>$<%= number_with_precision(gross_sales_total, :precision => 2, :delimiter => ",") %></td>
+			<td class="hidden-xs">$<%= number_with_precision(gross_sales_total, :precision => 2, :delimiter => ",") %></td>
 			<td>$<%= number_with_precision(net_price_total, :precision => 2, :delimiter => ",") %></td>
 			<td class="hidden-xs">$<%= number_with_precision(discount_total, :precision => 2, :delimiter => ",") %></td>		
 			<td><%= number_with_precision(m4m_total, :precision => 0, :delimiter => ",") %></td>		
