@@ -1,6 +1,6 @@
 <h1>Logs</h1>
 
-<table class="table">
+<table class="table table-hover datatable" id="job_log_tbl">
   <thead>
     <tr>
       <th>Job Type</th>
@@ -14,14 +14,16 @@
       <th>Updated</th>
       <th>Errors</th>
       <th>Error model ids</th>
+      <th></th>
     </tr>
   </thead>
 
   <tbody>
     <% @job_logs.each do |entry| %>
       <tr>
+
         <td><%= entry.job_type %></td>
-        <td><%= entry.date_run %></td>
+        <td><%= entry.date_run.strftime("%m-%d-%Y  %l:%M%p") %></td>
         <td><%= entry.folder_name %></td>
         <td><%= entry.file_name %></td>
         <td><%= entry.method_name %></td>
@@ -32,6 +34,7 @@
         <td><%= entry.num_errors %></td>       
         <td><%= entry.error_ids %></td>
         <td><%= link_to 'Destroy', entry, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+
       </tr>
     <% end %>
   </tbody>

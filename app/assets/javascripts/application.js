@@ -123,6 +123,11 @@ $(document).ready(function(){
 	  ]
 	});
 
+	$('#job_log_tbl').dataTable({
+	  "sPaginationType": "bootstrap",
+	  "order": [1, 'desc']
+	});
+
 });
 
 function addCommas(nStr) {
