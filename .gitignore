@@ -19,3 +19,18 @@ config/gmail.yml
 config/local_env.yml
 
 *.dbf
+.idea/.generators
+.idea/.name
+.idea/.rakeTasks
+.idea/dataSources.ids
+.idea/dataSources.xml
+.idea/dataSources.xml
+.idea/encodings.xml
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/scopes/scope_settings.xml
+.idea/runConfigurations/spec__hawkeye.xml
+.idea/runConfigurations/Development__hawkeye.xml
+.idea/runConfigurations/Production__hawkeye.xml
+.idea/runConfigurations/Development__hawkeye.xml
+.idea/runConfigurations/test__hawkeye.xml

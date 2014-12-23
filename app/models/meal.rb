@@ -53,10 +53,11 @@ class Meal
 			# 3 - Quirky Tacos
 			# 4 - Quesadilla & Burrito
 			# 5 - Kids
+			# 15 - CATERING
 			#
 			m4m_total = Tacos::TicketItem
 				.where("ticket_close_time between ? AND ?", start_date, end_date)
-				.where("pos_category_id IN (1, 2, 3, 4, 5)")
+				.where("pos_category_id IN (1, 2, 3, 4, 5, 15)")
 				.where("(void IS NULL OR void != 'TRUE')")
 				.sum(:meal_for_meal)
 			
@@ -370,7 +371,7 @@ class Meal
 				details_tbl = Tacos::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon DD, YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
 					(SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS m4m
 					FROM tacos_ticket_items 
-					WHERE pos_category_id IN (1, 2, 3, 4, 5)
+					WHERE pos_category_id IN (1, 2, 3, 4, 5, 15)
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
 					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY CAST(ticket_close_time AS DATE)) t1
@@ -404,7 +405,7 @@ class Meal
 				details_tbl = Tacos::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon, YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
 					(SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
 					FROM tacos_ticket_items 
-					WHERE pos_category_id IN (1, 2, 3, 4, 5)
+					WHERE pos_category_id IN (1, 2, 3, 4, 5, 15)
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
 					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('month', ticket_close_time)) t1
@@ -438,7 +439,7 @@ class Meal
 				details_tbl = Tacos::TicketItem.find_by_sql("SELECT ('Q' || to_char(t1.date, 'Q YYYY')) AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
 					(SELECT DATE_TRUNC('quarter', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
 					FROM tacos_ticket_items 
-					WHERE pos_category_id IN (1, 2, 3, 4, 5)
+					WHERE pos_category_id IN (1, 2, 3, 4, 5, 15)
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
 					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('quarter', ticket_close_time)) t1
@@ -472,7 +473,7 @@ class Meal
 				details_tbl = Tacos::TicketItem.find_by_sql("SELECT to_char(t1.date, 'YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
 					(SELECT DATE_TRUNC('year', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
 					FROM tacos_ticket_items 
-					WHERE pos_category_id IN (1, 2, 3, 4, 5)
+					WHERE pos_category_id IN (1, 2, 3, 4, 5, 15)
 					AND ticket_close_time between '#{start_date}' AND '#{end_date}'
 					AND (void IS NULL OR void != 'TRUE')
 					GROUP BY DATE_TRUNC('year', ticket_close_time)) t1
