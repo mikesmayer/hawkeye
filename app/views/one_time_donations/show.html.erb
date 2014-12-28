@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @one_time_donation.description %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @one_time_donation.amount %>
+</p>
+
+<p>
+  <strong>Meals:</strong>
+  <%= @one_time_donation.meals %>
+</p>
+
+<p>
+  <strong>Deposit date:</strong>
+  <%= @one_time_donation.deposit_date %>
+</p>
+
+<p>
+  <strong>Restaurant:</strong>
+  <%= @one_time_donation.restaurant.name %>
+</p>
+
+<%= link_to 'Edit', edit_one_time_donation_path(@one_time_donation) %> |
+<%= link_to 'Back', one_time_donations_path %>

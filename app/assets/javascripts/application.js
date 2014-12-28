@@ -123,6 +123,14 @@ $(document).ready(function(){
 	  ]
 	});
 
+	$('#one_time_donation_tbl').dataTable({
+	  "sPaginationType": "bootstrap",
+	  "order": [3, 'desc'],
+	  "columnDefs": [
+	  	{ "orderable": false, "targets": [ 5, 6, 7 ] }
+	  ]
+	});
+
 	$('#job_log_tbl').dataTable({
 	  "sPaginationType": "bootstrap",
 	  "order": [1, 'desc']

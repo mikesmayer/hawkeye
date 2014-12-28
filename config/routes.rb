@@ -2,6 +2,8 @@ RailsBootstrap::Application.routes.draw do
 
 
 
+  resources :one_time_donations
+
   namespace :tacos do
     resources :menu_item_groups
     resources :ticket_items
