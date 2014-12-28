@@ -117,8 +117,15 @@
 		</div>
 	</div><!-- end 2 col cont -->
 	<div class="col-xs-6 col-md-2">
-		<%= link_to 'Edit Tip jar donation', tip_jar_donations_path, :class => 'btn btn-sm btn-warning' %>
-	</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title text-centered">One Time Donation</h3>
+			</div>
+			<div class="panel-body">
+				<h2 class="meal-info-box" id="one_time_meals_info_box"><%= number_with_precision(@one_time, :precision => 0, :delimiter => ",") %></h2>
+			</div>
+		</div>
+	</div><!-- end 2 col cont -->
 </div><!-- End row of meal info boxes -->
 
 <div class="row">
@@ -174,6 +181,8 @@
 	</div> <!-- end three column containing tables for meal numbers by month -->
 
 	<div class="col-md-2">
+		<p><%= link_to 'Edit Tip jar donation', tip_jar_donations_path, :class => 'btn btn-sm btn-warning' %></p>
+		<p><%= link_to 'Edit One time donation', one_time_donations_path, :class => 'btn btn-sm btn-warning' %></p>
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				Counts by year

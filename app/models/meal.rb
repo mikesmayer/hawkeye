@@ -3,10 +3,10 @@ class Meal
 
 	def self.details_to_csv(details_tbl)
 		CSV.generate do |csv|
-			csv << ["Date", "Meal4Meal", "Double", "Apparel", "Tips", "Total"]
+			csv << ["Date", "Meal4Meal", "Double", "Apparel", "Tips", "One Time", "Total"]
 
 			details_tbl.each do |row|
-				csv << [row.date, row.m4m, row.dym, row.apparel, row.tip_jar, row.total]
+				csv << [row.date, row.m4m, row.dym, row.apparel, row.tip_jar, row.one_time, row.total]
 			end
 		end
 	end
@@ -40,6 +40,12 @@ class Meal
 				.where("restaurant_id = 1")
 				.sum(:meals)
 
+			one_time_total = OneTimeDonation
+				.where("deposit_date between ? AND ?", start_date, end_date)
+				.where("restaurant_id = 1")
+				.sum(:meals)
+
+			totals += one_time_total
 			totals += tip_jar_total
 		elsif restaurant == "tacos"
 			totals = Tacos::TicketItem
@@ -80,6 +86,12 @@ class Meal
 				.where("restaurant_id = 2")
 				.sum(:meals)
 
+			one_time_total = OneTimeDonation
+				.where("deposit_date between ? AND ?", start_date, end_date)
+				.where("restaurant_id = 2")
+				.sum(:meals)
+
+			totals += one_time_total
 			totals += tip_jar_total
 		end
 
@@ -88,9 +100,10 @@ class Meal
 		dym_total = dym_total.nil? ? 0 : dym_total
 		apparel_total = apparel_total.nil? ? 0 : apparel_total
 		tip_jar_total = tip_jar_total.nil? ? 0 : tip_jar_total
+		one_time_total = one_time_total.nil? ? 0 : one_time_total
 
 		meal_nums = {:total => totals, :m4m => m4m_total, 
-			:dym => dym_total, :apparel => apparel_total, :tip_jar => tip_jar_total}
+			:dym => dym_total, :apparel => apparel_total, :tip_jar => tip_jar_total, :one_time => one_time_total}
 		meal_nums.to_json
 	end
 
@@ -99,7 +112,8 @@ class Meal
 		end_date = end_date.to_s+"T23:59:59"
 
 		if restaurant == "p42"
-			P42::TicketItem.find_by_sql("SELECT t1.month as month, SUM(COALESCE(t1.total,0) + COALESCE(t2.total,0)) as total
+			P42::TicketItem.find_by_sql("SELECT t1.month as month, 
+					SUM( COALESCE(t1.total,0) + COALESCE(t2.total,0) + COALESCE(t3.total,0) ) as total
 				FROM
 				(SELECT DATE_TRUNC('month', ticket_close_time) AS month, SUM(meal_for_meal) as total
 				  FROM p42_ticket_items
@@ -109,12 +123,21 @@ class Meal
 				SELECT SUM(meals) as total, DATE_TRUNC('month', deposit_date) as month
 				  FROM tip_jar_donations
 				  WHERE restaurant_id = 1 AND deposit_date between '#{start_date}' AND '#{end_date}'
-				  GROUP BY DATE_TRUNC('month', deposit_date)) t2
+				  GROUP BY DATE_TRUNC('month', deposit_date)
+				) t2
 				  ON t1.month = t2.month
+				LEFT JOIN (
+				SELECT SUM(meals) as total, DATE_TRUNC('month', deposit_date) as month
+				  FROM one_time_donations
+				  WHERE restaurant_id = 1 AND deposit_date between '#{start_date}' AND '#{end_date}'
+				  GROUP BY DATE_TRUNC('month', deposit_date)
+				) t3
+				  ON t1.month = t3.month
 				  GROUP BY t1.month
 				  ORDER BY t1.month ASC")
 		elsif restaurant == "tacos"
-			Tacos::TicketItem.find_by_sql("SELECT t1.month as month, SUM(COALESCE(t1.total,0) + COALESCE(t2.total,0)) as total
+			Tacos::TicketItem.find_by_sql("SELECT t1.month as month, 
+					SUM( COALESCE(t1.total,0) + COALESCE(t2.total,0) + COALESCE(t3.total,0) ) as total
 				FROM
 				(SELECT DATE_TRUNC('month', ticket_close_time) AS month, SUM(meal_for_meal) as total
 				  FROM tacos_ticket_items
@@ -124,8 +147,16 @@ class Meal
 				SELECT SUM(meals) as total, DATE_TRUNC('month', deposit_date) as month
 				  FROM tip_jar_donations
 				  WHERE restaurant_id = 2 AND deposit_date between '#{start_date}' AND '#{end_date}'
-				  GROUP BY DATE_TRUNC('month', deposit_date)) t2
-				  ON t1.month = t2.month
+				  GROUP BY DATE_TRUNC('month', deposit_date)
+				) t2
+				ON t1.month = t2.month
+				LEFT JOIN (
+				SELECT SUM(meals) as total, DATE_TRUNC('month', deposit_date) as month
+				  FROM one_time_donations
+				  WHERE restaurant_id = 2 AND deposit_date between '#{start_date}' AND '#{end_date}'
+				  GROUP BY DATE_TRUNC('month', deposit_date)
+				) t3
+				ON t1.month = t3.month
 				  GROUP BY t1.month
 				  ORDER BY t1.month ASC")
 		end
@@ -139,7 +170,8 @@ class Meal
 
 		if restaurant == "p42"
 			
-			P42::TicketItem.find_by_sql("SELECT t1.year as year, SUM(COALESCE(t1.total,0) + COALESCE(t2.total,0)) as total
+			P42::TicketItem.find_by_sql("SELECT t1.year as year, 
+				SUM( COALESCE(t1.total,0) + COALESCE(t2.total,0) + COALESCE(t3.total,0) ) as total
 				FROM
 				(SELECT DATE_TRUNC('year', ticket_close_time) AS year, SUM(meal_for_meal) as total
 				  FROM p42_ticket_items
@@ -149,13 +181,22 @@ class Meal
 				SELECT SUM(meals) as total, DATE_TRUNC('year', deposit_date) as year
 				  FROM tip_jar_donations
 				  WHERE restaurant_id = 1 AND deposit_date between '#{start_date}' AND '#{end_date}'
-				  GROUP BY DATE_TRUNC('year', deposit_date)) t2
+				  GROUP BY DATE_TRUNC('year', deposit_date)
+				  ) t2
 				  ON t1.year = t2.year
+				LEFT JOIN (
+					SELECT SUM(meals) as total, DATE_TRUNC('year', deposit_date) as year
+					FROM one_time_donations
+					WHERE restaurant_id = 1 AND deposit_date between '#{start_date}' AND '#{end_date}'
+				  	GROUP BY DATE_TRUNC('year', deposit_date)
+					) t3
+				ON t1.year = t3.year
 				  GROUP BY t1.year
 				  ORDER BY t1.year ASC")
 
 		elsif restaurant == "tacos"
-			Tacos::TicketItem.find_by_sql("SELECT t1.year as year, SUM(COALESCE(t1.total,0) + COALESCE(t2.total,0)) as total
+			Tacos::TicketItem.find_by_sql("SELECT t1.year as year, 
+				SUM( COALESCE(t1.total,0) + COALESCE(t2.total,0) + COALESCE(t3.total,0) ) as total
 				FROM
 				(SELECT DATE_TRUNC('year', ticket_close_time) AS year, SUM(meal_for_meal) as total
 				  FROM tacos_ticket_items
@@ -165,8 +206,16 @@ class Meal
 				SELECT SUM(meals) as total, DATE_TRUNC('year', deposit_date) as year
 				  FROM tip_jar_donations
 				  WHERE restaurant_id = 2 AND deposit_date between '#{start_date}' AND '#{end_date}'
-				  GROUP BY DATE_TRUNC('year', deposit_date)) t2
+				  GROUP BY DATE_TRUNC('year', deposit_date)
+				  ) t2
 				  ON t1.year = t2.year
+				LEFT JOIN (
+				SELECT SUM(meals) as total, DATE_TRUNC('year', deposit_date) as year
+				  FROM one_time_donations
+				  WHERE restaurant_id = 2 AND deposit_date between '#{start_date}' AND '#{end_date}'
+				  GROUP BY DATE_TRUNC('year', deposit_date)
+				  ) t3
+				  ON t1.year = t3.year
 				  GROUP BY t1.year
 				  ORDER BY t1.year ASC")
 		end
@@ -245,7 +294,13 @@ class Meal
 		if restaurant == "p42"
 			case granularity
 			when "day"
-				details_tbl = P42::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon DD, YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
+				details_tbl = P42::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon DD, YYYY') AS date, 
+						t1.m4m, COALESCE(t2.dym, 0) AS dym, 
+						COALESCE(t3.apparel, 0) AS apparel, 
+						COALESCE(t4.tip_jar,0) AS tip_jar, 
+						COALESCE(t6.one_time,0) AS one_time,
+						( t5.total + COALESCE(t4.tip_jar,0) + COALESCE(t6.one_time,0) ) AS total 
+				FROM 
 					(SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS m4m
 					FROM p42_ticket_items 
 					WHERE pos_revenue_class_id != 15 AND pos_revenue_class_id != 18
@@ -269,13 +324,25 @@ class Meal
 					AND restaurant_id = 1
 					GROUP BY CAST(deposit_date AS DATE)) t4
 				ON t1.date = t4.date
+				LEFT JOIN (SELECT CAST(deposit_date AS DATE) as date, SUM(meals) AS one_time
+					FROM one_time_donations
+					WHERE deposit_date between '#{start_date}' AND '#{end_date}'
+					AND restaurant_id = 1
+					GROUP BY CAST(deposit_date AS DATE)) t6
+				ON t1.date = t6.date
 				LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS total
 					FROM p42_ticket_items
 					WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
 					GROUP BY CAST(ticket_close_time AS DATE)) t5
 				ON t1.date = t5.date")	
 			when "month"
-				details_tbl = P42::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon, YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
+				details_tbl = P42::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon, YYYY') AS date, 
+						t1.m4m, COALESCE(t2.dym, 0) AS dym, 
+						COALESCE(t3.apparel, 0) AS apparel, 
+						COALESCE(t4.tip_jar,0) AS tip_jar, 
+						COALESCE(t6.one_time,0) AS one_time,
+						( t5.total + COALESCE(t4.tip_jar,0) + COALESCE(t6.one_time,0) ) AS total 
+				FROM 
 					(SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
 					FROM p42_ticket_items 
 					WHERE pos_revenue_class_id != 15 AND pos_revenue_class_id != 18
@@ -299,13 +366,25 @@ class Meal
 					AND restaurant_id = 1
 					GROUP BY DATE_TRUNC('month', deposit_date)) t4
 				ON t1.date = t4.date
+				LEFT JOIN (SELECT DATE_TRUNC('month', deposit_date) as date, SUM(meals) AS one_time
+					FROM one_time_donations
+					WHERE deposit_date between '#{start_date}' AND '#{end_date}'
+					AND restaurant_id = 1
+					GROUP BY DATE_TRUNC('month', deposit_date)) t6
+				ON t1.date = t6.date
 				LEFT JOIN (SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS total
 					FROM p42_ticket_items
 					WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
 					GROUP BY DATE_TRUNC('month', ticket_close_time)) t5
 				ON t1.date = t5.date")
 			when "quarter"
-				details_tbl = P42::TicketItem.find_by_sql("SELECT ('Q' || to_char(t1.date, 'Q YYYY')) AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
+				details_tbl = P42::TicketItem.find_by_sql("SELECT ('Q' || to_char(t1.date, 'Q YYYY')) AS date, 
+						t1.m4m, COALESCE(t2.dym, 0) AS dym, 
+						COALESCE(t3.apparel, 0) AS apparel, 
+						COALESCE(t4.tip_jar,0) AS tip_jar, 
+						COALESCE(t6.one_time,0) AS one_time,
+						( t5.total + COALESCE(t4.tip_jar,0) + COALESCE(t6.one_time,0) ) AS total 
+				FROM 
 					(SELECT DATE_TRUNC('quarter', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
 					FROM p42_ticket_items 
 					WHERE pos_revenue_class_id != 15 AND pos_revenue_class_id != 18
@@ -329,13 +408,25 @@ class Meal
 					AND restaurant_id = 1
 					GROUP BY DATE_TRUNC('quarter', deposit_date)) t4
 				ON t1.date = t4.date
+				LEFT JOIN (SELECT DATE_TRUNC('quarter', deposit_date) as date, SUM(meals) AS one_time
+					FROM one_time_donations
+					WHERE deposit_date between '#{start_date}' AND '#{end_date}'
+					AND restaurant_id = 1
+					GROUP BY DATE_TRUNC('quarter', deposit_date)) t6
+				ON t1.date = t6.date
 				LEFT JOIN (SELECT DATE_TRUNC('quarter', ticket_close_time) as date, SUM(meal_for_meal) AS total
 					FROM p42_ticket_items
 					WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
 					GROUP BY DATE_TRUNC('quarter', ticket_close_time)) t5
 				ON t1.date = t5.date")
 			when "year"
-				details_tbl = P42::TicketItem.find_by_sql("SELECT to_char(t1.date, 'YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
+				details_tbl = P42::TicketItem.find_by_sql("SELECT to_char(t1.date, 'YYYY') AS date, 
+						t1.m4m, COALESCE(t2.dym, 0) AS dym, 
+						COALESCE(t3.apparel, 0) AS apparel, 
+						COALESCE(t4.tip_jar,0) AS tip_jar, 
+						COALESCE(t6.one_time,0) AS one_time,
+						( t5.total + COALESCE(t4.tip_jar,0) + COALESCE(t6.one_time,0) ) AS total 
+				FROM 
 					(SELECT DATE_TRUNC('year', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
 					FROM p42_ticket_items 
 					WHERE pos_revenue_class_id != 15 AND pos_revenue_class_id != 18
@@ -359,6 +450,12 @@ class Meal
 					AND restaurant_id = 1
 					GROUP BY DATE_TRUNC('year', deposit_date)) t4
 				ON t1.date = t4.date
+				LEFT JOIN (SELECT DATE_TRUNC('year', deposit_date) as date, SUM(meals) AS one_time
+					FROM one_time_donations
+					WHERE deposit_date between '#{start_date}' AND '#{end_date}'
+					AND restaurant_id = 1
+					GROUP BY DATE_TRUNC('year', deposit_date)) t6
+				ON t1.date = t6.date
 				LEFT JOIN (SELECT DATE_TRUNC('year', ticket_close_time) as date, SUM(meal_for_meal) AS total
 					FROM p42_ticket_items
 					WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
@@ -368,7 +465,13 @@ class Meal
 		elsif restaurant == "tacos"
 			case granularity
 			when "day"
-				details_tbl = Tacos::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon DD, YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
+				details_tbl = Tacos::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon DD, YYYY') AS date, 
+					t1.m4m, COALESCE(t2.dym, 0) AS dym, 
+					COALESCE(t3.apparel, 0) AS apparel, 
+					COALESCE(t4.tip_jar,0) AS tip_jar, 
+					COALESCE(t6.one_time,0) AS one_time,
+					( t5.total + COALESCE(t4.tip_jar,0) + COALESCE(t6.one_time,0) ) AS total 
+				FROM 
 					(SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS m4m
 					FROM tacos_ticket_items 
 					WHERE pos_category_id IN (1, 2, 3, 4, 5, 15)
@@ -395,6 +498,12 @@ class Meal
 					AND restaurant_id = 2
 					GROUP BY CAST(deposit_date AS DATE)) t4
 				ON t1.date = t4.date
+				LEFT JOIN (SELECT CAST(deposit_date AS DATE) as date, SUM(meals) AS one_time
+					FROM one_time_donations
+					WHERE deposit_date between '#{start_date}' AND '#{end_date}'
+					AND restaurant_id = 2
+					GROUP BY CAST(deposit_date AS DATE)) t6
+				ON t1.date = t6.date
 				LEFT JOIN (SELECT CAST(ticket_close_time AS DATE) AS date, SUM(meal_for_meal) AS total
 					FROM tacos_ticket_items
 					WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
@@ -402,7 +511,13 @@ class Meal
 					GROUP BY CAST(ticket_close_time AS DATE)) t5
 				ON t1.date = t5.date")	
 			when "month"
-				details_tbl = Tacos::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon, YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
+				details_tbl = Tacos::TicketItem.find_by_sql("SELECT to_char(t1.date, 'Mon, YYYY') AS date, 
+						t1.m4m, COALESCE(t2.dym, 0) AS dym, 
+						COALESCE(t3.apparel, 0) AS apparel, 
+						COALESCE(t4.tip_jar,0) AS tip_jar, 
+						COALESCE(t6.one_time,0) AS one_time,
+						( t5.total + COALESCE(t4.tip_jar,0) + COALESCE(t6.one_time,0) ) AS total 
+				FROM 
 					(SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
 					FROM tacos_ticket_items 
 					WHERE pos_category_id IN (1, 2, 3, 4, 5, 15)
@@ -429,6 +544,12 @@ class Meal
 					AND restaurant_id = 2
 					GROUP BY DATE_TRUNC('month', deposit_date)) t4
 				ON t1.date = t4.date
+				LEFT JOIN (SELECT DATE_TRUNC('month', deposit_date) as date, SUM(meals) AS one_time
+					FROM one_time_donations
+					WHERE deposit_date between '#{start_date}' AND '#{end_date}'
+					AND restaurant_id = 2
+					GROUP BY DATE_TRUNC('month', deposit_date)) t6
+				ON t1.date = t6.date
 				LEFT JOIN (SELECT DATE_TRUNC('month', ticket_close_time) as date, SUM(meal_for_meal) AS total
 					FROM tacos_ticket_items
 					WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
@@ -436,7 +557,13 @@ class Meal
 					GROUP BY DATE_TRUNC('month', ticket_close_time)) t5
 				ON t1.date = t5.date")
 			when "quarter"
-				details_tbl = Tacos::TicketItem.find_by_sql("SELECT ('Q' || to_char(t1.date, 'Q YYYY')) AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
+				details_tbl = Tacos::TicketItem.find_by_sql("SELECT ('Q' || to_char(t1.date, 'Q YYYY')) AS date, 
+						t1.m4m, COALESCE(t2.dym, 0) AS dym, 
+						COALESCE(t3.apparel, 0) AS apparel, 
+						COALESCE(t4.tip_jar,0) AS tip_jar, 
+						COALESCE(t6.one_time,0) AS one_time,
+						( t5.total + COALESCE(t4.tip_jar,0) + COALESCE(t6.one_time,0) ) AS total 
+				FROM 
 					(SELECT DATE_TRUNC('quarter', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
 					FROM tacos_ticket_items 
 					WHERE pos_category_id IN (1, 2, 3, 4, 5, 15)
@@ -463,6 +590,12 @@ class Meal
 					AND restaurant_id = 2
 					GROUP BY DATE_TRUNC('quarter', deposit_date)) t4
 				ON t1.date = t4.date
+				LEFT JOIN (SELECT DATE_TRUNC('quarter', deposit_date) as date, SUM(meals) AS one_time
+					FROM one_time_donations
+					WHERE deposit_date between '#{start_date}' AND '#{end_date}'
+					AND restaurant_id = 2
+					GROUP BY DATE_TRUNC('quarter', deposit_date)) t6
+				ON t1.date = t6.date
 				LEFT JOIN (SELECT DATE_TRUNC('quarter', ticket_close_time) as date, SUM(meal_for_meal) AS total
 					FROM tacos_ticket_items
 					WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'
@@ -470,7 +603,13 @@ class Meal
 					GROUP BY DATE_TRUNC('quarter', ticket_close_time)) t5
 				ON t1.date = t5.date")
 			when "year"
-				details_tbl = Tacos::TicketItem.find_by_sql("SELECT to_char(t1.date, 'YYYY') AS date, t1.m4m, COALESCE(t2.dym, 0) AS dym, COALESCE(t3.apparel, 0) AS apparel, COALESCE(t4.tip_jar,0) AS tip_jar, (t5.total + COALESCE(t4.tip_jar,0)) AS total FROM 
+				details_tbl = Tacos::TicketItem.find_by_sql("SELECT to_char(t1.date, 'YYYY') AS date, 
+						t1.m4m, COALESCE(t2.dym, 0) AS dym, 
+						COALESCE(t3.apparel, 0) AS apparel, 
+						COALESCE(t4.tip_jar,0) AS tip_jar, 
+						COALESCE(t6.one_time,0) AS one_time,
+						( t5.total + COALESCE(t4.tip_jar,0) + COALESCE(t6.one_time,0) ) AS total 
+				FROM 
 					(SELECT DATE_TRUNC('year', ticket_close_time) as date, SUM(meal_for_meal) AS m4m
 					FROM tacos_ticket_items 
 					WHERE pos_category_id IN (1, 2, 3, 4, 5, 15)
@@ -497,6 +636,12 @@ class Meal
 					AND restaurant_id = 2
 					GROUP BY DATE_TRUNC('year', deposit_date)) t4
 				ON t1.date = t4.date
+				LEFT JOIN (SELECT DATE_TRUNC('year', deposit_date) as date, SUM(meals) AS one_time
+					FROM one_time_donations
+					WHERE deposit_date between '#{start_date}' AND '#{end_date}'
+					AND restaurant_id = 2
+					GROUP BY DATE_TRUNC('year', deposit_date)) t6
+				ON t1.date = t6.date
 				LEFT JOIN (SELECT DATE_TRUNC('year', ticket_close_time) as date, SUM(meal_for_meal) AS total
 					FROM tacos_ticket_items
 					WHERE ticket_close_time between '#{start_date}' AND '#{end_date}'

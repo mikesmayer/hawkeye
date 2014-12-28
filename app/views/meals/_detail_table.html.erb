@@ -7,6 +7,7 @@
 			<th>Double</th>
 			<th>Apparel</th>
 			<th>Tip Jar</th>
+			<th>One Time</th>
 			<th>Total</th>
 		</tr>
 	</thead>
@@ -18,6 +19,7 @@
 				<td><%= number_with_precision(row.dym, :precision => 0, :delimiter => ",") %></td>
 				<td><%= number_with_precision(row.apparel, :precision => 0, :delimiter => ",") %></td>
 				<td><%= number_with_precision(row.tip_jar, :precision => 0, :delimiter => ",") %></td>
+				<td><%= number_with_precision(row.one_time, :precision => 0, :detimiter => ",") %></td>
 				<td><%= number_with_precision(row.total, :precision => 0, :delimiter => ",") %></td>
 			</tr>
 		<% end %>

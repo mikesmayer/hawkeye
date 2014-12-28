@@ -13,6 +13,7 @@ class MealsController < ApplicationController
 		@dym = totals["dym"]
 		@apparel = totals["apparel"]
 		@tip_jar = totals["tip_jar"]
+		@one_time = totals["one_time"]
 
 		@p42_categories = P42::MenuItemGroup.all
 		@tacos_categories = Tacos::MenuItemGroup.all
