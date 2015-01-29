@@ -102,7 +102,7 @@ function update_sales_info_boxes(){
 			net_sales = addCommas( data.net_sales.toFixed(0) );
 			discount_totals = addCommas( data.discount_totals.toFixed(0) );
 			m4m_totals = addCommas( data.m4m_totals.toFixed(0) );
-			food_totals = addCommas( data.food_sales.toFixed(0) );
+			food_totals = addCommas( (data.food_sales + data.catering_sales).toFixed(0) );
 			merch_totals = addCommas( data.merch_sales.toFixed(0) );
 
 			$('#net_sales_info_box').html("$" + net_sales);
